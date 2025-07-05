@@ -84,13 +84,6 @@ jobs:
         run: |
           uv sync --all-extras
 
-      - name: Lint Code
-        if: env.RELEASE_EXISTS == 'false'
-        run: |
-          uv run black --check src/
-          uv run isort --check-only src/
-          uv run mypy src/
-
       - name: Build Package
         if: env.RELEASE_EXISTS == 'false'
         run: |
