@@ -1,4 +1,5 @@
 import asyncio
+import logging # Added logging
 from urllib.parse import urlparse
 from typing import Union, Dict, Type
 
@@ -59,8 +60,9 @@ class TrueLinkResolver:
             UnsupportedProviderException: If provider is not supported
             ExtractionFailedException: If extraction fails
         """
-        resolver = self._get_resolver(url)
-        return await resolver.resolve(url)
+        resolver_instance = self._get_resolver(url)
+        logging.debug(f"TrueLinkResolver.resolve: Using resolver {type(resolver_instance)} for URL {url}")
+        return await resolver_instance.resolve(url)
     
     def resolve_sync(self, url: str) -> Union[LinkResult, FolderResult]:
         """

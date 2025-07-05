@@ -1,4 +1,5 @@
 import re
+import logging # Added logging
 from typing import Union
 
 from .base import BaseResolver
@@ -11,7 +12,13 @@ class FuckingFastResolver(BaseResolver):
     async def resolve(self, url: str) -> Union[LinkResult, FolderResult]:
         """Resolve FuckingFast URL"""
         try:
-            async with await self._get(url) as response:
+            logging.debug(f"FuckingFastResolver.resolve: Calling self._get('{url}')")
+            response_obj_coro = self._get(url)
+            logging.debug(f"FuckingFastResolver.resolve: self._get('{url}') returned coro: {response_obj_coro}")
+            response_obj = await response_obj_coro
+            logging.debug(f"FuckingFastResolver.resolve: awaited self._get('{url}') returned: {type(response_obj)}")
+            async with response_obj as response:
+                logging.debug(f"FuckingFastResolver.resolve: Entered async with for response: {type(response)}")
                 content = await response.text()
             
             pattern = r'window\.open\((["\'])(https://fuckingfast\.co/dl/[^"\']+)\1'
