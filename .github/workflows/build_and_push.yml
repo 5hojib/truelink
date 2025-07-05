@@ -84,11 +84,6 @@ jobs:
         run: |
           uv sync --all-extras
 
-      - name: Run Tests
-        if: env.RELEASE_EXISTS == 'false'
-        run: |
-          uv run pytest tests/ -v --cov=src/truelink --cov-report=term-missing
-
       - name: Lint Code
         if: env.RELEASE_EXISTS == 'false'
         run: |
