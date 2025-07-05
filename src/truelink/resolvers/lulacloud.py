@@ -11,7 +11,7 @@ class LulaCloudResolver(BaseResolver):
         """Resolve LulaCloud URL"""
         try:
             headers = {"Referer": url}
-            async with self._post(url, headers=headers, allow_redirects=False) as response:
+            async with await self._post(url, headers=headers, allow_redirects=False) as response:
                 location = response.headers.get("location")
                 if not location:
                     raise ExtractionFailedException("No redirect location found")

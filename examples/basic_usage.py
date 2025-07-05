@@ -4,11 +4,8 @@ from truelink import TrueLinkResolver
 async def main():
     resolver = TrueLinkResolver()
     
-    # Example URLs (replace with actual URLs)
     urls = [
-        "https://buzzheavier.com/example123",
-        "https://fuckingfast.co/example456",
-        "https://lulacloud.com/example789",
+        "https://www.lulacloud.com/d/nuNbCVcYq31-fbi-s07e14-hitched-awafim-tv-mkv",
     ]
     
     for url in urls:
@@ -23,5 +20,4 @@ async def main():
         except Exception as e:
             print(f"Error processing {url}: {e}")
 
-if __name__ == "__main__":
-    asyncio.run(main())
+await main()

@@ -11,7 +11,7 @@ class FuckingFastResolver(BaseResolver):
     async def resolve(self, url: str) -> Union[LinkResult, FolderResult]:
         """Resolve FuckingFast URL"""
         try:
-            async with self._get(url) as response:
+            async with await self._get(url) as response:
                 content = await response.text()
             
             pattern = r'window\.open\((["\'])(https://fuckingfast\.co/dl/[^"\']+)\1'
