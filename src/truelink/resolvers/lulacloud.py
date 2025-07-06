@@ -12,11 +12,8 @@ class LulaCloudResolver(BaseResolver):
         """Resolve LulaCloud URL"""
         try:
             headers = {"Referer": url}
-            logging.debug(f"LulaCloudResolver.resolve: Calling self._post('{url}')")
             response_obj_coro = self._post(url, headers=headers, allow_redirects=False)
-            logging.debug(f"LulaCloudResolver.resolve: self._post('{url}') returned coro: {response_obj_coro}")
             response_obj = await response_obj_coro
-            logging.debug(f"LulaCloudResolver.resolve: awaited self._post('{url}') returned: {type(response_obj)}")
             async with response_obj as response:
                 logging.debug(f"LulaCloudResolver.resolve: Entered async with for response: {type(response)}")
 

@@ -1,5 +1,4 @@
 import aiohttp
-import logging # Added logging
 from abc import ABC, abstractmethod
 from typing import Union, Dict, Any, Optional
 
@@ -38,21 +37,15 @@ class BaseResolver(ABC):
     async def _get(self, url: str, **kwargs) -> aiohttp.ClientResponse:
         """Make GET request"""
         if not self.session:
-            logging.debug("BaseResolver._get: Session not found, creating new session.")
             await self._create_session()
-        logging.debug(f"BaseResolver._get: Making GET request to {url}")
         response = await self.session.get(url, **kwargs)
-        logging.debug(f"BaseResolver._get: Received response of type {type(response)} from {url}")
         return response
     
     async def _post(self, url: str, **kwargs) -> aiohttp.ClientResponse:
         """Make POST request"""
         if not self.session:
-            logging.debug("BaseResolver._post: Session not found, creating new session.")
             await self._create_session()
-        logging.debug(f"BaseResolver._post: Making POST request to {url}")
         response = await self.session.post(url, **kwargs)
-        logging.debug(f"BaseResolver._post: Received response of type {type(response)} from {url}")
         return response
     
     @abstractmethod

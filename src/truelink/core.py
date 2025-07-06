@@ -1,5 +1,4 @@
 import asyncio
-import logging # Added logging
 from urllib.parse import urlparse
 from typing import Union, Dict, Type
 
@@ -7,7 +6,7 @@ from .exceptions import InvalidURLException, UnsupportedProviderException
 from .types import LinkResult, FolderResult
 from .resolvers import (
     # YandexDiskResolver,
-    # BuzzHeavierResolver,
+    BuzzHeavierResolver,
     # DevUploadsResolver,
     LulaCloudResolver,
     # UploadHavenResolver,
@@ -23,7 +22,7 @@ class TrueLinkResolver:
         self._resolvers: Dict[str, Type] = {
             # 'yadi.sk': YandexDiskResolver,
             # 'disk.yandex.': YandexDiskResolver,
-            # 'buzzheavier.com': BuzzHeavierResolver,
+            'buzzheavier.com': BuzzHeavierResolver,
             # 'devuploads': DevUploadsResolver,
             'lulacloud.com': LulaCloudResolver,
             # 'uploadhaven': UploadHavenResolver,
@@ -61,7 +60,6 @@ class TrueLinkResolver:
             ExtractionFailedException: If extraction fails
         """
         resolver_instance = self._get_resolver(url)
-        logging.debug(f"TrueLinkResolver.resolve: Using resolver {type(resolver_instance)} for URL {url}")
         return await resolver_instance.resolve(url)
     
     def resolve_sync(self, url: str) -> Union[LinkResult, FolderResult]:
