@@ -1,6 +1,6 @@
 [project]
 name = "truelink"
-version = "0.0.4"
+version = "0.0.5"
 description = "Extract direct download links from various URL formats"
 authors = [
     {name = "5hojib", email = "yesiamshojib@ganil.com"}

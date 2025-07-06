@@ -1,6 +1,6 @@
 from .base import BaseResolver
 # from .yandex import YandexDiskResolver
-# from .buzzheavier import BuzzHeavierResolver
+from .buzzheavier import BuzzHeavierResolver
 # from .devuploads import DevUploadsResolver
 from .lulacloud import LulaCloudResolver
 # from .uploadhaven import UploadHavenResolver
@@ -11,7 +11,7 @@ from .fuckingfast import FuckingFastResolver
 __all__ = [
     'BaseResolver',
     # 'YandexDiskResolver',
-    # 'BuzzHeavierResolver',
+    'BuzzHeavierResolver',
     # 'DevUploadsResolver',
     'LulaCloudResolver',
     # 'UploadHavenResolver',
