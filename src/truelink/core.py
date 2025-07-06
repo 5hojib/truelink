@@ -46,15 +46,15 @@ class TrueLinkResolver:
         
         raise UnsupportedProviderException(f"No resolver found for domain: {domain}")
     
-    async def resolve(self, url: str) -> str: # Changed return type to str
+    async def resolve(self, url: str) -> Union[LinkResult, FolderResult]:
         """
-        Resolve a URL to direct download link(s) and return as a JSON string.
+        Resolve a URL to direct download link(s) and return as a LinkResult or FolderResult object.
         
         Args:
             url: The URL to resolve
             
         Returns:
-            A JSON string representing the LinkResult or FolderResult.
+            A LinkResult or FolderResult object.
             
         Raises:
             InvalidURLException: If URL is invalid
@@ -62,16 +62,12 @@ class TrueLinkResolver:
             ExtractionFailedException: If extraction fails
         """
         resolver_instance = self._get_resolver(url)
-        # The resolver_instance.resolve(url) still returns a LinkResult or FolderResult object
+        # The resolver_instance.resolve(url) returns a LinkResult or FolderResult object
         result_object = await resolver_instance.resolve(url)
 
-        # Convert the result object to a dictionary
-        result_dict = asdict(result_object)
-
-        # Convert the dictionary to a pretty-printed JSON string
-        return json.dumps(result_dict, indent=4)
+        return result_object
     
-    def resolve_sync(self, url: str) -> str: # Changed return type to str
+    def resolve_sync(self, url: str) -> Union[LinkResult, FolderResult]:
         """
         Synchronous version of resolve()
         
@@ -79,7 +75,7 @@ class TrueLinkResolver:
             url: The URL to resolve
             
         Returns:
-            A JSON string representing the LinkResult or FolderResult.
+            A LinkResult or FolderResult object.
         """
         return asyncio.run(self.resolve(url))
     
