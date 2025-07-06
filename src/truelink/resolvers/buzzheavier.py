@@ -28,7 +28,9 @@ class BuzzHeavierResolver(BaseResolver):
             
             if link_elements:
                 download_url = await self._get_download_url(f"https://buzzheavier.com{link_elements[0]}")
-                return LinkResult(url=download_url)
+                # Fetch filename and size
+                filename, size = await self._fetch_file_details(download_url)
+                return LinkResult(url=download_url, filename=filename, size=size)
             
             # Check for folder contents
             folder_elements = tree.xpath("//tbody[@id='tbody']/tr")
@@ -68,22 +70,26 @@ class BuzzHeavierResolver(BaseResolver):
         for element in folder_elements:
             try:
                 filename_elem = element.xpath(".//a")[0]
-                filename = filename_elem.text.strip()
+                scraped_filename = filename_elem.text.strip()
                 file_id = filename_elem.get("href", "").strip()
-                size_text = element.xpath(".//td[@class='text-center']/text()")[0].strip()
+                # size_text = element.xpath(".//td[@class='text-center']/text()")[0].strip() # Original size text, not reliable
                 
                 download_url = await self._get_download_url(f"https://buzzheavier.com{file_id}", True)
                 
                 if download_url:
+                    # Fetch actual filename and size
+                    actual_filename, item_size = await self._fetch_file_details(download_url)
+
                     contents.append(FileItem(
-                        filename=filename,
+                        filename=actual_filename if actual_filename else scraped_filename, # Prioritize actual_filename
                         url=download_url,
+                        size=item_size,
                         path="",
                     ))
-                    # Convert size string to bytes (you'll need to implement this)
-                    # total_size += self._parse_size(size_text)
+                    if item_size is not None:
+                        total_size += item_size
                     
-            except Exception:
+            except Exception: # Consider more specific exception handling or logging
                 continue
         
         title = tree.xpath("//span/text()")[0].strip() if tree.xpath("//span/text()") else "BuzzHeavier Folder"

@@ -1,9 +1,11 @@
 import asyncio
+import json # Added for JSON output
+from dataclasses import asdict # Added for converting dataclass to dict
 from urllib.parse import urlparse
-from typing import Union, Dict, Type
+from typing import Union, Dict, Type, Any # Added Any for resolve return
 
 from .exceptions import InvalidURLException, UnsupportedProviderException
-from .types import LinkResult, FolderResult
+from .types import LinkResult, FolderResult # These are still used internally by resolvers
 from .resolvers import (
     # YandexDiskResolver,
     BuzzHeavierResolver,
@@ -44,15 +46,15 @@ class TrueLinkResolver:
         
         raise UnsupportedProviderException(f"No resolver found for domain: {domain}")
     
-    async def resolve(self, url: str) -> Union[LinkResult, FolderResult]:
+    async def resolve(self, url: str) -> str: # Changed return type to str
         """
-        Resolve a URL to direct download link(s)
+        Resolve a URL to direct download link(s) and return as a JSON string.
         
         Args:
             url: The URL to resolve
             
         Returns:
-            LinkResult for single files, FolderResult for folders
+            A JSON string representing the LinkResult or FolderResult.
             
         Raises:
             InvalidURLException: If URL is invalid
@@ -60,9 +62,16 @@ class TrueLinkResolver:
             ExtractionFailedException: If extraction fails
         """
         resolver_instance = self._get_resolver(url)
-        return await resolver_instance.resolve(url)
+        # The resolver_instance.resolve(url) still returns a LinkResult or FolderResult object
+        result_object = await resolver_instance.resolve(url)
+
+        # Convert the result object to a dictionary
+        result_dict = asdict(result_object)
+
+        # Convert the dictionary to a pretty-printed JSON string
+        return json.dumps(result_dict, indent=4)
     
-    def resolve_sync(self, url: str) -> Union[LinkResult, FolderResult]:
+    def resolve_sync(self, url: str) -> str: # Changed return type to str
         """
         Synchronous version of resolve()
         
@@ -70,7 +79,7 @@ class TrueLinkResolver:
             url: The URL to resolve
             
         Returns:
-            LinkResult for single files, FolderResult for folders
+            A JSON string representing the LinkResult or FolderResult.
         """
         return asyncio.run(self.resolve(url))
     

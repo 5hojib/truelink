@@ -8,16 +8,19 @@ async def main():
         "https://www.lulacloud.com/d/nuNbCVcYq31-fbi-s07e14-hitched-awafim-tv-mkv",
     ]
     
+    print("--- Output from resolver ---")
     for url in urls:
         try:
             if resolver.is_supported(url):
-                result = await resolver.resolve(url)
-                print(f"URL: {url}")
-                print(f"Result: {result}")
-                print("-" * 50)
+                print(f"\nProcessing URL: {url}")
+                # resolve() will now return a JSON string directly
+                json_result_str = await resolver.resolve(url)
+                print(json_result_str)
             else:
-                print(f"URL not supported: {url}")
+                print(f"\nURL not supported: {url}")
         except Exception as e:
-            print(f"Error processing {url}: {e}")
+            print(f"\nError processing {url}: {e}")
+        print("-" * 50)
 
-await main()
+if __name__ == "__main__":
+    asyncio.run(main())

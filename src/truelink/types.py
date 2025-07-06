@@ -7,7 +7,6 @@ class LinkResult:
     url: str
     filename: Optional[str] = None
     size: Optional[int] = None
-    metadata: Optional[Dict[str, Any]] = None
 
 @dataclass
 class FileItem:
@@ -23,4 +22,3 @@ class FolderResult:
     title: str
     contents: List[FileItem]
     total_size: int = 0
-    metadata: Optional[Dict[str, Any]] = None

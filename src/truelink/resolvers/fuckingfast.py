@@ -22,7 +22,11 @@ class FuckingFastResolver(BaseResolver):
             if not match:
                 raise ExtractionFailedException("Could not find download link in page")
             
-            return LinkResult(url=match.group(2))
+            download_url = match.group(2)
+            # Fetch filename and size
+            filename, size = await self._fetch_file_details(download_url)
+
+            return LinkResult(url=download_url, filename=filename, size=size)
             
         except Exception as e:
             raise ExtractionFailedException(f"Failed to resolve FuckingFast URL: {e}") from e
