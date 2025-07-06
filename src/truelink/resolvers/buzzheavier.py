@@ -17,7 +17,7 @@ class BuzzHeavierResolver(BaseResolver):
             return LinkResult(url=url)
         
         try:
-            async with self._get(url) as response:
+            async with await self._get(url) as response:
                 html_content = await response.text()
                 tree = fromstring(html_content)
             
@@ -54,7 +54,7 @@ class BuzzHeavierResolver(BaseResolver):
             "priority": "u=1, i",
         }
         
-        async with self._get(url, headers=headers) as response:
+        async with await self._get(url, headers=headers) as response:
             redirect_url = response.headers.get("Hx-Redirect")
             if not redirect_url:
                 if not is_folder:
