@@ -2,8 +2,8 @@ import aiohttp
 from abc import ABC, abstractmethod
 from typing import Union, Dict, Any, Optional
 
-import re # For extracting filename
-from urllib.parse import unquote, urlparse # For extracting filename
+import re 
+from urllib.parse import unquote, urlparse 
 from ..types import LinkResult, FolderResult
 from ..exceptions import ExtractionFailedException
 
@@ -79,20 +79,14 @@ class BaseResolver(ABC):
             session_created_here = True
 
         try:
-            # Ensure self.session is not None before proceeding
             if not self.session:
-                # This case should ideally not be reached if _create_session works correctly
-                # or if the session is managed by the resolver's lifecycle.
-                # Consider logging or raising an error if session is still None.
                 return None, None
 
             async with self.session.head(url, allow_redirects=True) as response:
-                response.raise_for_status() # Raise an exception for bad status codes
+                response.raise_for_status() 
 
-                # Try to get filename from Content-Disposition header
                 content_disposition = response.headers.get("Content-Disposition")
                 if content_disposition:
-                    # Regex to find filename*=UTF-8''<encoded_filename> or filename="<filename>"
                     match = re.search(r"filename\*=UTF-8''([^']+)$", content_disposition, re.IGNORECASE)
                     if match:
                         filename = unquote(match.group(1))
@@ -101,26 +95,20 @@ class BaseResolver(ABC):
                         if match:
                             filename = match.group(1)
 
-                # If filename is still None, try to get it from the URL path
                 if not filename:
                     parsed_url = urlparse(url)
                     if parsed_url.path:
                         filename = unquote(parsed_url.path.split('/')[-1])
-                        if not filename: # Handle cases like trailing slash
+                        if not filename: 
                             filename = None
 
-                # Get size from Content-Length header
                 content_length = response.headers.get("Content-Length")
                 if content_length and content_length.isdigit():
                     size = int(content_length)
 
         except aiohttp.ClientError as e:
-            # Log error or handle as needed, e.g., print(f"Error fetching file details for {url}: {e}")
-            # For now, we'll let filename and size remain None or their current values
             pass
         except Exception as e:
-            # Catch any other unexpected errors
-            # Log error or handle as needed, e.g., print(f"Unexpected error fetching file details for {url}: {e}")
             pass
         finally:
             if session_created_here:
