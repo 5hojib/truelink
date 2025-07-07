@@ -1,13 +1,17 @@
+from __future__ import annotations
+
 import asyncio
+
 from truelink import TrueLinkResolver
+
 
 async def main():
     resolver = TrueLinkResolver()
-    
+
     urls = [
         "https://www.lulacloud.com/d/nuNbCVcYq31-fbi-s07e14-hitched-awafim-tv-mkv",
     ]
-    
+
     print("--- Output from resolver ---")
     for url in urls:
         try:
@@ -15,18 +19,18 @@ async def main():
                 print(f"\nProcessing URL: {url}")
                 result = await resolver.resolve(url)
 
-                from truelink.types import LinkResult, FolderResult
+                from truelink.types import FolderResult, LinkResult
 
                 if isinstance(result, LinkResult):
-                    print(f"Type: LinkResult")
+                    print("Type: LinkResult")
                     print(f"  URL: {result.url}")
                     print(f"  Filename: {result.filename}")
                     print(f"  Size: {result.size}")
                 elif isinstance(result, FolderResult):
-                    print(f"Type: FolderResult")
+                    print("Type: FolderResult")
                     print(f"  Title: {result.title}")
                     print(f"  Total Size: {result.total_size}")
-                    print(f"  Contents:")
+                    print("  Contents:")
                     for item in result.contents:
                         print(f"    - Filename: {item.filename}")
                         print(f"      URL: {item.url}")
@@ -41,6 +45,7 @@ async def main():
         except Exception as e:
             print(f"\nError processing {url}: {e}")
         print("-" * 50)
+
 
 if __name__ == "__main__":
     asyncio.run(main())

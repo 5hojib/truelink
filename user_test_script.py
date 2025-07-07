@@ -1,5 +1,9 @@
+from __future__ import annotations
+
 import asyncio
+
 from truelink import TrueLinkResolver
+
 
 async def main():
     resolver = TrueLinkResolver()
@@ -17,14 +21,12 @@ async def main():
                 result = await resolver.resolve(url)
                 print(result)
 
-                from truelink.types import LinkResult, FolderResult
-
-
             else:
                 print(f"\nURL not supported: {url}")
         except Exception as e:
             print(f"\nError processing {url}: {e}")
         print("-" * 50)
+
 
 if __name__ == "__main__":
     asyncio.run(main())

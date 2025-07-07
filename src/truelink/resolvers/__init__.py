@@ -1,21 +1,27 @@
+from __future__ import annotations
+
 from .base import BaseResolver
+
 # from .yandex import YandexDiskResolver
 from .buzzheavier import BuzzHeavierResolver
-# from .devuploads import DevUploadsResolver
-from .lulacloud import LulaCloudResolver
+
 # from .uploadhaven import UploadHavenResolver
 from .fuckingfast import FuckingFastResolver
+
+# from .devuploads import DevUploadsResolver
+from .lulacloud import LulaCloudResolver
+
 # from .mediafile import MediaFileResolver
 # from .mediafire import MediaFireResolver
 
 __all__ = [
-    'BaseResolver',
+    "BaseResolver",
     # 'YandexDiskResolver',
-    'BuzzHeavierResolver',
-    # 'DevUploadsResolver',
-    'LulaCloudResolver',
+    "BuzzHeavierResolver",
     # 'UploadHavenResolver',
-    'FuckingFastResolver',
+    "FuckingFastResolver",
+    # 'DevUploadsResolver',
+    "LulaCloudResolver",
     # 'MediaFileResolver',
     # 'MediaFireResolver',
 ]
