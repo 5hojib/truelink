@@ -21,7 +21,6 @@ class FuckingFastResolver(BaseResolver):
                 raise ExtractionFailedException("Could not find download link in page")
             
             download_url = match.group(2)
-            # Fetch filename and size
             filename, size = await self._fetch_file_details(download_url)
 
             return LinkResult(url=download_url, filename=filename, size=size)

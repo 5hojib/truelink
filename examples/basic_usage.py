@@ -13,10 +13,8 @@ async def main():
         try:
             if resolver.is_supported(url):
                 print(f"\nProcessing URL: {url}")
-                # resolve() will now return a LinkResult or FolderResult object
                 result = await resolver.resolve(url)
 
-                # Import the result types to check isinstance
                 from truelink.types import LinkResult, FolderResult
 
                 if isinstance(result, LinkResult):
@@ -45,7 +43,4 @@ async def main():
         print("-" * 50)
 
 if __name__ == "__main__":
-    # Example with a buzzheavier URL as requested by the user
-    # You can change this or add more URLs to the list above
-    # urls.append("https://buzzheavier.com/rnk4ut0lci9y")
     asyncio.run(main())

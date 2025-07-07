@@ -1,5 +1,4 @@
 from typing import Union
-import logging # Added logging
 
 from .base import BaseResolver
 from ..types import LinkResult, FolderResult

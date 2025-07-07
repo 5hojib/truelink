@@ -81,7 +81,7 @@ class BaseResolver(ABC):
             await self._create_session()
             session_created_here = True
 
-        if not self.session: # Should not happen if _create_session works
+        if not self.session: 
             if session_created_here: await self._close_session()
             return None, None
 
@@ -89,7 +89,6 @@ class BaseResolver(ABC):
         if custom_headers:
             request_headers.update(custom_headers)
 
-        # Try HEAD request
         try:
             async with self.session.head(url, headers=request_headers, allow_redirects=True) as resp:
                 if resp.status == 200:
@@ -113,22 +112,18 @@ class BaseResolver(ABC):
                     content_length = resp.headers.get("Content-Length")
                     if content_length and content_length.isdigit():
                         size = int(content_length)
-                        # If HEAD gives size, return (handles session_created_here in finally)
-                        # No, explicit close if returning early and session was created here.
                         if session_created_here: await self._close_session()
                         return filename, size
         except aiohttp.ClientError:
-            pass # HEAD failed, proceed to GET
+            pass 
         except Exception:
-            pass # Other error with HEAD
+            pass 
 
-        # Fallback to GET with Range header if size not found
         try:
             get_range_headers = request_headers.copy()
             get_range_headers["Range"] = "bytes=0-0"
             async with self.session.get(url, headers=get_range_headers, allow_redirects=True) as resp:
                 if resp.status in (200, 206):
-                    # Update filename if not already found (e.g., if HEAD failed)
                     if not filename:
                         content_disposition = resp.headers.get("Content-Disposition")
                         if content_disposition:
@@ -151,11 +146,11 @@ class BaseResolver(ABC):
                         try:
                             size = int(content_range.split("/")[-1])
                         except (ValueError, IndexError):
-                            pass # Size not found in Content-Range
+                            pass 
         except aiohttp.ClientError:
-            pass # GET failed
+            pass 
         except Exception:
-            pass # Other error with GET
+            pass 
 
         finally:
             if session_created_here:

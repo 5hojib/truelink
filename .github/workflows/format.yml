@@ -1,0 +1,46 @@
+name: Format and test code with uv
+
+on: 
+  push:
+
+jobs:
+  lint-format-and-test:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout electrogram
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: "latest"
+
+      - name: Install dependencies
+        run: |
+          uv python install 3.13
+          uv lock --upgrade
+
+      - name: Run ruff to lint and format code
+        run: |
+          uv tool run ruff check . --exit-zero
+          uv tool run ruff format .
+          git add -u
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "5hojib"
+          git config --global user.email "yesiamshojib@gmail.com"
+          if git diff-index --quiet HEAD --; then
+            echo "No changes to commit."
+          else
+            git commit -m "InkyPinkyPonky [no ci]" --signoff
+            git push origin ${{ github.ref }}
+          fi

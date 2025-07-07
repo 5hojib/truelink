@@ -1,11 +1,11 @@
 import asyncio
-import json # Added for JSON output
-from dataclasses import asdict # Added for converting dataclass to dict
+import json
+from dataclasses import asdict 
 from urllib.parse import urlparse
-from typing import Union, Dict, Type, Any # Added Any for resolve return
+from typing import Union, Dict, Type, Any 
 
 from .exceptions import InvalidURLException, UnsupportedProviderException
-from .types import LinkResult, FolderResult # These are still used internally by resolvers
+from .types import LinkResult, FolderResult 
 from .resolvers import (
     # YandexDiskResolver,
     BuzzHeavierResolver,
@@ -62,8 +62,7 @@ class TrueLinkResolver:
             ExtractionFailedException: If extraction fails
         """
         resolver_instance = self._get_resolver(url)
-        async with resolver_instance: # Use the resolver as an async context manager
-            # The resolver_instance.resolve(url) returns a LinkResult or FolderResult object
+        async with resolver_instance:
             result_object = await resolver_instance.resolve(url)
 
         return result_object
