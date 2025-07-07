@@ -41,18 +41,12 @@ jobs:
       - name: Check for Existing Release
         id: check_release
         run: |
-          VERSION=${{ env.VERSION }}
-          TAG_WITH_V="v$VERSION"
-          TAG_PLAIN="$VERSION"
-
-          CODE_WITH_V=$(curl -s -o /dev/null -w "%{http_code}" https://api.github.com/repos/$GITHUB_REPOSITORY/releases/tags/$TAG_WITH_V)
-          CODE_PLAIN=$(curl -s -o /dev/null -w "%{http_code}" https://api.github.com/repos/$GITHUB_REPOSITORY/releases/tags/$TAG_PLAIN)
-
-          if [ "$CODE_WITH_V" -eq 200 ] || [ "$CODE_PLAIN" -eq 200 ]; then
-            echo "Release already exists."
+          TAG_EXISTS=$(curl -s -o /dev/null -w "%{http_code}" https://api.github.com/repos/$GITHUB_REPOSITORY/releases/tags/v${{ env.VERSION }})
+          if [ "$TAG_EXISTS" -eq 200 ]; then
+            echo "Release with tag v${{ env.VERSION }} already exists."
             echo "RELEASE_EXISTS=true" >> $GITHUB_ENV
           else
-            echo "No matching release found."
+            echo "Release with tag v${{ env.VERSION }} does not exist."
             echo "RELEASE_EXISTS=false" >> $GITHUB_ENV
           fi
 
@@ -60,12 +54,12 @@ jobs:
         id: get_commits
         if: env.RELEASE_EXISTS == 'false'
         run: |
-          VERSION=${{ env.VERSION }}
-          LAST_TAG=$(git describe --tags --match "v*" --abbrev=0 2>/dev/null || echo "")
-
-          echo "## Release Notes v$VERSION" > release_notes.txt
+          # Get the last release tag
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          
+          echo "## Release Notes v${{ env.VERSION }}" > release_notes.txt
           echo "" >> release_notes.txt
-
+          
           if [ -n "$LAST_TAG" ]; then
             echo "### Changes since $LAST_TAG:" >> release_notes.txt
             echo "" >> release_notes.txt
@@ -75,23 +69,25 @@ jobs:
             echo "" >> release_notes.txt
             echo "- Initial release of TrueLink library" >> release_notes.txt
           fi
-
+          
           echo "" >> release_notes.txt
           echo "### Latest Commit:" >> release_notes.txt
           echo "**$(git log -1 --pretty=format:"%s")**" >> release_notes.txt
           echo "" >> release_notes.txt
           git log -1 --pretty=format:"%b" >> release_notes.txt
-
+          
           echo "Generated release notes:"
           cat release_notes.txt
 
       - name: Install Dependencies
         if: env.RELEASE_EXISTS == 'false'
-        run: uv sync --all-extras
+        run: |
+          uv sync --all-extras
 
       - name: Build Package
         if: env.RELEASE_EXISTS == 'false'
-        run: uv build
+        run: |
+          uv build
 
       - name: Create New Release
         if: env.RELEASE_EXISTS == 'false'
@@ -109,9 +105,11 @@ jobs:
 
       - name: Publish to PyPI
         if: env.RELEASE_EXISTS == 'false'
-        run: uv publish --token ${{ secrets.PYPI_API_TOKEN }}
+        run: |
+          uv publish --token ${{ secrets.PYPI_API_TOKEN }}
         env:
           PYPI_API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+
 
   notify:
     needs: tag_and_publish
