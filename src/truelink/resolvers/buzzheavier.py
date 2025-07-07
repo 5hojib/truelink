@@ -30,7 +30,7 @@ class BuzzHeavierResolver(BaseResolver):
 
             if link_elements:
                 download_url = await self._get_download_url(
-                    f"https://buzzheavier.com{link_elements[0]}"
+                    f"https://buzzheavier.com{link_elements[0]}",
                 )
 
                 referer = download_url.split("?")[0]
@@ -41,7 +41,8 @@ class BuzzHeavierResolver(BaseResolver):
                     "priority": "u=1, i",
                 }
                 filename, size = await self._fetch_file_details(
-                    download_url, custom_headers=buzz_headers
+                    download_url,
+                    custom_headers=buzz_headers,
                 )
                 return LinkResult(url=download_url, filename=filename, size=size)
 
@@ -53,7 +54,7 @@ class BuzzHeavierResolver(BaseResolver):
 
         except Exception as e:
             raise ExtractionFailedException(
-                f"Failed to resolve BuzzHeavier URL: {e}"
+                f"Failed to resolve BuzzHeavier URL: {e}",
             ) from e
 
     async def _get_download_url(self, url: str, is_folder: bool = False) -> str:
@@ -88,7 +89,8 @@ class BuzzHeavierResolver(BaseResolver):
                 file_id = filename_elem.get("href", "").strip()
 
                 download_url = await self._get_download_url(
-                    f"https://buzzheavier.com{file_id}", True
+                    f"https://buzzheavier.com{file_id}",
+                    True,
                 )
 
                 if download_url:
@@ -100,7 +102,8 @@ class BuzzHeavierResolver(BaseResolver):
                         "priority": "u=1, i",
                     }
                     actual_filename, item_size = await self._fetch_file_details(
-                        download_url, custom_headers=buzz_headers
+                        download_url,
+                        custom_headers=buzz_headers,
                     )
 
                     contents.append(
@@ -111,7 +114,7 @@ class BuzzHeavierResolver(BaseResolver):
                             url=download_url,
                             size=item_size,
                             path="",
-                        )
+                        ),
                     )
                     if item_size is not None:
                         total_size += item_size

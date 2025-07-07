@@ -69,7 +69,9 @@ class BaseResolver(ABC):
         """
 
     async def _fetch_file_details(
-        self, url: str, custom_headers: dict[str, str] | None = None
+        self,
+        url: str,
+        custom_headers: dict[str, str] | None = None,
     ) -> tuple[str | None, int | None]:
         """
         Fetch filename and size from URL.
@@ -96,7 +98,9 @@ class BaseResolver(ABC):
 
         try:
             async with self.session.head(
-                url, headers=request_headers, allow_redirects=True
+                url,
+                headers=request_headers,
+                allow_redirects=True,
             ) as resp:
                 if resp.status == 200:
                     content_disposition = resp.headers.get("Content-Disposition")
@@ -139,7 +143,9 @@ class BaseResolver(ABC):
             get_range_headers = request_headers.copy()
             get_range_headers["Range"] = "bytes=0-0"
             async with self.session.get(
-                url, headers=get_range_headers, allow_redirects=True
+                url,
+                headers=get_range_headers,
+                allow_redirects=True,
             ) as resp:
                 if resp.status in (200, 206):
                     if not filename:
@@ -164,7 +170,7 @@ class BaseResolver(ABC):
                             parsed_url = urlparse(url)
                             if parsed_url.path:
                                 path_filename = unquote(
-                                    parsed_url.path.split("/")[-1]
+                                    parsed_url.path.split("/")[-1],
                                 )
                                 if path_filename:
                                     filename = path_filename

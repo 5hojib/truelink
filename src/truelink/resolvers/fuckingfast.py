@@ -22,7 +22,7 @@ class FuckingFastResolver(BaseResolver):
 
             if not match:
                 raise ExtractionFailedException(
-                    "Could not find download link in page"
+                    "Could not find download link in page",
                 )
 
             download_url = match.group(2)
@@ -32,5 +32,5 @@ class FuckingFastResolver(BaseResolver):
 
         except Exception as e:
             raise ExtractionFailedException(
-                f"Failed to resolve FuckingFast URL: {e}"
+                f"Failed to resolve FuckingFast URL: {e}",
             ) from e
