@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from .akamfiles import AkmFilesResolver
+from .akmfiles import AkmFilesResolver
 from .base import BaseResolver
 from .berkasdrive import BerkasDriveResolver
 from .buzzheavier import BuzzHeavierResolver
