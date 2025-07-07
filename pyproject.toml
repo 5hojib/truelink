@@ -98,6 +98,11 @@ target-version = "py313"
 [tool.ruff.lint.isort]
 required-imports = ["from __future__ import annotations"]
 
+[tool.ruff.lint.pylint]
+max-statements = 75
+max-branches = 20
+allow-magic-value-types = ["int", "str", "bytes"]
+
 [tool.ruff.lint.mccabe]
 max-complexity = 50
 
@@ -133,4 +138,5 @@ select = [
 ignore = [
     "E501",
     "N818",
+    "COM812",
 ]
