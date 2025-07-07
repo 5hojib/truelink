@@ -3,7 +3,7 @@ from __future__ import annotations
 from urllib.parse import urlparse
 
 from truelink.exceptions import ExtractionFailedException, InvalidURLException
-from truelink.types import FolderResult, LinkResult # FolderResult for type hint
+from truelink.types import FolderResult, LinkResult  # FolderResult for type hint
 
 from .base import BaseResolver
 
@@ -20,7 +20,7 @@ class PixelDrainResolver(BaseResolver):
         """Resolve PixelDrain URL"""
         try:
             parsed_url = urlparse(url.rstrip("/"))
-            path_parts = parsed_url.path.split('/')
+            path_parts = parsed_url.path.split("/")
 
             if not path_parts:
                 raise InvalidURLException("Invalid PixelDrain URL: Empty path.")
@@ -34,11 +34,15 @@ class PixelDrainResolver(BaseResolver):
             # The original code splits by '/' and takes the last part.
 
             file_or_list_code = path_parts[-1]
-            if not file_or_list_code: # If URL ends with a slash, previous part might be the code
+            if (
+                not file_or_list_code
+            ):  # If URL ends with a slash, previous part might be the code
                 if len(path_parts) > 1:
                     file_or_list_code = path_parts[-2]
                 else:
-                    raise InvalidURLException("Invalid PixelDrain URL: Could not extract ID.")
+                    raise InvalidURLException(
+                        "Invalid PixelDrain URL: Could not extract ID."
+                    )
 
             # The original code uses "https://pd.cybar.xyz/" and appends the code.
             # Let's see where that request leads.
@@ -53,7 +57,7 @@ class PixelDrainResolver(BaseResolver):
             if parsed_url.path.startswith("/l/"):
                 raise ExtractionFailedException(
                     "PixelDrain lists (/l/ URLs) are not directly supported by this resolver method."
-                    " A list resolver would require iterating items."
+                    " A list resolver would require iterating items.",
                 )
 
             # Replicating: response = get("https://pd.cybar.xyz/", allow_redirects=True)
@@ -71,18 +75,22 @@ class PixelDrainResolver(BaseResolver):
 
             # Let's try to get the base redirect from pd.cybar.xyz
             # This is fragile as pd.cybar.xyz could change or go down.
-            temp_base_url = "https://pd.cybar.xyz/" # Default if the root fetch fails
+            temp_base_url = (
+                "https://pd.cybar.xyz/"  # Default if the root fetch fails
+            )
             try:
-                async with await self._get("https://pd.cybar.xyz/", allow_redirects=True) as base_res:
+                async with await self._get(
+                    "https://pd.cybar.xyz/", allow_redirects=True
+                ) as base_res:
                     # Ensure the final URL from pd.cybar.xyz ends with a slash if it's a base path
                     fetched_base = str(base_res.url)
-                    if not fetched_base.endswith('/'):
-                        fetched_base += '/'
+                    if not fetched_base.endswith("/"):
+                        fetched_base += "/"
                     temp_base_url = fetched_base
             except Exception:
                 # If fetching base fails, proceed with the hardcoded one, or raise.
                 # For now, let it try with the default assumption or fail at the next step.
-                pass # temp_base_url remains "https://pd.cybar.xyz/"
+                pass  # temp_base_url remains "https://pd.cybar.xyz/"
 
             # If file_or_list_code already contains query params from original URL, they'd be appended here.
             # Usually, the code is just the ID.
@@ -103,8 +111,8 @@ class PixelDrainResolver(BaseResolver):
             return LinkResult(url=direct_link, filename=filename, size=size)
 
         except Exception as e:
-            if isinstance(e, (ExtractionFailedException, InvalidURLException)):
+            if isinstance(e, ExtractionFailedException | InvalidURLException):
                 raise
             raise ExtractionFailedException(
-                f"Failed to resolve PixelDrain URL '{url}': {e!s}"
+                f"Failed to resolve PixelDrain URL '{url}': {e!s}",
             ) from e

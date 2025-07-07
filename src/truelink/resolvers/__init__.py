@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-from .base import BaseResolver
-
 from .akamfiles import AkmFilesResolver
+from .base import BaseResolver
 from .berkasdrive import BerkasDriveResolver
 from .buzzheavier import BuzzHeavierResolver
 from .devuploads import DevUploadsResolver
@@ -39,8 +38,8 @@ from .uploadhaven import UploadHavenResolver
 from .yandexdisk import YandexDiskResolver
 
 __all__ = [
-    "BaseResolver",
     "AkmFilesResolver",
+    "BaseResolver",
     "BerkasDriveResolver",
     "BuzzHeavierResolver",
     "DevUploadsResolver",

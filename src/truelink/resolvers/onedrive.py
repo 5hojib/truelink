@@ -2,10 +2,9 @@ from __future__ import annotations
 
 from urllib.parse import parse_qs, urlparse
 from uuid import uuid4
-import json # For the empty JSON part of the multipart
 
 from truelink.exceptions import ExtractionFailedException, InvalidURLException
-from truelink.types import FolderResult, LinkResult # FolderResult for type hint
+from truelink.types import FolderResult, LinkResult  # FolderResult for type hint
 
 from .base import BaseResolver
 
@@ -26,23 +25,27 @@ class OneDriveResolver(BaseResolver):
 
             if not link_data:
                 raise ExtractionFailedException(
-                    "OneDrive error: Unable to find link_data (query parameters) in the URL."
+                    "OneDrive error: Unable to find link_data (query parameters) in the URL.",
                 )
 
             # resid usually contains driveId!itemId
             folder_id_list = link_data.get("resid")
             if not folder_id_list:
-                raise ExtractionFailedException("OneDrive error: 'resid' not found in URL query parameters.")
+                raise ExtractionFailedException(
+                    "OneDrive error: 'resid' not found in URL query parameters."
+                )
             folder_id = folder_id_list[0]
 
             authkey_list = link_data.get("authkey")
             if not authkey_list:
-                raise ExtractionFailedException("OneDrive error: 'authkey' not found in URL query parameters.")
+                raise ExtractionFailedException(
+                    "OneDrive error: 'authkey' not found in URL query parameters."
+                )
             authkey = authkey_list[0]
 
             # Construct the API URL
             # Example folder_id: DRIVEID!ITEMID
-            drive_id_part = folder_id.split('!', 1)[0]
+            drive_id_part = folder_id.split("!", 1)[0]
             api_url = f"https://api.onedrive.com/v1.0/drives/{drive_id_part}/items/{folder_id}?$select=id,@content.downloadUrl&ump=1&authKey={authkey}"
 
             # The original script uses a complex multipart POST with X-HTTP-Method-Override: GET.
@@ -54,7 +57,9 @@ class OneDriveResolver(BaseResolver):
             }
 
             try:
-                async with await self._get(api_url, headers=api_headers) as api_response:
+                async with await self._get(
+                    api_url, headers=api_headers
+                ) as api_response:
                     if api_response.status == 200:
                         json_resp = await api_response.json()
                     else:
@@ -71,37 +76,45 @@ class OneDriveResolver(BaseResolver):
                         # aiohttp's FormData might not be suitable. We send raw bytes.
                         custom_body_parts = [
                             f"--{boundary}",
-                            'Content-Disposition: form-data; name="data"', # Name 'data' is arbitrary here
-                            'Prefer: Migration=EnableRedirect;FailOnMigratedFiles',
-                            'X-HTTP-Method-Override: GET',
-                            'Content-Type: application/json', # For the empty JSON payload part
-                            '',
-                            '{}', # Empty JSON payload
+                            'Content-Disposition: form-data; name="data"',  # Name 'data' is arbitrary here
+                            "Prefer: Migration=EnableRedirect;FailOnMigratedFiles",
+                            "X-HTTP-Method-Override: GET",
+                            "Content-Type: application/json",  # For the empty JSON payload part
+                            "",
+                            "{}",  # Empty JSON payload
                             f"--{boundary}--",
-                            ''
+                            "",
                         ]
-                        custom_body = "\r\n".join(custom_body_parts).encode('utf-8')
+                        custom_body = "\r\n".join(custom_body_parts).encode("utf-8")
 
                         override_headers = {
                             "User-Agent": self.USER_AGENT,
                             "Content-Type": f"multipart/form-data; boundary={boundary}",
                         }
-                        async with await self._post(api_url, data=custom_body, headers=override_headers) as post_api_response:
+                        async with await self._post(
+                            api_url, data=custom_body, headers=override_headers
+                        ) as post_api_response:
                             if post_api_response.status != 200:
                                 error_text = await post_api_response.text()
                                 raise ExtractionFailedException(
-                                    f"OneDrive API error (after trying override). Status: {post_api_response.status}. Response: {error_text[:200]}"
+                                    f"OneDrive API error (after trying override). Status: {post_api_response.status}. Response: {error_text[:200]}",
                                 )
                             json_resp = await post_api_response.json()
 
             except Exception as e_api:
-                 if isinstance(e_api, ExtractionFailedException): # re-raise if already specific
-                     raise
-                 raise ExtractionFailedException(f"OneDrive API request failed: {e_api!s}") from e_api
-
+                if isinstance(
+                    e_api, ExtractionFailedException
+                ):  # re-raise if already specific
+                    raise
+                raise ExtractionFailedException(
+                    f"OneDrive API request failed: {e_api!s}"
+                ) from e_api
 
             if "@content.downloadUrl" not in json_resp:
-                err_msg = json_resp.get("error", {}).get("message", "Direct download link ('@content.downloadUrl') not found in OneDrive API response.")
+                err_msg = json_resp.get("error", {}).get(
+                    "message",
+                    "Direct download link ('@content.downloadUrl') not found in OneDrive API response.",
+                )
                 raise ExtractionFailedException(err_msg)
 
             direct_link = json_resp["@content.downloadUrl"]
@@ -109,21 +122,25 @@ class OneDriveResolver(BaseResolver):
             # OneDrive download URLs are usually pre-signed and may not have Content-Disposition always.
             # The API response might include 'name' and 'size'.
             filename = json_resp.get("name")
-            size = json_resp.get("size") # This is often in bytes
+            size = json_resp.get("size")  # This is often in bytes
 
             # If details are not in API response, _fetch_file_details will try.
             if not filename or size is None:
-                details_filename, details_size = await self._fetch_file_details(direct_link)
+                details_filename, details_size = await self._fetch_file_details(
+                    direct_link
+                )
                 if details_filename and not filename:
                     filename = details_filename
-                if details_size is not None and size is None: # Only update if API didn't provide it
+                if (
+                    details_size is not None and size is None
+                ):  # Only update if API didn't provide it
                     size = details_size
 
             return LinkResult(url=direct_link, filename=filename, size=size)
 
         except Exception as e:
-            if isinstance(e, (ExtractionFailedException, InvalidURLException)):
+            if isinstance(e, ExtractionFailedException | InvalidURLException):
                 raise
             raise ExtractionFailedException(
-                f"Failed to resolve OneDrive URL '{url}': {e!s}"
+                f"Failed to resolve OneDrive URL '{url}': {e!s}",
             ) from e

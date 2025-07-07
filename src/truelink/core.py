@@ -6,42 +6,42 @@ from urllib.parse import urlparse
 
 from .exceptions import InvalidURLException, UnsupportedProviderException
 from .resolvers import (
-    YandexDiskResolver,
+    AkmFilesResolver,
+    BerkasDriveResolver,
     BuzzHeavierResolver,
-    UploadHavenResolver,
+    DevUploadsResolver,
+    DoodStreamResolver,
+    FichierResolver,
+    FilePressResolver,
     FuckingFastResolver,
+    GitHubResolver,
+    GoFileResolver,
+    HxFileResolver,
+    KrakenFilesResolver,
+    LinkBoxResolver,
+    LulaCloudResolver,
     MediaFileResolver,
     MediaFireResolver,
-    DevUploadsResolver,
-    LulaCloudResolver,
-    OsdnResolver,
-    GitHubResolver,
-    HxFileResolver,
-    OneDriveResolver,
-    PixelDrainResolver,
-    StreamtapeResolver,
-    RacatyResolver,
-    FichierResolver,
-    SolidFilesResolver,
-    KrakenFilesResolver,
-    UploadEeResolver,
-    TeraboxResolver,
-    FilePressResolver,
-    WeTransferResolver,
-    AkmFilesResolver,
-    ShrdskResolver,
-    LinkBoxResolver,
-    GoFileResolver,
-    SendCmResolver,
-    DoodStreamResolver,
-    StreamvidResolver,
-    StreamHubResolver,
-    PCloudResolver,
-    TmpSendResolver,
-    QiwiResolver,
     Mp4UploadResolver,
-    BerkasDriveResolver,
+    OneDriveResolver,
+    OsdnResolver,
+    PCloudResolver,
+    PixelDrainResolver,
+    QiwiResolver,
+    RacatyResolver,
+    SendCmResolver,
+    ShrdskResolver,
+    SolidFilesResolver,
+    StreamHubResolver,
+    StreamtapeResolver,
+    StreamvidResolver,
     SwissTransferResolver,
+    TeraboxResolver,
+    TmpSendResolver,
+    UploadEeResolver,
+    UploadHavenResolver,
+    WeTransferResolver,
+    YandexDiskResolver,
 )
 
 if TYPE_CHECKING:
@@ -57,22 +57,21 @@ class TrueLinkResolver:
             "buzzheavier.com": BuzzHeavierResolver,
             "lulacloud.com": LulaCloudResolver,
             "fuckingfast.co": FuckingFastResolver,
-
             # Newly added resolvers
             "yadi.sk": YandexDiskResolver,
-            "disk.yandex.": YandexDiskResolver, # Catches disk.yandex.com, disk.yandex.ru etc.
-            "devuploads.com": DevUploadsResolver, # Main domain for devuploads
-            "devuploads.net": DevUploadsResolver, # Alias
+            "disk.yandex.": YandexDiskResolver,  # Catches disk.yandex.com, disk.yandex.ru etc.
+            "devuploads.com": DevUploadsResolver,  # Main domain for devuploads
+            "devuploads.net": DevUploadsResolver,  # Alias
             "uploadhaven.com": UploadHavenResolver,
             "mediafile.cc": MediaFileResolver,
             "mediafire.com": MediaFireResolver,
             "osdn.net": OsdnResolver,
-            "github.com": GitHubResolver, # For release links
+            "github.com": GitHubResolver,  # For release links
             "hxfile.co": HxFileResolver,
-            "1drv.ms": OneDriveResolver, # OneDrive short links
-            "onedrive.live.com": OneDriveResolver, # OneDrive direct/shared links
+            "1drv.ms": OneDriveResolver,  # OneDrive short links
+            "onedrive.live.com": OneDriveResolver,  # OneDrive direct/shared links
             "pixeldrain.com": PixelDrainResolver,
-            "pixeldra.in": PixelDrainResolver, # Alias
+            "pixeldra.in": PixelDrainResolver,  # Alias
             "streamtape.com": StreamtapeResolver,
             "streamtape.co": StreamtapeResolver,
             "streamtape.cc": StreamtapeResolver,
@@ -81,7 +80,7 @@ class TrueLinkResolver:
             "streamta.pe": StreamtapeResolver,
             "streamtape.xyz": StreamtapeResolver,
             "racaty.net": RacatyResolver,
-            "racaty.io": RacatyResolver, # Alias
+            "racaty.io": RacatyResolver,  # Alias
             "1fichier.com": FichierResolver,
             "solidfiles.com": SolidFilesResolver,
             "krakenfiles.com": KrakenFilesResolver,
@@ -89,17 +88,17 @@ class TrueLinkResolver:
             "gofile.io": GoFileResolver,
             "send.cm": SendCmResolver,
             "tmpsend.com": TmpSendResolver,
-            "easyupload.io": BaseResolver, # Placeholder, original script had easyupload.io but no function
+            "easyupload.io": BaseResolver,  # Placeholder, original script had easyupload.io but no function
             "streamvid.net": StreamvidResolver,
             "shrdsk.me": ShrdskResolver,
-            "u.pcloud.link": PCloudResolver, # pCloud short links
-            "pcloud.com": PCloudResolver, # Main domain for shares if not short link
+            "u.pcloud.link": PCloudResolver,  # pCloud short links
+            "pcloud.com": PCloudResolver,  # Main domain for shares if not short link
             "qiwi.gg": QiwiResolver,
             "mp4upload.com": Mp4UploadResolver,
             "berkasdrive.com": BerkasDriveResolver,
             "swisstransfer.com": SwissTransferResolver,
             "akmfiles.com": AkmFilesResolver,
-            "akmfls.xyz": AkmFilesResolver, # Alias
+            "akmfls.xyz": AkmFilesResolver,  # Alias
             "dood.watch": DoodStreamResolver,
             "doodstream.com": DoodStreamResolver,
             "dood.to": DoodStreamResolver,
@@ -126,14 +125,14 @@ class TrueLinkResolver:
             "streamhub.ink": StreamHubResolver,
             "streamhub.to": StreamHubResolver,
             "linkbox.to": LinkBoxResolver,
-            "lbx.to": LinkBoxResolver, # Alias
-            "teltobx.net": LinkBoxResolver, # Alias
-            "telbx.net": LinkBoxResolver, # Alias
-            "filepress.net": FilePressResolver, # Assuming .net, original had 'filepress' in domain
-            "filepress.com": FilePressResolver, # Common TLD
-            "filepress.org": FilePressResolver, # Common TLD
+            "lbx.to": LinkBoxResolver,  # Alias
+            "teltobx.net": LinkBoxResolver,  # Alias
+            "telbx.net": LinkBoxResolver,  # Alias
+            "filepress.net": FilePressResolver,  # Assuming .net, original had 'filepress' in domain
+            "filepress.com": FilePressResolver,  # Common TLD
+            "filepress.org": FilePressResolver,  # Common TLD
             "wetransfer.com": WeTransferResolver,
-            "we.tl": WeTransferResolver, # Alias
+            "we.tl": WeTransferResolver,  # Alias
             "terabox.com": TeraboxResolver,
             "nephobox.com": TeraboxResolver,
             "4funbox.com": TeraboxResolver,

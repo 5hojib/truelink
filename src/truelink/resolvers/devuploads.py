@@ -19,7 +19,9 @@ class DevUploadsResolver(BaseResolver):
             html = fromstring(response_text)
 
             if not (form_inputs := html.xpath("//input[@name]")):
-                raise ExtractionFailedException("Unable to find link data on initial page")
+                raise ExtractionFailedException(
+                    "Unable to find link data on initial page"
+                )
 
             data = {i.get("name"): i.get("value") for i in form_inputs}
 
@@ -28,12 +30,16 @@ class DevUploadsResolver(BaseResolver):
             # to that implementation or a way to bypass some restrictions.
             # For now, I will replicate this behavior.
             # If gujjukhabar.in is not essential, this part might need adjustment.
-            async with await self._post("https://gujjukhabar.in/", data=data) as response_gujju:
+            async with await self._post(
+                "https://gujjukhabar.in/", data=data
+            ) as response_gujju:
                 response_gujju_text = await response_gujju.text()
 
             html_gujju = fromstring(response_gujju_text)
             if not (form_inputs_gujju := html_gujju.xpath("//input[@name]")):
-                raise ExtractionFailedException("Unable to find link data on gujjukhabar.in")
+                raise ExtractionFailedException(
+                    "Unable to find link data on gujjukhabar.in"
+                )
 
             data_gujju = {i.get("name"): i.get("value") for i in form_inputs_gujju}
 
@@ -42,20 +48,24 @@ class DevUploadsResolver(BaseResolver):
                 "Origin": "https://gujjukhabar.in",
                 "Referer": "https://gujjukhabar.in/",
             }
-            async with await self._get("https://du2.devuploads.com/dlhash.php", headers=headers_du2) as resp_ipp:
+            async with await self._get(
+                "https://du2.devuploads.com/dlhash.php", headers=headers_du2
+            ) as resp_ipp:
                 ipp_text = await resp_ipp.text()
                 if not ipp_text:
                     raise ExtractionFailedException("Unable to find ipp value")
             data_gujju["ipp"] = ipp_text.strip()
 
             if not data_gujju.get("rand"):
-                raise ExtractionFailedException("Unable to find rand value in form data")
+                raise ExtractionFailedException(
+                    "Unable to find rand value in form data"
+                )
 
             # Fetching xd value
             async with await self._post(
                 "https://devuploads.com/token/token.php",
                 data={"rand": data_gujju["rand"], "msg": ""},
-                headers=headers_du2, # Reusing headers from ipp fetch
+                headers=headers_du2,  # Reusing headers from ipp fetch
             ) as resp_xd:
                 xd_text = await resp_xd.text()
                 if not xd_text:
@@ -67,8 +77,14 @@ class DevUploadsResolver(BaseResolver):
                 final_response_text = await final_response.text()
 
             html_final = fromstring(final_response_text)
-            if not (direct_link_elements := html_final.xpath("//input[@name='orilink']/@value")):
-                raise ExtractionFailedException("Unable to find Direct Link in final page")
+            if not (
+                direct_link_elements := html_final.xpath(
+                    "//input[@name='orilink']/@value"
+                )
+            ):
+                raise ExtractionFailedException(
+                    "Unable to find Direct Link in final page"
+                )
 
             direct_link = direct_link_elements[0]
 
@@ -81,5 +97,5 @@ class DevUploadsResolver(BaseResolver):
             if isinstance(e, ExtractionFailedException):
                 raise  # Re-raise if it's already the correct type
             raise ExtractionFailedException(
-                f"Failed to resolve DevUploads URL '{url}': {e!s}"
+                f"Failed to resolve DevUploads URL '{url}': {e!s}",
             ) from e

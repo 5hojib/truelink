@@ -25,9 +25,13 @@ class OsdnResolver(BaseResolver):
             if not mirror_link_elements:
                 # Fallback: Check for a direct download button if the primary mirror link class isn't found
                 # This is a guess, actual OSDN pages might have other structures
-                fallback_links = html.xpath('//a[contains(@href, "dl.osdn.net") and contains(@class, "btn")]/@href')
+                fallback_links = html.xpath(
+                    '//a[contains(@href, "dl.osdn.net") and contains(@class, "btn")]/@href'
+                )
                 if not fallback_links:
-                    raise ExtractionFailedException("OSDN error: Direct download link or mirror link not found.")
+                    raise ExtractionFailedException(
+                        "OSDN error: Direct download link or mirror link not found."
+                    )
 
                 # Assuming the first fallback link is the one
                 # It might be a relative or full URL
@@ -42,7 +46,7 @@ class OsdnResolver(BaseResolver):
                 # If it's not absolute and not starting with /, it might be relative to current path
                 # This case might need more specific handling based on OSDN's URL structure
                 # For now, assuming it's relative to hostname if not starting with /
-                parsed_original_url = self.session._prepare_url(url) # type: ignore
+                parsed_original_url = self.session._prepare_url(url)  # type: ignore
                 base_url_parts = parsed_original_url.parts
                 direct_link = f"{base_url_parts.scheme}://{base_url_parts.host}/{direct_link_path}"
             else:
@@ -57,13 +61,12 @@ class OsdnResolver(BaseResolver):
                     # Example: https://osdn.net/projects/manjarolinux/storage/Manjaro-LXQt-20.2-201201-linux59.iso/
                     # Example direct: http://jaist.dl.osdn.jp/manjarolinux/74185/Manjaro-LXQt-20.2-201201-linux59.iso
                     # Try to get the last part of the path from the direct_link
-                    parsed_dl_url = self.session._prepare_url(direct_link) # type: ignore
-                    path_segments = [s for s in parsed_dl_url.path.split('/') if s]
+                    parsed_dl_url = self.session._prepare_url(direct_link)  # type: ignore
+                    path_segments = [s for s in parsed_dl_url.path.split("/") if s]
                     if path_segments:
                         filename = path_segments[-1]
                 except Exception:
                     pass
-
 
             return LinkResult(url=direct_link, filename=filename, size=size)
 
@@ -71,5 +74,5 @@ class OsdnResolver(BaseResolver):
             if isinstance(e, ExtractionFailedException):
                 raise
             raise ExtractionFailedException(
-                f"Failed to resolve OSDN.net URL '{url}': {e!s}"
+                f"Failed to resolve OSDN.net URL '{url}': {e!s}",
             ) from e

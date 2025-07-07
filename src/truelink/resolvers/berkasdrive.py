@@ -6,7 +6,7 @@ from urllib.parse import urljoin
 from lxml.html import fromstring
 
 from truelink.exceptions import ExtractionFailedException
-from truelink.types import FolderResult, LinkResult # FolderResult for type hint
+from truelink.types import FolderResult, LinkResult  # FolderResult for type hint
 
 from .base import BaseResolver
 
@@ -28,7 +28,9 @@ class BerkasDriveResolver(BaseResolver):
             # 2. The script content, when split by double quotes, has the base64 string as the second element.
             # This can easily break if the page structure or script content changes.
 
-            script_elements = html.xpath("//script/text()") # Get text content of all script tags
+            script_elements = html.xpath(
+                "//script/text()"
+            )  # Get text content of all script tags
             b64_encoded_link = None
 
             for script_content in script_elements:
@@ -53,46 +55,69 @@ class BerkasDriveResolver(BaseResolver):
                         potential_b64_strings.extend(parts[1::2])
 
                 for b64_candidate in potential_b64_strings:
-                    if not b64_candidate or len(b64_candidate) < 10: # Too short for a meaningful b64 URL
+                    if (
+                        not b64_candidate or len(b64_candidate) < 10
+                    ):  # Too short for a meaningful b64 URL
                         continue
                     # Basic check for base64 characters (A-Za-z0-9+/=)
                     # A full check is `base64.b64decode` itself.
-                    is_potential_b64 = all(c in "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=" for c in b64_candidate.strip())
-                    if not is_potential_b64 and len(b64_candidate) % 4 != 0 : # Length check for padding
+                    is_potential_b64 = all(
+                        c
+                        in "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="
+                        for c in b64_candidate.strip()
+                    )
+                    if (
+                        not is_potential_b64 and len(b64_candidate) % 4 != 0
+                    ):  # Length check for padding
                         continue
 
                     try:
                         # Attempt to decode. If it decodes to something URL-like, use it.
-                        decoded_check = base64.b64decode(b64_candidate).decode("utf-8", errors="ignore")
-                        if "http://" in decoded_check or "https://" in decoded_check or "/" in decoded_check:
+                        decoded_check = base64.b64decode(b64_candidate).decode(
+                            "utf-8", errors="ignore"
+                        )
+                        if (
+                            "http://" in decoded_check
+                            or "https://" in decoded_check
+                            or "/" in decoded_check
+                        ):
                             b64_encoded_link = b64_candidate
-                            break # Found a likely candidate
+                            break  # Found a likely candidate
                     except Exception:
-                        continue # Not valid base64 or failed to decode as UTF-8
+                        continue  # Not valid base64 or failed to decode as UTF-8
 
                 if b64_encoded_link:
-                    break # Found in one of the scripts
+                    break  # Found in one of the scripts
 
             if not b64_encoded_link:
                 # Check for error messages on page if no link found
-                if "File not found" in page_html_text or "has been deleted" in page_html_text:
-                    raise ExtractionFailedException("BerkasDrive error: File not found or has been deleted.")
+                if (
+                    "File not found" in page_html_text
+                    or "has been deleted" in page_html_text
+                ):
+                    raise ExtractionFailedException(
+                        "BerkasDrive error: File not found or has been deleted."
+                    )
                 raise ExtractionFailedException(
-                    "BerkasDrive error: Could not find or extract the base64 encoded link from any script tag."
+                    "BerkasDrive error: Could not find or extract the base64 encoded link from any script tag.",
                 )
 
             try:
                 direct_link = base64.b64decode(b64_encoded_link).decode("utf-8")
             except Exception as e_decode:
                 raise ExtractionFailedException(
-                    f"BerkasDrive error: Failed to decode base64 string '{b64_encoded_link[:30]}...'. Error: {e_decode}"
+                    f"BerkasDrive error: Failed to decode base64 string '{b64_encoded_link[:30]}...'. Error: {e_decode}",
                 ) from e_decode
 
             # Ensure the link is absolute if it's a path
             if not direct_link.startswith("http"):
-                direct_link = urljoin(url, direct_link) # Use original page URL as base
+                direct_link = urljoin(
+                    url, direct_link
+                )  # Use original page URL as base
 
-            filename, size = await self._fetch_file_details(direct_link, custom_headers={"Referer": url})
+            filename, size = await self._fetch_file_details(
+                direct_link, custom_headers={"Referer": url}
+            )
 
             return LinkResult(url=direct_link, filename=filename, size=size)
 
@@ -100,5 +125,5 @@ class BerkasDriveResolver(BaseResolver):
             if isinstance(e, ExtractionFailedException):
                 raise
             raise ExtractionFailedException(
-                f"Failed to resolve BerkasDrive.com URL '{url}': {e!s}"
+                f"Failed to resolve BerkasDrive.com URL '{url}': {e!s}",
             ) from e
