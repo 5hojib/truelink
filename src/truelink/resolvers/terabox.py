@@ -53,10 +53,11 @@ class TeraboxResolver(BaseResolver):
                     )
 
             if "✅ Status" not in json_response or not json_response.get(
-                "📜 Extracted Info"
+                "📜 Extracted Info",
             ):
                 error_message = json_response.get(
-                    "message", "File not found or API failed to extract info."
+                    "message",
+                    "File not found or API failed to extract info.",
                 )
                 if "error" in json_response:
                     error_message = json_response["error"]
@@ -82,7 +83,7 @@ class TeraboxResolver(BaseResolver):
 
                 size_bytes = _speed_string_to_bytes(size_str)
                 header_filename, header_size = await self._fetch_file_details(
-                    direct_link
+                    direct_link,
                 )
 
                 return LinkResult(

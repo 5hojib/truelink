@@ -18,48 +18,35 @@ class TrueLinkResolver:
         self._resolvers: dict[str, type] = {
             # Buzzheavier
             "buzzheavier.com": BuzzHeavierResolver,
-            
-            # Lulacloud 
+            # Lulacloud
             "lulacloud.com": LulaCloudResolver,
-            
-            #FuckingFast
+            # FuckingFast
             "fuckingfast.co": FuckingFastResolver,
-            
             # Yandex
             "yadi.sk": YandexDiskResolver,
             "disk.yandex.": YandexDiskResolver,
-            
-            #Devupload 
+            # Devupload
             "devuploads.com": DevUploadsResolver,
-            "devuploads.net": DevUploadsResolver, 
-            
+            "devuploads.net": DevUploadsResolver,
             # UploadHaven
             "uploadhaven.com": UploadHavenResolver,
-            
             # Meduafile
             "mediafile.cc": MediaFileResolver,
-            
-            # MediaFire 
+            # MediaFire
             "mediafire.com": MediaFireResolver,
-            
             # osdn
             "osdn.net": OsdnResolver,
-            
-            # GitHub 
-            "github.com": GitHubResolver, 
-            
+            # GitHub
+            "github.com": GitHubResolver,
             # hxfile
             "hxfile.co": HxFileResolver,
-            
-            # OneDrive 
-            "1drv.ms": OneDriveResolver, 
+            # OneDrive
+            "1drv.ms": OneDriveResolver,
             "onedrive.live.com": OneDriveResolver,
-            
             # pixel drains
             "pixeldrain.com": PixelDrainResolver,
             "pixeldra.in": PixelDrainResolver,
-            
-            # streamtape 
+            # streamtape
             "streamtape.com": StreamtapeResolver,
             "streamtape.co": StreamtapeResolver,
             "streamtape.cc": StreamtapeResolver,
@@ -67,59 +54,42 @@ class TrueLinkResolver:
             "streamtape.net": StreamtapeResolver,
             "streamta.pe": StreamtapeResolver,
             "streamtape.xyz": StreamtapeResolver,
-            
             # Recaty
             "racaty.net": RacatyResolver,
-            "racaty.io": RacatyResolver,  
-            
+            "racaty.io": RacatyResolver,
             # Dicgier
             "1fichier.com": FichierResolver,
-            
-            # solidfiles 
+            # solidfiles
             "solidfiles.com": SolidFilesResolver,
-            
-            # Krakenfiles 
+            # Krakenfiles
             "krakenfiles.com": KrakenFilesResolver,
-            
             # upload ee
             "upload.ee": UploadEeResolver,
-            
-            # Gofile 
+            # Gofile
             "gofile.io": GoFileResolver,
-            
             # send cm
             "send.cm": SendCmResolver,
-            
             # tmpsend
             "tmpsend.com": TmpSendResolver,
-            
-            # streamvid 
+            # streamvid
             "streamvid.net": StreamvidResolver,
-            
             # shrdsk
             "shrdsk.me": ShrdskResolver,
-            
-            #pcloud
-            "u.pcloud.link": PCloudResolver,  
-            "pcloud.com": PCloudResolver,  
-            
+            # pcloud
+            "u.pcloud.link": PCloudResolver,
+            "pcloud.com": PCloudResolver,
             # qiwi
             "qiwi.gg": QiwiResolver,
-            
             # mp4upload
             "mp4upload.com": Mp4UploadResolver,
-            
             # berkasdrive
             "berkasdrive.com": BerkasDriveResolver,
-            
             # Swisstrensfer
             "swisstransfer.com": SwissTransferResolver,
-            
             # akmfiles
             "akmfiles.com": AkmFilesResolver,
-            "akmfls.xyz": AkmFilesResolver,  
-            
-            # DoodStream 
+            "akmfls.xyz": AkmFilesResolver,
+            # DoodStream
             "dood.watch": DoodStreamResolver,
             "doodstream.com": DoodStreamResolver,
             "dood.to": DoodStreamResolver,
@@ -143,25 +113,20 @@ class TrueLinkResolver:
             "ds2video.com": DoodStreamResolver,
             "do0od.com": DoodStreamResolver,
             "d000d.com": DoodStreamResolver,
-            
-            # Streamhub 
+            # Streamhub
             "streamhub.ink": StreamHubResolver,
             "streamhub.to": StreamHubResolver,
-            
-            # linkbox 
+            # linkbox
             "linkbox.to": LinkBoxResolver,
-            "lbx.to": LinkBoxResolver,  
-            "teltobx.net": LinkBoxResolver,  
-            "telbx.net": LinkBoxResolver,  
-            
+            "lbx.to": LinkBoxResolver,
+            "teltobx.net": LinkBoxResolver,
+            "telbx.net": LinkBoxResolver,
             # file press
-            "filepress": FilePressResolver,  
-            
-            # wWeTransfer 
+            "filepress": FilePressResolver,
+            # wWeTransfer
             "wetransfer.com": WeTransferResolver,
-            "we.tl": WeTransferResolver,  
-            
-            # terabox 
+            "we.tl": WeTransferResolver,
+            # terabox
             "terabox.com": TeraboxResolver,
             "nephobox.com": TeraboxResolver,
             "4funbox.com": TeraboxResolver,
