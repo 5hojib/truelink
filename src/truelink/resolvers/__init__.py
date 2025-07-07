@@ -35,6 +35,7 @@ from .terabox import TeraboxResolver
 from .tmpsend import TmpSendResolver
 from .uploadee import UploadEeResolver
 from .uploadhaven import UploadHavenResolver
+from .wetransfer import WeTransferResolver
 from .yandexdisk import YandexDiskResolver
 
 __all__ = [
@@ -73,5 +74,6 @@ __all__ = [
     "TmpSendResolver",
     "UploadEeResolver",
     "UploadHavenResolver",
+    "WeTransferResolver",
     "YandexDiskResolver",
 ]
