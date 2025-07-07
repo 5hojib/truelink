@@ -1,7 +1,9 @@
 import re
 import asyncio
+import aiohttp # Added for type hinting if needed, and direct use in new method
 from lxml.html import fromstring
-from typing import Union
+from typing import Union, Optional # Added Optional
+from urllib.parse import urlparse, unquote # For filename extraction
 
 from .base import BaseResolver
 from ..types import LinkResult, FolderResult, FileItem
@@ -28,8 +30,20 @@ class BuzzHeavierResolver(BaseResolver):
             
             if link_elements:
                 download_url = await self._get_download_url(f"https://buzzheavier.com{link_elements[0]}")
-                # Fetch filename and size
-                filename, size = await self._fetch_file_details(download_url)
+
+                # Prepare Buzzheavier specific headers for _fetch_file_details
+                # The referer for the direct download link is typically the page you got the link from,
+                # or the direct link itself without query parameters.
+                # For _get_download_url, the referer was url.split("/download")[0].
+                # For the actual file download, the direct_url (download_url here) itself can be a base for referer.
+                referer = download_url.split("?")[0]
+                buzz_headers = {
+                    "referer": referer,
+                    "hx-current-url": referer, # Mimicking headers used in the original script
+                    "hx-request": "true",
+                    "priority": "u=1, i",
+                }
+                filename, size = await self._fetch_file_details(download_url, custom_headers=buzz_headers)
                 return LinkResult(url=download_url, filename=filename, size=size)
             
             # Check for folder contents
@@ -41,7 +55,7 @@ class BuzzHeavierResolver(BaseResolver):
             
         except Exception as e:
             raise ExtractionFailedException(f"Failed to resolve BuzzHeavier URL: {e}") from e
-    
+
     async def _get_download_url(self, url: str, is_folder: bool = False) -> str:
         """Get download URL from BuzzHeavier"""
         if "/download" not in url:
@@ -77,8 +91,15 @@ class BuzzHeavierResolver(BaseResolver):
                 download_url = await self._get_download_url(f"https://buzzheavier.com{file_id}", True)
                 
                 if download_url:
-                    # Fetch actual filename and size
-                    actual_filename, item_size = await self._fetch_file_details(download_url)
+                    # Prepare Buzzheavier specific headers for _fetch_file_details
+                    referer = download_url.split("?")[0]
+                    buzz_headers = {
+                        "referer": referer,
+                        "hx-current-url": referer,
+                        "hx-request": "true",
+                        "priority": "u=1, i",
+                    }
+                    actual_filename, item_size = await self._fetch_file_details(download_url, custom_headers=buzz_headers)
 
                     contents.append(FileItem(
                         filename=actual_filename if actual_filename else scraped_filename, # Prioritize actual_filename

@@ -7,6 +7,7 @@ async def main():
     urls = [
         "https://www.lulacloud.com/d/nuNbCVcYq31-fbi-s07e14-hitched-awafim-tv-mkv",
     ]
+    urls.append("https://buzzheavier.com/rnk4ut0lci9y") # Added here
 
     print("--- Output from resolver ---")
     for url in urls:
@@ -30,5 +31,5 @@ async def main():
 if __name__ == "__main__":
     # Example with a buzzheavier URL as requested by the user
     # You can change this or add more URLs to the list above
-    # urls.append("https://buzzheavier.com/rnk4ut0lci9y")
+    # urls.append("https://buzzheavier.com/rnk4ut0lci9y") # Back to commented
     asyncio.run(main())

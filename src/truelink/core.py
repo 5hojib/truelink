@@ -62,8 +62,9 @@ class TrueLinkResolver:
             ExtractionFailedException: If extraction fails
         """
         resolver_instance = self._get_resolver(url)
-        # The resolver_instance.resolve(url) returns a LinkResult or FolderResult object
-        result_object = await resolver_instance.resolve(url)
+        async with resolver_instance: # Use the resolver as an async context manager
+            # The resolver_instance.resolve(url) returns a LinkResult or FolderResult object
+            result_object = await resolver_instance.resolve(url)
 
         return result_object
     

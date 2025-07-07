@@ -66,9 +66,12 @@ class BaseResolver(ABC):
         """
         pass
 
-    async def _fetch_file_details(self, url: str) -> tuple[Optional[str], Optional[int]]:
+    async def _fetch_file_details(self, url: str, custom_headers: Optional[Dict[str, str]] = None) -> tuple[Optional[str], Optional[int]]:
         """
-        Fetch filename and size from URL using a HEAD request.
+        Fetch filename and size from URL.
+        Uses HEAD request first, then falls back to GET with Range header for size if needed.
+        Attempts to extract filename from Content-Disposition or URL.
+        Accepts optional custom_headers to be used for the requests.
         """
         filename: Optional[str] = None
         size: Optional[int] = None
@@ -78,38 +81,82 @@ class BaseResolver(ABC):
             await self._create_session()
             session_created_here = True
 
+        if not self.session: # Should not happen if _create_session works
+            if session_created_here: await self._close_session()
+            return None, None
+
+        request_headers = {}
+        if custom_headers:
+            request_headers.update(custom_headers)
+
+        # Try HEAD request
         try:
-            if not self.session:
-                return None, None
+            async with self.session.head(url, headers=request_headers, allow_redirects=True) as resp:
+                if resp.status == 200:
+                    content_disposition = resp.headers.get("Content-Disposition")
+                    if content_disposition:
+                        match_utf8 = re.search(r"filename\*=UTF-8''([^']+)$", content_disposition, re.IGNORECASE)
+                        if match_utf8:
+                            filename = unquote(match_utf8.group(1))
+                        else:
+                            match_ascii = re.search(r"filename=\"([^\"]+)\"", content_disposition, re.IGNORECASE)
+                            if match_ascii:
+                                filename = match_ascii.group(1)
 
-            async with self.session.head(url, allow_redirects=True) as response:
-                response.raise_for_status() 
+                    if not filename:
+                        parsed_url = urlparse(url)
+                        if parsed_url.path:
+                            path_filename = unquote(parsed_url.path.split('/')[-1])
+                            if path_filename:
+                                filename = path_filename
 
-                content_disposition = response.headers.get("Content-Disposition")
-                if content_disposition:
-                    match = re.search(r"filename\*=UTF-8''([^']+)$", content_disposition, re.IGNORECASE)
-                    if match:
-                        filename = unquote(match.group(1))
-                    else:
-                        match = re.search(r"filename=\"([^\"]+)\"", content_disposition, re.IGNORECASE)
-                        if match:
-                            filename = match.group(1)
+                    content_length = resp.headers.get("Content-Length")
+                    if content_length and content_length.isdigit():
+                        size = int(content_length)
+                        # If HEAD gives size, return (handles session_created_here in finally)
+                        # No, explicit close if returning early and session was created here.
+                        if session_created_here: await self._close_session()
+                        return filename, size
+        except aiohttp.ClientError:
+            pass # HEAD failed, proceed to GET
+        except Exception:
+            pass # Other error with HEAD
 
-                if not filename:
-                    parsed_url = urlparse(url)
-                    if parsed_url.path:
-                        filename = unquote(parsed_url.path.split('/')[-1])
-                        if not filename: 
-                            filename = None
+        # Fallback to GET with Range header if size not found
+        try:
+            get_range_headers = request_headers.copy()
+            get_range_headers["Range"] = "bytes=0-0"
+            async with self.session.get(url, headers=get_range_headers, allow_redirects=True) as resp:
+                if resp.status in (200, 206):
+                    # Update filename if not already found (e.g., if HEAD failed)
+                    if not filename:
+                        content_disposition = resp.headers.get("Content-Disposition")
+                        if content_disposition:
+                            match_utf8 = re.search(r"filename\*=UTF-8''([^']+)$", content_disposition, re.IGNORECASE)
+                            if match_utf8:
+                                filename = unquote(match_utf8.group(1))
+                            else:
+                                match_ascii = re.search(r"filename=\"([^\"]+)\"", content_disposition, re.IGNORECASE)
+                                if match_ascii:
+                                    filename = match_ascii.group(1)
+                        if not filename:
+                            parsed_url = urlparse(url)
+                            if parsed_url.path:
+                                path_filename = unquote(parsed_url.path.split('/')[-1])
+                                if path_filename:
+                                    filename = path_filename
 
-                content_length = response.headers.get("Content-Length")
-                if content_length and content_length.isdigit():
-                    size = int(content_length)
+                    content_range = resp.headers.get("Content-Range")
+                    if content_range:
+                        try:
+                            size = int(content_range.split("/")[-1])
+                        except (ValueError, IndexError):
+                            pass # Size not found in Content-Range
+        except aiohttp.ClientError:
+            pass # GET failed
+        except Exception:
+            pass # Other error with GET
 
-        except aiohttp.ClientError as e:
-            pass
-        except Exception as e:
-            pass
         finally:
             if session_created_here:
                 await self._close_session()
