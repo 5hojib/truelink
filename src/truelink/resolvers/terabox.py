@@ -42,18 +42,22 @@ class TeraboxResolver(BaseResolver):
                 if response.status != 200:
                     error_text = await response.text()
                     raise ExtractionFailedException(
-                        f"Terabox API error ({response.status}): {error_text[:200]}"
+                        f"Terabox API error ({response.status}): {error_text[:200]}",
                     )
                 try:
                     json_response = await response.json()
                 except Exception as json_error:
                     text_snippet = await response.text()
                     raise ExtractionFailedException(
-                        f"Terabox API error: Failed to parse JSON response. {json_error}. Response: {text_snippet[:200]}"
+                        f"Terabox API error: Failed to parse JSON response. {json_error}. Response: {text_snippet[:200]}",
                     )
 
-            if "✅ Status" not in json_response or not json_response.get("📜 Extracted Info"):
-                error_message = json_response.get("message", "File not found or API failed to extract info.")
+            if "✅ Status" not in json_response or not json_response.get(
+                "📜 Extracted Info"
+            ):
+                error_message = json_response.get(
+                    "message", "File not found or API failed to extract info."
+                )
                 if "error" in json_response:
                     error_message = json_response["error"]
                 raise ExtractionFailedException(f"Terabox: {error_message}")
@@ -62,7 +66,7 @@ class TeraboxResolver(BaseResolver):
 
             if not isinstance(extracted_info, list) or not extracted_info:
                 raise ExtractionFailedException(
-                    "Terabox API error: '📜 Extracted Info' is not a valid list or is empty."
+                    "Terabox API error: '📜 Extracted Info' is not a valid list or is empty.",
                 )
 
             if len(extracted_info) == 1:
@@ -73,11 +77,13 @@ class TeraboxResolver(BaseResolver):
 
                 if not direct_link:
                     raise ExtractionFailedException(
-                        "Terabox API error: Missing download link for single file."
+                        "Terabox API error: Missing download link for single file.",
                     )
 
                 size_bytes = _speed_string_to_bytes(size_str)
-                header_filename, header_size = await self._fetch_file_details(direct_link)
+                header_filename, header_size = await self._fetch_file_details(
+                    direct_link
+                )
 
                 return LinkResult(
                     url=direct_link,
@@ -104,13 +110,13 @@ class TeraboxResolver(BaseResolver):
                         url=item_link,
                         size=item_size_bytes if item_size_bytes > 0 else None,
                         path="",
-                    )
+                    ),
                 )
                 total_size_bytes += item_size_bytes
 
             if not folder_contents:
                 raise ExtractionFailedException(
-                    "Terabox: No valid files found in folder data from API."
+                    "Terabox: No valid files found in folder data from API.",
                 )
 
             return FolderResult(
@@ -123,5 +129,5 @@ class TeraboxResolver(BaseResolver):
             if isinstance(e, ExtractionFailedException):
                 raise
             raise ExtractionFailedException(
-                f"Failed to resolve Terabox URL '{url}': {e!s}"
+                f"Failed to resolve Terabox URL '{url}': {e!s}",
             ) from e
