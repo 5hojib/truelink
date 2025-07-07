@@ -5,44 +5,7 @@ from typing import TYPE_CHECKING
 from urllib.parse import urlparse
 
 from .exceptions import InvalidURLException, UnsupportedProviderException
-from .resolvers import (
-    AkmFilesResolver,
-    BerkasDriveResolver,
-    BuzzHeavierResolver,
-    DevUploadsResolver,
-    DoodStreamResolver,
-    FichierResolver,
-    FilePressResolver,
-    FuckingFastResolver,
-    GitHubResolver,
-    GoFileResolver,
-    HxFileResolver,
-    KrakenFilesResolver,
-    LinkBoxResolver,
-    LulaCloudResolver,
-    MediaFileResolver,
-    MediaFireResolver,
-    Mp4UploadResolver,
-    OneDriveResolver,
-    OsdnResolver,
-    PCloudResolver,
-    PixelDrainResolver,
-    QiwiResolver,
-    RacatyResolver,
-    SendCmResolver,
-    ShrdskResolver,
-    SolidFilesResolver,
-    StreamHubResolver,
-    StreamtapeResolver,
-    StreamvidResolver,
-    SwissTransferResolver,
-    TeraboxResolver,
-    TmpSendResolver,
-    UploadEeResolver,
-    UploadHavenResolver,
-    WeTransferResolver,
-    YandexDiskResolver,
-)
+from .resolvers import *
 
 if TYPE_CHECKING:
     from .types import FolderResult, LinkResult
@@ -53,25 +16,50 @@ class TrueLinkResolver:
 
     def __init__(self):
         self._resolvers: dict[str, type] = {
-            # Existing from before
+            # Buzzheavier
             "buzzheavier.com": BuzzHeavierResolver,
+            
+            # Lulacloud 
             "lulacloud.com": LulaCloudResolver,
+            
+            #FuckingFast
             "fuckingfast.co": FuckingFastResolver,
-            # Newly added resolvers
+            
+            # Yandex
             "yadi.sk": YandexDiskResolver,
-            "disk.yandex.": YandexDiskResolver,  # Catches disk.yandex.com, disk.yandex.ru etc.
-            "devuploads.com": DevUploadsResolver,  # Main domain for devuploads
-            "devuploads.net": DevUploadsResolver,  # Alias
+            "disk.yandex.": YandexDiskResolver,
+            
+            #Devupload 
+            "devuploads.com": DevUploadsResolver,
+            "devuploads.net": DevUploadsResolver, 
+            
+            # UploadHaven
             "uploadhaven.com": UploadHavenResolver,
+            
+            # Meduafile
             "mediafile.cc": MediaFileResolver,
+            
+            # MediaFire 
             "mediafire.com": MediaFireResolver,
+            
+            # osdn
             "osdn.net": OsdnResolver,
-            "github.com": GitHubResolver,  # For release links
+            
+            # GitHub 
+            "github.com": GitHubResolver, 
+            
+            # hxfile
             "hxfile.co": HxFileResolver,
-            "1drv.ms": OneDriveResolver,  # OneDrive short links
-            "onedrive.live.com": OneDriveResolver,  # OneDrive direct/shared links
+            
+            # OneDrive 
+            "1drv.ms": OneDriveResolver, 
+            "onedrive.live.com": OneDriveResolver,
+            
+            # pixel drains
             "pixeldrain.com": PixelDrainResolver,
-            "pixeldra.in": PixelDrainResolver,  # Alias
+            "pixeldra.in": PixelDrainResolver,
+            
+            # streamtape 
             "streamtape.com": StreamtapeResolver,
             "streamtape.co": StreamtapeResolver,
             "streamtape.cc": StreamtapeResolver,
@@ -79,25 +67,59 @@ class TrueLinkResolver:
             "streamtape.net": StreamtapeResolver,
             "streamta.pe": StreamtapeResolver,
             "streamtape.xyz": StreamtapeResolver,
+            
+            # Recaty
             "racaty.net": RacatyResolver,
-            "racaty.io": RacatyResolver,  # Alias
+            "racaty.io": RacatyResolver,  
+            
+            # Dicgier
             "1fichier.com": FichierResolver,
+            
+            # solidfiles 
             "solidfiles.com": SolidFilesResolver,
+            
+            # Krakenfiles 
             "krakenfiles.com": KrakenFilesResolver,
+            
+            # upload ee
             "upload.ee": UploadEeResolver,
+            
+            # Gofile 
             "gofile.io": GoFileResolver,
+            
+            # send cm
             "send.cm": SendCmResolver,
+            
+            # tmpsend
             "tmpsend.com": TmpSendResolver,
+            
+            # streamvid 
             "streamvid.net": StreamvidResolver,
+            
+            # shrdsk
             "shrdsk.me": ShrdskResolver,
-            "u.pcloud.link": PCloudResolver,  # pCloud short links
-            "pcloud.com": PCloudResolver,  # Main domain for shares if not short link
+            
+            #pcloud
+            "u.pcloud.link": PCloudResolver,  
+            "pcloud.com": PCloudResolver,  
+            
+            # qiwi
             "qiwi.gg": QiwiResolver,
+            
+            # mp4upload
             "mp4upload.com": Mp4UploadResolver,
+            
+            # berkasdrive
             "berkasdrive.com": BerkasDriveResolver,
+            
+            # Swisstrensfer
             "swisstransfer.com": SwissTransferResolver,
+            
+            # akmfiles
             "akmfiles.com": AkmFilesResolver,
-            "akmfls.xyz": AkmFilesResolver,  # Alias
+            "akmfls.xyz": AkmFilesResolver,  
+            
+            # DoodStream 
             "dood.watch": DoodStreamResolver,
             "doodstream.com": DoodStreamResolver,
             "dood.to": DoodStreamResolver,
@@ -121,15 +143,25 @@ class TrueLinkResolver:
             "ds2video.com": DoodStreamResolver,
             "do0od.com": DoodStreamResolver,
             "d000d.com": DoodStreamResolver,
+            
+            # Streamhub 
             "streamhub.ink": StreamHubResolver,
             "streamhub.to": StreamHubResolver,
+            
+            # linkbox 
             "linkbox.to": LinkBoxResolver,
-            "lbx.to": LinkBoxResolver,  # Alias
-            "teltobx.net": LinkBoxResolver,  # Alias
-            "telbx.net": LinkBoxResolver,  # Alias
-            "filepress": FilePressResolver,  # Assuming .net, original had 'filepress' in domain
+            "lbx.to": LinkBoxResolver,  
+            "teltobx.net": LinkBoxResolver,  
+            "telbx.net": LinkBoxResolver,  
+            
+            # file press
+            "filepress": FilePressResolver,  
+            
+            # wWeTransfer 
             "wetransfer.com": WeTransferResolver,
-            "we.tl": WeTransferResolver,  # Alias
+            "we.tl": WeTransferResolver,  
+            
+            # terabox 
             "terabox.com": TeraboxResolver,
             "nephobox.com": TeraboxResolver,
             "4funbox.com": TeraboxResolver,
@@ -147,8 +179,6 @@ class TrueLinkResolver:
             "teraboxshare.com": TeraboxResolver,
             "terafileshare.com": TeraboxResolver,
             "terabox.club": TeraboxResolver,
-            # R.I.P section from original - these will raise UnsupportedProviderException by default
-            # "anonfiles.com": BaseResolver, # Example of how to mark as "known but unsupported"
         }
 
     def _get_resolver(self, url: str):
