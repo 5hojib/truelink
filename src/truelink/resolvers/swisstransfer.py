@@ -172,16 +172,3 @@ class SwissTransferResolver(BaseResolver):
             contents=folder_contents,
             total_size=total_folder_size
         )
-
-        # Original script's header "User-Agent:Mozilla/5.0" is handled by BaseResolver.
-        # No specific other headers were mentioned for the final download.
-
-        # This part of the original code is unreachable due to earlier returns for single/multi file.
-        # return None # Should not be reached if logic is correct.
-
-        except Exception as e:
-            if isinstance(e, (ExtractionFailedException, InvalidURLException)):
-                raise
-            raise ExtractionFailedException(
-                f"Failed to resolve SwissTransfer.com URL '{url}': {e!s}"
-            ) from e
