@@ -47,7 +47,8 @@ class TmpSendResolver(BaseResolver):
             # _fetch_file_details will use this referer.
             custom_headers = {"Referer": referer_url}
             filename, size = await self._fetch_file_details(
-                direct_download_link, custom_headers=custom_headers
+                direct_download_link,
+                custom_headers=custom_headers,
             )
 
             # If filename is not found, it might be in the original URL or page title (if we were to fetch it)

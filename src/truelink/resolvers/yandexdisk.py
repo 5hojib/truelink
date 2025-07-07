@@ -18,7 +18,8 @@ class YandexDiskResolver(BaseResolver):
             # We can simplify as the URL passed to resolve should be the Yandex link itself.
             # However, good to ensure it's a valid Yandex link.
             match = re.match(
-                r"https?://(yadi\.sk|disk\.yandex\.(?:com|ru))/\S+", url
+                r"https?://(yadi\.sk|disk\.yandex\.(?:com|ru))/\S+",
+                url,
             )
             if not match:
                 # This check might be redundant if TrueLinkResolver already validated domain

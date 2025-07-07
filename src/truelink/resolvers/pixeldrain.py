@@ -41,7 +41,7 @@ class PixelDrainResolver(BaseResolver):
                     file_or_list_code = path_parts[-2]
                 else:
                     raise InvalidURLException(
-                        "Invalid PixelDrain URL: Could not extract ID."
+                        "Invalid PixelDrain URL: Could not extract ID.",
                     )
 
             # The original code uses "https://pd.cybar.xyz/" and appends the code.
@@ -80,7 +80,8 @@ class PixelDrainResolver(BaseResolver):
             )
             try:
                 async with await self._get(
-                    "https://pd.cybar.xyz/", allow_redirects=True
+                    "https://pd.cybar.xyz/",
+                    allow_redirects=True,
                 ) as base_res:
                     # Ensure the final URL from pd.cybar.xyz ends with a slash if it's a base path
                     fetched_base = str(base_res.url)

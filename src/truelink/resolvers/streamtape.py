@@ -42,7 +42,7 @@ class StreamtapeResolver(BaseResolver):
                     _id = cleaned_path_segments[-1]
                 else:
                     raise InvalidURLException(
-                        f"Could not extract video ID from Streamtape URL: {url}"
+                        f"Could not extract video ID from Streamtape URL: {url}",
                     )
 
             # Ensure we use the main page URL, not embed if possible, for fetching the script
@@ -72,7 +72,7 @@ class StreamtapeResolver(BaseResolver):
                 # If the specific strings are not found, try a more generic JS variable extraction if possible.
                 # For now, sticking to original identified patterns.
                 raise ExtractionFailedException(
-                    "Streamtape error: Required script content not found on page."
+                    "Streamtape error: Required script content not found on page.",
                 )
 
             # Original: findall(r"(&expires\S+)'", script[0]) -> script[0] was target_script_content
@@ -108,7 +108,7 @@ class StreamtapeResolver(BaseResolver):
 
                 if not match_get_video:
                     raise ExtractionFailedException(
-                        "Streamtape error: Download link pattern not found in script."
+                        "Streamtape error: Download link pattern not found in script.",
                     )
 
                 # This is the path and query part, e.g., /get_video?id=...&expires=...
@@ -128,7 +128,8 @@ class StreamtapeResolver(BaseResolver):
             # _fetch_file_details will hit this. Streamtape might require specific referers.
             # The original code doesn't specify a referer for the final link.
             filename, size = await self._fetch_file_details(
-                direct_link, custom_headers={"Referer": page_url}
+                direct_link,
+                custom_headers={"Referer": page_url},
             )
 
             return LinkResult(url=direct_link, filename=filename, size=size)

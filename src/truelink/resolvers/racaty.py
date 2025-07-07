@@ -28,14 +28,15 @@ class RacatyResolver(BaseResolver):
 
             if not file_id:
                 raise InvalidURLException(
-                    f"Could not extract file ID from Racaty URL: {canonical_url}"
+                    f"Could not extract file ID from Racaty URL: {canonical_url}",
                 )
 
             post_data = {"op": "download2", "id": file_id}
 
             # POST to the canonical URL
             async with await self._post(
-                canonical_url, data=post_data
+                canonical_url,
+                data=post_data,
             ) as post_response:
                 response_text = await post_response.text()
 
@@ -46,11 +47,11 @@ class RacatyResolver(BaseResolver):
             if not direct_link_elements:
                 # Check for error messages if link not found
                 error_msg = html.xpath(
-                    "//div[contains(@class,'alert-danger')]/text()"
+                    "//div[contains(@class,'alert-danger')]/text()",
                 )
                 if error_msg:
                     raise ExtractionFailedException(
-                        f"Racaty error: {error_msg[0].strip()}"
+                        f"Racaty error: {error_msg[0].strip()}",
                     )
 
                 # Check for common messages like "File not found"
@@ -59,11 +60,11 @@ class RacatyResolver(BaseResolver):
                     or "No such file" in response_text
                 ):
                     raise ExtractionFailedException(
-                        f"Racaty error: File Not Found or link expired for ID {file_id}."
+                        f"Racaty error: File Not Found or link expired for ID {file_id}.",
                     )
 
                 raise ExtractionFailedException(
-                    "Racaty error: Direct download link ('uniqueExpirylink') not found."
+                    "Racaty error: Direct download link ('uniqueExpirylink') not found.",
                 )
 
             direct_link = direct_link_elements[0]
@@ -71,7 +72,8 @@ class RacatyResolver(BaseResolver):
             # Racaty links might be direct or might need a referer.
             # Using the canonical_url as referer for fetching details.
             filename, size = await self._fetch_file_details(
-                direct_link, custom_headers={"Referer": canonical_url}
+                direct_link,
+                custom_headers={"Referer": canonical_url},
             )
 
             return LinkResult(url=direct_link, filename=filename, size=size)

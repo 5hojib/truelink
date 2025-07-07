@@ -32,7 +32,7 @@ class HxFileResolver(BaseResolver):
             # or raise an exception immediately.
             # For now, matching original: raise if file not found.
             raise ExtractionFailedException(
-                f"HxFile error: Cookie file '{self.COOKIE_FILE}' not found."
+                f"HxFile error: Cookie file '{self.COOKIE_FILE}' not found.",
             )
 
         cookies_dict = {}
@@ -50,7 +50,7 @@ class HxFileResolver(BaseResolver):
         except Exception as e:
             # Original code raises generic DirectDownloadLinkException here
             raise ExtractionFailedException(
-                f"HxFile error: Failed to load cookies from '{self.COOKIE_FILE}': {e!s}"
+                f"HxFile error: Failed to load cookies from '{self.COOKIE_FILE}': {e!s}",
             )
 
     async def resolve(self, url: str) -> LinkResult | FolderResult:
@@ -67,7 +67,7 @@ class HxFileResolver(BaseResolver):
             file_code_match = normalized_url.split("/")
             if not file_code_match:
                 raise ExtractionFailedException(
-                    "HxFile error: Could not extract file code from URL."
+                    "HxFile error: Could not extract file code from URL.",
                 )
             file_code = file_code_match[-1]
 
@@ -87,11 +87,11 @@ class HxFileResolver(BaseResolver):
             if not direct_link_elements:
                 # Check for common error messages if link not found
                 error_message = html.xpath(
-                    "//div[contains(@class,'alert-danger')]/text()"
+                    "//div[contains(@class,'alert-danger')]/text()",
                 )
                 if error_message:
                     raise ExtractionFailedException(
-                        f"HxFile error: {error_message[0].strip()}"
+                        f"HxFile error: {error_message[0].strip()}",
                     )
                 # Check for login/premium messages
                 if (
@@ -99,10 +99,10 @@ class HxFileResolver(BaseResolver):
                     or "Login to download" in response_text
                 ):
                     raise ExtractionFailedException(
-                        "HxFile error: Link may require premium account or login."
+                        "HxFile error: Link may require premium account or login.",
                     )
                 raise ExtractionFailedException(
-                    "HxFile error: Direct download link not found on page."
+                    "HxFile error: Direct download link not found on page.",
                 )
 
             direct_link = direct_link_elements[0]
@@ -111,7 +111,8 @@ class HxFileResolver(BaseResolver):
             # We'll use this referer for _fetch_file_details
             fetch_headers = {"Referer": normalized_url}
             filename, size = await self._fetch_file_details(
-                direct_link, custom_headers=fetch_headers
+                direct_link,
+                custom_headers=fetch_headers,
             )
 
             return LinkResult(url=direct_link, filename=filename, size=size)

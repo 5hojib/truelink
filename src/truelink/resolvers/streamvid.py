@@ -22,7 +22,7 @@ class StreamvidResolver(BaseResolver):
 
             if not path_segments:
                 raise InvalidURLException(
-                    "Streamvid: Invalid URL, no path segments found."
+                    "Streamvid: Invalid URL, no path segments found.",
                 )
 
             file_code_with_quality = path_segments[
@@ -61,21 +61,21 @@ class StreamvidResolver(BaseResolver):
             if quality_defined:
                 # If quality is in URL, expect a form to POST to get the actual link.
                 form_inputs = html.xpath(
-                    '//form[@id="F1"]//input | //form[contains(@action, "/d/")]//input'
+                    '//form[@id="F1"]//input | //form[contains(@action, "/d/")]//input',
                 )  # More generic form search
                 if not form_inputs:
                     # Check for errors if form not found
                     error_div = html.xpath(
-                        '//div[@class="alert alert-danger"][1]/text()'
+                        '//div[@class="alert alert-danger"][1]/text()',
                     )
                     if (
                         error_div and len(error_div) > 1
                     ):  # Often error is second text node
                         raise ExtractionFailedException(
-                            f"Streamvid error (quality page): {error_div[1].strip()}"
+                            f"Streamvid error (quality page): {error_div[1].strip()}",
                         )
                     raise ExtractionFailedException(
-                        "Streamvid error: No form inputs found on quality download page."
+                        "Streamvid error: No form inputs found on quality download page.",
                     )
 
                 post_data = {}
@@ -89,7 +89,8 @@ class StreamvidResolver(BaseResolver):
 
                 # POST to the same download_page_url
                 async with await self._post(
-                    download_page_url, data=post_data
+                    download_page_url,
+                    data=post_data,
                 ) as post_response:
                     post_response_text = await post_response.text()
 
@@ -98,18 +99,18 @@ class StreamvidResolver(BaseResolver):
                 # Script extraction logic from original
                 # Look for: document.location.href = "DIRECT_LINK_HERE";
                 script_elements = post_html.xpath(
-                    '//script[contains(text(),"document.location.href")]/text()'
+                    '//script[contains(text(),"document.location.href")]/text()',
                 )
                 if not script_elements:
                     error_div_post = post_html.xpath(
-                        '//div[@class="alert alert-danger"][1]/text()'
+                        '//div[@class="alert alert-danger"][1]/text()',
                     )
                     if error_div_post and len(error_div_post) > 1:
                         raise ExtractionFailedException(
-                            f"Streamvid error (after POST): {error_div_post[1].strip()}"
+                            f"Streamvid error (after POST): {error_div_post[1].strip()}",
                         )
                     raise ExtractionFailedException(
-                        "Streamvid error: Direct link script not found after POST."
+                        "Streamvid error: Direct link script not found after POST.",
                     )
 
                 script_content = script_elements[0]
@@ -119,7 +120,7 @@ class StreamvidResolver(BaseResolver):
                 )
                 if not direct_link_match:
                     raise ExtractionFailedException(
-                        "Streamvid error: Direct link not found in script pattern."
+                        "Streamvid error: Direct link not found in script pattern.",
                     )
 
                 direct_link = direct_link_match.group(1)
@@ -128,14 +129,15 @@ class StreamvidResolver(BaseResolver):
                     direct_link = urljoin(download_page_url, direct_link)
 
                 filename, size = await self._fetch_file_details(
-                    direct_link, custom_headers={"Referer": download_page_url}
+                    direct_link,
+                    custom_headers={"Referer": download_page_url},
                 )
                 return LinkResult(url=direct_link, filename=filename, size=size)
 
             # Quality not defined in URL, list available qualities
             qualities_urls = html.xpath('//div[@id="dl_versions"]//a/@href')
             qualities_texts = html.xpath(
-                '//div[@id="dl_versions"]//a/text()[normalize-space()]'
+                '//div[@id="dl_versions"]//a/text()[normalize-space()]',
             )  # Get non-empty text nodes
 
             if qualities_urls and qualities_texts:
@@ -163,11 +165,13 @@ class StreamvidResolver(BaseResolver):
                     )
                     # The q_url_path is relative, e.g. /d/xxxx_o. We need the suffix part.
                     suffix_match = re.search(
-                        r"(_[ohl])$", q_url_path.split("/")[-1]
+                        r"(_[ohl])$",
+                        q_url_path.split("/")[-1],
                     )  # _o, _h, _l
                     if not suffix_match:  # Try _n for normal or others
                         suffix_match = re.search(
-                            r"(_[a-zA-Z])$", q_url_path.split("/")[-1]
+                            r"(_[a-zA-Z])$",
+                            q_url_path.split("/")[-1],
                         )
 
                     suffix_for_user = (
@@ -184,7 +188,7 @@ class StreamvidResolver(BaseResolver):
             error_not_found = html.xpath('//div[@class="not-found-text"]/text()')
             if error_not_found:
                 raise ExtractionFailedException(
-                    f"Streamvid error: {error_not_found[0].strip()}"
+                    f"Streamvid error: {error_not_found[0].strip()}",
                 )
 
             # General error if page structure is unexpected

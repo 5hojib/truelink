@@ -26,11 +26,11 @@ class OsdnResolver(BaseResolver):
                 # Fallback: Check for a direct download button if the primary mirror link class isn't found
                 # This is a guess, actual OSDN pages might have other structures
                 fallback_links = html.xpath(
-                    '//a[contains(@href, "dl.osdn.net") and contains(@class, "btn")]/@href'
+                    '//a[contains(@href, "dl.osdn.net") and contains(@class, "btn")]/@href',
                 )
                 if not fallback_links:
                     raise ExtractionFailedException(
-                        "OSDN error: Direct download link or mirror link not found."
+                        "OSDN error: Direct download link or mirror link not found.",
                     )
 
                 # Assuming the first fallback link is the one

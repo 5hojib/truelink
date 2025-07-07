@@ -46,11 +46,13 @@ class PCloudResolver(BaseResolver):
                     # Example from some pCloud pages: metadata.variants[0].hosts[0] + metadata.variants[0].path
                     # Or metadata.downloadlink
                     if "downloadlink" in metadata and isinstance(
-                        metadata["downloadlink"], str
+                        metadata["downloadlink"],
+                        str,
                     ):
                         direct_link = metadata["downloadlink"]
                     elif "downloadLink" in metadata and isinstance(
-                        metadata["downloadLink"], str
+                        metadata["downloadLink"],
+                        str,
                     ):  # Camel case
                         direct_link = metadata["downloadLink"]
                     # Add more specific JSON path checks if known.
@@ -124,7 +126,7 @@ class PCloudResolver(BaseResolver):
 
             if not direct_link:
                 raise ExtractionFailedException(
-                    "pCloud.link error: Direct download link not found in page source."
+                    "pCloud.link error: Direct download link not found in page source.",
                 )
 
             # Unescape slashes if any (though already handled if from JSON path)
@@ -135,7 +137,8 @@ class PCloudResolver(BaseResolver):
             direct_link = unquote(direct_link)
 
             filename, size = await self._fetch_file_details(
-                direct_link, custom_headers={"Referer": url}
+                direct_link,
+                custom_headers={"Referer": url},
             )
 
             # pCloud filenames from Content-Disposition are often URL-encoded or base64.

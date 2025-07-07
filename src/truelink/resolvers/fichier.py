@@ -24,7 +24,8 @@ class FichierResolver(BaseResolver):
         # Validate URL structure (basic check)
         regex_1fichier = r"^https?://(?:www\.)?1fichier\.com/\?.+"
         if not re.match(
-            regex_1fichier, url.split("::")[0]
+            regex_1fichier,
+            url.split("::")[0],
         ):  # Check URL part before password
             # A more common 1fichier link is like https://1fichier.com/?xxxxxxxxxx
             # Or https://1fichier.com/?xxxxxxxxxx&e=123456 (temp links)
@@ -61,12 +62,13 @@ class FichierResolver(BaseResolver):
 
             # Check for direct download button
             dl_url_elements = html.xpath(
-                '//a[@class="ok btn-general btn-orange"]/@href'
+                '//a[@class="ok btn-general btn-orange"]/@href',
             )
             if dl_url_elements:
                 direct_link = dl_url_elements[0]
                 filename, size = await self._fetch_file_details(
-                    direct_link, custom_headers={"Referer": request_url}
+                    direct_link,
+                    custom_headers={"Referer": request_url},
                 )
                 return LinkResult(url=direct_link, filename=filename, size=size)
 
@@ -79,7 +81,7 @@ class FichierResolver(BaseResolver):
                     in response_text
                 ):
                     raise ExtractionFailedException(
-                        "1Fichier error: Requires a prior validation download (often via browser). Link may be restricted."
+                        "1Fichier error: Requires a prior validation download (often via browser). Link may be restricted.",
                     )
                 raise ExtractionFailedException(
                     "1Fichier error: No download link found and no warning messages. Page structure might have changed.",
@@ -105,28 +107,27 @@ class FichierResolver(BaseResolver):
                         else "Please wait a few minutes/hours."
                     )
                     raise ExtractionFailedException(
-                        f"1Fichier error: Download limit reached. {wait_time_msg}"
+                        f"1Fichier error: Download limit reached. {wait_time_msg}",
                     )
 
                 if "bad password" in last_warn_text_content:
                     raise ExtractionFailedException(
-                        "1Fichier error: The password you entered is wrong."
+                        "1Fichier error: The password you entered is wrong.",
                     )
 
                 if "you have to create a premium account" in last_warn_text_content:
                     raise ExtractionFailedException(
-                        "1Fichier error: This link may require a premium account."
+                        "1Fichier error: This link may require a premium account.",
                     )
 
                 # Check for password prompt if password was not provided
                 if (
                     "protect access to this file" in last_warn_text_content
                     or "enter the password" in last_warn_text_content
-                ):
-                    if not _password:
-                        raise ExtractionFailedException(
-                            PASSWORD_ERROR_MESSAGE_FICHIER.format(request_url)
-                        )
+                ) and not _password:
+                    raise ExtractionFailedException(
+                        PASSWORD_ERROR_MESSAGE_FICHIER.format(request_url),
+                    )
                     # If password was provided but still see this, it might be a generic message before password check
                     # or the password check failed and led to a different error handled above.
 
@@ -135,7 +136,7 @@ class FichierResolver(BaseResolver):
             # For simplicity, if no download link and warnings exist, assume an issue.
             # Concatenate warning texts for a more informative message.
             all_warnings = " | ".join(
-                ["".join(w.xpath(".//text()")).strip() for w in ct_warn_elements]
+                ["".join(w.xpath(".//text()")).strip() for w in ct_warn_elements],
             )
             raise ExtractionFailedException(
                 f"1Fichier error: Could not retrieve download link. Warnings: {all_warnings}",

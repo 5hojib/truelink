@@ -26,7 +26,7 @@ class Mp4UploadResolver(BaseResolver):
                 normalized_path = normalized_path.replace("embed-", "")
 
             page_url = urlunparse(
-                (parsed_url.scheme, parsed_url.netloc, normalized_path, "", "", "")
+                (parsed_url.scheme, parsed_url.netloc, normalized_path, "", "", ""),
             )
 
             # Step 1: GET the page to extract initial form data
@@ -39,7 +39,7 @@ class Mp4UploadResolver(BaseResolver):
             # Let's try to be more specific if there's a form.
             # MP4Upload often has a form with name="F1" or similar.
             form1_inputs = html.xpath(
-                '//form[@name="F1"]//input | //form[button/@name="submit"]//input'
+                '//form[@name="F1"]//input | //form[button/@name="submit"]//input',
             )  # More specific
             if (
                 not form1_inputs
@@ -53,10 +53,10 @@ class Mp4UploadResolver(BaseResolver):
                     or "File was removed" in page_html_text
                 ):
                     raise ExtractionFailedException(
-                        "Mp4Upload error: File Not Found or removed."
+                        "Mp4Upload error: File Not Found or removed.",
                     )
                 raise ExtractionFailedException(
-                    "Mp4Upload error: Could not find initial form inputs on page."
+                    "Mp4Upload error: Could not find initial form inputs on page.",
                 )
 
             data1 = {
@@ -66,14 +66,16 @@ class Mp4UploadResolver(BaseResolver):
             }
             if not data1:  # If all inputs were nameless or no inputs
                 raise ExtractionFailedException(
-                    "Mp4Upload error: No valid data extracted for first POST."
+                    "Mp4Upload error: No valid data extracted for first POST.",
                 )
 
             # Step 2: First POST request
             # Original headers: User-Agent (from BaseResolver), Referer: self.BASE_URL
             headers_post1 = {"Referer": self.BASE_URL}
             async with await self._post(
-                page_url, data=data1, headers=headers_post1
+                page_url,
+                data=data1,
+                headers=headers_post1,
             ) as post1_response:
                 post1_html_text = await post1_response.text()
 
@@ -82,7 +84,7 @@ class Mp4UploadResolver(BaseResolver):
             # Step 3: Extract data for the second POST from the response of the first POST
             # Original: inputs = tree.xpath('//form[@name="F1"]//input') (applied to new HTML)
             form2_inputs = html_post1.xpath(
-                '//form[@name="F1"]//input | //form[button/@name="submit"]//input'
+                '//form[@name="F1"]//input | //form[button/@name="submit"]//input',
             )
             if not form2_inputs:
                 if (
@@ -90,20 +92,21 @@ class Mp4UploadResolver(BaseResolver):
                     or "download link generated" not in post1_html_text.lower()
                 ):  # Check if error or unexpected page
                     raise ExtractionFailedException(
-                        "Mp4Upload error: Second form inputs not found or page indicates an error after first POST."
+                        "Mp4Upload error: Second form inputs not found or page indicates an error after first POST.",
                     )
                 # Sometimes the direct link might be here if structure changed
                 direct_link_early = html_post1.xpath(
-                    '//a[contains(@href,"mp4upload.com:183/d/")]/@href'
+                    '//a[contains(@href,"mp4upload.com:183/d/")]/@href',
                 )
                 if direct_link_early:
                     dl = direct_link_early[0]
                     filename, size = await self._fetch_file_details(
-                        dl, custom_headers={"Referer": page_url}
+                        dl,
+                        custom_headers={"Referer": page_url},
                     )
                     return LinkResult(url=dl, filename=filename, size=size)
                 raise ExtractionFailedException(
-                    "Mp4Upload error: Second form inputs not found after first POST."
+                    "Mp4Upload error: Second form inputs not found after first POST.",
                 )
 
             data2 = {
@@ -113,7 +116,7 @@ class Mp4UploadResolver(BaseResolver):
             }
             if not data2:
                 raise ExtractionFailedException(
-                    "Mp4Upload error: No valid data extracted for second POST."
+                    "Mp4Upload error: No valid data extracted for second POST.",
                 )
 
             # Add referer to data2 as per original script
@@ -123,7 +126,9 @@ class Mp4UploadResolver(BaseResolver):
             # The response from this POST is expected to be the direct link URL itself (via redirect).
             # So, we use allow_redirects=True (default for _post) and get response.url.
             async with await self._post(
-                page_url, data=data2, headers=headers_post1
+                page_url,
+                data=data2,
+                headers=headers_post1,
             ) as post2_response:  # Re-use headers from post1
                 direct_link = str(post2_response.url)  # The URL after redirects
 
@@ -141,10 +146,10 @@ class Mp4UploadResolver(BaseResolver):
                     or "timer" in final_page_text.lower()
                 ):
                     raise ExtractionFailedException(
-                        "Mp4Upload error: Stuck in a loop or timer page after second POST."
+                        "Mp4Upload error: Stuck in a loop or timer page after second POST.",
                     )
                 raise ExtractionFailedException(
-                    f"Mp4Upload error: Could not obtain final direct link URL after second POST. Ended at: {direct_link}"
+                    f"Mp4Upload error: Could not obtain final direct link URL after second POST. Ended at: {direct_link}",
                 )
 
             # The direct_link is now the URL to the file.
@@ -152,7 +157,8 @@ class Mp4UploadResolver(BaseResolver):
             # This referer will be used by _fetch_file_details.
             fetch_headers = {"Referer": self.BASE_URL}
             filename, size = await self._fetch_file_details(
-                direct_link, custom_headers=fetch_headers
+                direct_link,
+                custom_headers=fetch_headers,
             )
 
             return LinkResult(url=direct_link, filename=filename, size=size)

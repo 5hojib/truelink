@@ -24,7 +24,7 @@ class QiwiResolver(BaseResolver):
 
             if not path_segments:
                 raise InvalidURLException(
-                    "Qiwi.gg error: Could not extract file ID from URL (empty path)."
+                    "Qiwi.gg error: Could not extract file ID from URL (empty path).",
                 )
 
             file_id = path_segments[
@@ -42,7 +42,7 @@ class QiwiResolver(BaseResolver):
             # e.g., looking for h1 containing the filename.
             # For now, sticking to the original.
             filename_elements = html.xpath(
-                '//h1[contains(@class,"TextHeading")]/text()'
+                '//h1[contains(@class,"TextHeading")]/text()',
             )  # Made class check more general
 
             if not filename_elements:
@@ -66,16 +66,16 @@ class QiwiResolver(BaseResolver):
                         or "This file does not exist" in page_html_text
                     ):
                         raise ExtractionFailedException(
-                            "Qiwi.gg error: File not found on page."
+                            "Qiwi.gg error: File not found on page.",
                         )
                     raise ExtractionFailedException(
-                        "Qiwi.gg error: Could not find filename element on page to determine extension."
+                        "Qiwi.gg error: Could not find filename element on page to determine extension.",
                     )
 
             full_filename = filename_elements[0].strip()
             if not full_filename or "." not in full_filename:
                 raise ExtractionFailedException(
-                    f"Qiwi.gg error: Extracted filename '{full_filename}' is invalid or missing extension."
+                    f"Qiwi.gg error: Extracted filename '{full_filename}' is invalid or missing extension.",
                 )
 
             # Original logic: ext = name[0].split(".")[-1]
@@ -83,7 +83,7 @@ class QiwiResolver(BaseResolver):
             file_extension = full_filename.split(".")[-1]
             if not file_extension:  # Should not happen if previous check passed
                 raise ExtractionFailedException(
-                    f"Qiwi.gg error: Could not determine file extension from '{full_filename}'."
+                    f"Qiwi.gg error: Could not determine file extension from '{full_filename}'.",
                 )
 
             # Construct the direct link using spyderrock.com
@@ -92,7 +92,8 @@ class QiwiResolver(BaseResolver):
             # Fetch details for the spyderrock link
             # The referer might be important. Using the original qiwi.gg URL.
             filename_from_details, size = await self._fetch_file_details(
-                direct_link, custom_headers={"Referer": url}
+                direct_link,
+                custom_headers={"Referer": url},
             )
 
             # Use filename from page if Content-Disposition doesn't provide a better one.

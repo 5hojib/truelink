@@ -39,12 +39,12 @@ class DoodStreamResolver(BaseResolver):
             # Original XPath: //div[@class='download-content']//a/@href
             # This usually gets a relative path like '/download/xxxxxxx'
             intermediate_link_elements = html.xpath(
-                "//div[contains(@class,'download-content')]//a/@href"
+                "//div[contains(@class,'download-content')]//a/@href",
             )
             if not intermediate_link_elements:
                 # Fallback: check for other common patterns if 'download-content' changed
                 intermediate_link_elements = html.xpath(
-                    "//a[contains(@class,'btn-download') or contains(@class,'download_button')]/@href"
+                    "//a[contains(@class,'btn-download') or contains(@class,'download_button')]/@href",
                 )
                 if not intermediate_link_elements:
                     # Check if page content indicates an error (e.g., "File not found", "DMCA")
@@ -53,7 +53,7 @@ class DoodStreamResolver(BaseResolver):
                         or "File has been removed" in page_html_text
                     ):
                         raise ExtractionFailedException(
-                            "DoodStream error: File not found or removed."
+                            "DoodStream error: File not found or removed.",
                         )
                     raise ExtractionFailedException(
                         "DoodStream error: Could not find the intermediate download link on the page.",
@@ -80,21 +80,23 @@ class DoodStreamResolver(BaseResolver):
             # The referer for this GET should be the initial page_url_str
             headers_intermediate = {"Referer": page_url_str}
             async with await self._get(
-                intermediate_url, headers=headers_intermediate
+                intermediate_url,
+                headers=headers_intermediate,
             ) as intermediate_response:
                 intermediate_page_text = await intermediate_response.text()
 
             # Regex from original: search(r"window\.open\('(\S+)'", _res.text)
             # This looks for JavaScript `window.open('DIRECT_LINK_HERE', ...)`
             final_link_match = re.search(
-                r"window\.open\s*\(\s*['\"]([^'\"]+)['\"]", intermediate_page_text
+                r"window\.open\s*\(\s*['\"]([^'\"]+)['\"]",
+                intermediate_page_text,
             )
             if not final_link_match:
                 # If window.open not found, DoodStream might have changed its method.
                 # Look for alternative patterns if possible or common error messages.
                 if "Error generating download link" in intermediate_page_text:
                     raise ExtractionFailedException(
-                        "DoodStream error: Server reported an error generating the download link."
+                        "DoodStream error: Server reported an error generating the download link.",
                     )
                 raise ExtractionFailedException(
                     "DoodStream error: Could not find final download link pattern (window.open) on intermediate page.",
@@ -105,14 +107,15 @@ class DoodStreamResolver(BaseResolver):
             # The direct_link should be absolute. If not, it's an issue.
             if not direct_link.startswith("http"):
                 raise ExtractionFailedException(
-                    f"DoodStream error: Extracted final link is not absolute: {direct_link}"
+                    f"DoodStream error: Extracted final link is not absolute: {direct_link}",
                 )
 
             # Referer for _fetch_file_details: original script used parsed_url.scheme + hostname
             # This should be the domain of the DoodStream site we are on.
             fetch_referer = f"{parsed_url.scheme}://{parsed_url.netloc}/"
             filename, size = await self._fetch_file_details(
-                direct_link, custom_headers={"Referer": fetch_referer}
+                direct_link,
+                custom_headers={"Referer": fetch_referer},
             )
 
             return LinkResult(url=direct_link, filename=filename, size=size)

@@ -59,12 +59,14 @@ class SendCmResolver(BaseResolver):
 
         try:
             async with await self._post(
-                self.CF_BYPASS_API_URL, json=payload, headers=headers
+                self.CF_BYPASS_API_URL,
+                json=payload,
+                headers=headers,
             ) as cf_response:
                 if cf_response.status != 200:
                     err_text = await cf_response.text()
                     raise ExtractionFailedException(
-                        f"Send.cm (CF Bypass API) error {cf_response.status}: {err_text[:200]}"
+                        f"Send.cm (CF Bypass API) error {cf_response.status}: {err_text[:200]}",
                     )
 
                 json_res = await cf_response.json()
@@ -78,20 +80,23 @@ class SendCmResolver(BaseResolver):
                     "response"
                 ]  # This is expected to be HTML content
             error_detail = json_res.get(
-                "message", "CF Bypass failed or returned unexpected response."
+                "message",
+                "CF Bypass failed or returned unexpected response.",
             )
             raise ExtractionFailedException(
-                f"Send.cm (CF Bypass API) error: {error_detail}. Full: {str(json_res)[:200]}"
+                f"Send.cm (CF Bypass API) error: {error_detail}. Full: {str(json_res)[:200]}",
             )
         except Exception as e:
             if isinstance(e, ExtractionFailedException):
                 raise
             raise ExtractionFailedException(
-                f"Send.cm: Cloudflare bypass request failed for {url_to_bypass}. Error: {e!s}"
+                f"Send.cm: Cloudflare bypass request failed for {url_to_bypass}. Error: {e!s}",
             )
 
     async def _resolve_sendcm_file(
-        self, page_url: str, file_id_override: str | None = None
+        self,
+        page_url: str,
+        file_id_override: str | None = None,
     ) -> LinkResult:
         """Resolves a single Send.cm file link."""
         _password = ""
@@ -120,7 +125,7 @@ class SendCmResolver(BaseResolver):
                 file_id_elements = html.xpath("//input[@name='id']/@value")
                 if not file_id_elements:
                     raise ExtractionFailedException(
-                        "Send.cm file error: file_id not found on page."
+                        "Send.cm file error: file_id not found on page.",
                     )
                 file_id_from_page = file_id_elements[0]
             except (
@@ -131,13 +136,13 @@ class SendCmResolver(BaseResolver):
                 # If GET fails (e.g. CF protection), this is where CF bypass might be needed.
                 # For now, re-raise.
                 raise ExtractionFailedException(
-                    f"Send.cm: Failed to get file page {request_url}. Error: {e!s}"
+                    f"Send.cm: Failed to get file page {request_url}. Error: {e!s}",
                 )
 
         actual_file_id = file_id_override if file_id_override else file_id_from_page
         if not actual_file_id:  # Should not happen if logic is correct
             raise ExtractionFailedException(
-                "Send.cm file error: Could not determine file_id."
+                "Send.cm file error: Could not determine file_id.",
             )
 
         post_data = {"op": "download2", "id": actual_file_id}
@@ -149,14 +154,17 @@ class SendCmResolver(BaseResolver):
         # POST to get the direct link
         # allow_redirects=False to catch Location header
         async with await self._post(
-            "https://send.cm/", data=post_data, allow_redirects=False
+            "https://send.cm/",
+            data=post_data,
+            allow_redirects=False,
         ) as dl_response:
             if "Location" in dl_response.headers and 300 <= dl_response.status < 400:
                 direct_link = dl_response.headers["Location"]
                 # Referer for _fetch_file_details
                 fetch_headers = {"Referer": "https://send.cm/"}
                 filename, size = await self._fetch_file_details(
-                    direct_link, custom_headers=fetch_headers
+                    direct_link,
+                    custom_headers=fetch_headers,
                 )
                 return LinkResult(url=direct_link, filename=filename, size=size)
             # No redirect or not a redirect status
@@ -164,12 +172,12 @@ class SendCmResolver(BaseResolver):
                 password_needed_on_page and not _password
             ):  # Or if we tried without password and it failed
                 raise ExtractionFailedException(
-                    PASSWORD_ERROR_MESSAGE_SENDCM.format(request_url)
+                    PASSWORD_ERROR_MESSAGE_SENDCM.format(request_url),
                 )
             # Other errors
             error_text_snippet = await dl_response.text()
             raise ExtractionFailedException(
-                f"Send.cm file error: Could not get direct link. Status {dl_response.status}. Response: {error_text_snippet[:200]}"
+                f"Send.cm file error: Could not get direct link. Status {dl_response.status}. Response: {error_text_snippet[:200]}",
             )
 
     async def _get_file_link_for_folder(self, file_id: str) -> str | None:
@@ -209,11 +217,13 @@ class SendCmResolver(BaseResolver):
 
             try:
                 subfolder_html_content = await self._cf_bypass_helper(
-                    subfolder_full_url
+                    subfolder_full_url,
                 )
                 new_path = os.path.join(current_path, folder_name)
                 await self._process_sendcm_folder_page(
-                    subfolder_html_content, new_path, folder_details_obj
+                    subfolder_html_content,
+                    new_path,
+                    folder_details_obj,
                 )
             except Exception:
                 # Skip subfolder if CF bypass or processing fails
@@ -250,7 +260,7 @@ class SendCmResolver(BaseResolver):
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve Send.cm URL (file or folder)"""
         parsed_url = urlparse(
-            url.split("::")[0]
+            url.split("::")[0],
         )  # Use URL without password for path checks
 
         # Handle direct file links (e.g. /d/xxxx or /xxxx if no /s/ or /d/)
@@ -284,14 +294,16 @@ class SendCmResolver(BaseResolver):
             try:
                 # Main folder page requires CF bypass
                 main_folder_html = await self._cf_bypass_helper(
-                    url.split("::")[0]
+                    url.split("::")[0],
                 )  # Use URL without password
                 await self._process_sendcm_folder_page(
-                    main_folder_html, folder_details.title, folder_details
+                    main_folder_html,
+                    folder_details.title,
+                    folder_details,
                 )
             except Exception as e:
                 raise ExtractionFailedException(
-                    f"Send.cm: Failed to process folder '{url}'. Error: {e!s}"
+                    f"Send.cm: Failed to process folder '{url}'. Error: {e!s}",
                 )
 
             if not folder_details.contents:
@@ -299,7 +311,7 @@ class SendCmResolver(BaseResolver):
                 # For now, return empty FolderResult if title was set.
                 if not folder_details.title:  # Should have a title by now
                     raise ExtractionFailedException(
-                        f"Send.cm: No files found in folder '{url}' and no title derived."
+                        f"Send.cm: No files found in folder '{url}' and no title derived.",
                     )
 
             # If folder has only one file, and root title matches file name, return as LinkResult

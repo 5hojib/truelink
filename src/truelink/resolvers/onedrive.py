@@ -32,14 +32,14 @@ class OneDriveResolver(BaseResolver):
             folder_id_list = link_data.get("resid")
             if not folder_id_list:
                 raise ExtractionFailedException(
-                    "OneDrive error: 'resid' not found in URL query parameters."
+                    "OneDrive error: 'resid' not found in URL query parameters.",
                 )
             folder_id = folder_id_list[0]
 
             authkey_list = link_data.get("authkey")
             if not authkey_list:
                 raise ExtractionFailedException(
-                    "OneDrive error: 'authkey' not found in URL query parameters."
+                    "OneDrive error: 'authkey' not found in URL query parameters.",
                 )
             authkey = authkey_list[0]
 
@@ -58,7 +58,8 @@ class OneDriveResolver(BaseResolver):
 
             try:
                 async with await self._get(
-                    api_url, headers=api_headers
+                    api_url,
+                    headers=api_headers,
                 ) as api_response:
                     if api_response.status == 200:
                         json_resp = await api_response.json()
@@ -92,7 +93,9 @@ class OneDriveResolver(BaseResolver):
                             "Content-Type": f"multipart/form-data; boundary={boundary}",
                         }
                         async with await self._post(
-                            api_url, data=custom_body, headers=override_headers
+                            api_url,
+                            data=custom_body,
+                            headers=override_headers,
                         ) as post_api_response:
                             if post_api_response.status != 200:
                                 error_text = await post_api_response.text()
@@ -103,11 +106,12 @@ class OneDriveResolver(BaseResolver):
 
             except Exception as e_api:
                 if isinstance(
-                    e_api, ExtractionFailedException
+                    e_api,
+                    ExtractionFailedException,
                 ):  # re-raise if already specific
                     raise
                 raise ExtractionFailedException(
-                    f"OneDrive API request failed: {e_api!s}"
+                    f"OneDrive API request failed: {e_api!s}",
                 ) from e_api
 
             if "@content.downloadUrl" not in json_resp:
@@ -127,7 +131,7 @@ class OneDriveResolver(BaseResolver):
             # If details are not in API response, _fetch_file_details will try.
             if not filename or size is None:
                 details_filename, details_size = await self._fetch_file_details(
-                    direct_link
+                    direct_link,
                 )
                 if details_filename and not filename:
                     filename = details_filename

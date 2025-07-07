@@ -31,7 +31,9 @@ class MediaFireResolver(BaseResolver):
         return await self._resolve_file(url, _password)
 
     async def _repair_download(
-        self, repair_url: str, original_password: str
+        self,
+        repair_url: str,
+        original_password: str,
     ) -> LinkResult | FolderResult:
         """Helper to handle MediaFire's repair/continue links."""
         # The repair_url might already contain //, so ensure it's a full URL
@@ -65,40 +67,42 @@ class MediaFireResolver(BaseResolver):
             error_elements = html.xpath('//p[@class="notranslate"]/text()')
             if error_elements:
                 raise ExtractionFailedException(
-                    f"MediaFire error: {error_elements[0]}"
+                    f"MediaFire error: {error_elements[0]}",
                 )
 
             if html.xpath("//div[@class='passwordPrompt']"):
                 if not password:
                     raise ExtractionFailedException(
-                        PASSWORD_ERROR_MESSAGE.format(normalized_url)
+                        PASSWORD_ERROR_MESSAGE.format(normalized_url),
                     )
 
                 async with await self._post(
-                    normalized_url, data={"downloadp": password}
+                    normalized_url,
+                    data={"downloadp": password},
                 ) as pw_response:
                     html_text = await pw_response.text()
                 html = fromstring(html_text)
 
                 if html.xpath(
-                    "//div[@class='passwordPrompt']"
+                    "//div[@class='passwordPrompt']",
                 ):  # Password was wrong
                     raise ExtractionFailedException(
-                        "MediaFire error: Wrong password."
+                        "MediaFire error: Wrong password.",
                     )
 
             final_link_elements = html.xpath(
-                '//a[@aria-label="Download file"]/@href'
+                '//a[@aria-label="Download file"]/@href',
             )
             if not final_link_elements:
                 repair_link_elements = html.xpath("//a[@class='retry']/@href")
                 if repair_link_elements:
                     # The repair_link_elements[0] might be a relative path or start with //
                     return await self._repair_download(
-                        repair_link_elements[0], password
+                        repair_link_elements[0],
+                        password,
                     )
                 raise ExtractionFailedException(
-                    "No download or repair link found on MediaFire page."
+                    "No download or repair link found on MediaFire page.",
                 )
 
             final_link = final_link_elements[0]
@@ -108,7 +112,8 @@ class MediaFireResolver(BaseResolver):
             # If the link obtained is another mediafire page, recurse.
             # This handles cases where the first link is not the final download link.
             if "mediafire.com" in urlparse(final_link).hostname and not re.match(
-                r"https?:\/\/download\d+\.mediafire\.com", final_link
+                r"https?:\/\/download\d+\.mediafire\.com",
+                final_link,
             ):
                 return await self._resolve_file(final_link, password)
 
@@ -119,11 +124,13 @@ class MediaFireResolver(BaseResolver):
             if isinstance(e, ExtractionFailedException | InvalidURLException):
                 raise
             raise ExtractionFailedException(
-                f"Failed to resolve MediaFire file '{url}': {e!s}"
+                f"Failed to resolve MediaFire file '{url}': {e!s}",
             ) from e
 
     async def _fetch_folder_content_page(
-        self, folder_key: str, content_type: str = "files"
+        self,
+        folder_key: str,
+        content_type: str = "files",
     ):
         """Helper to fetch folder content (files or subfolders) via API."""
         api_url = "https://www.mediafire.com/api/1.5/folder/get_content.php"
@@ -135,14 +142,14 @@ class MediaFireResolver(BaseResolver):
         async with await self._get(api_url, params=params) as response:
             if response.status != 200:
                 raise ExtractionFailedException(
-                    f"Failed to get folder content API ({content_type}): {response.status}"
+                    f"Failed to get folder content API ({content_type}): {response.status}",
                 )
             json_data = await response.json()
 
         res_api = json_data.get("response", {})
         if "message" in res_api and res_api.get("result", "").lower() == "error":
             raise ExtractionFailedException(
-                f"MediaFire API error for folder content ({content_type}): {res_api['message']}"
+                f"MediaFire API error for folder content ({content_type}): {res_api['message']}",
             )
         return res_api.get("folder_content", {})
 
@@ -155,7 +162,7 @@ class MediaFireResolver(BaseResolver):
             folder_keys_list = folder_key_part.split(",")
             if not folder_keys_list:
                 raise InvalidURLException(
-                    "Could not parse folder key from MediaFire URL."
+                    "Could not parse folder key from MediaFire URL.",
                 )
 
             # For simplicity, we'll primarily use the first key for top-level info,
@@ -179,7 +186,7 @@ class MediaFireResolver(BaseResolver):
             ) as response:
                 if response.status != 200:
                     raise ExtractionFailedException(
-                        f"Failed to get folder info: {response.status}"
+                        f"Failed to get folder info: {response.status}",
                     )
                 json_data = await response.json()
 
@@ -191,31 +198,35 @@ class MediaFireResolver(BaseResolver):
                 # Try folder_infos for multiple keys case, though we only used one key above
                 if api_response.get("folder_infos"):
                     folder_title = api_response["folder_infos"][0].get(
-                        "name", "MediaFire Folder"
+                        "name",
+                        "MediaFire Folder",
                     )
                 elif "message" in api_response:
                     raise ExtractionFailedException(
-                        f"MediaFire API error for folder info: {api_response['message']}"
+                        f"MediaFire API error for folder info: {api_response['message']}",
                     )
                 else:
                     raise ExtractionFailedException(
-                        "MediaFire API error: Could not retrieve folder_info."
+                        "MediaFire API error: Could not retrieve folder_info.",
                     )
             else:
                 folder_title = api_response["folder_info"].get(
-                    "name", "MediaFire Folder"
+                    "name",
+                    "MediaFire Folder",
                 )
 
             all_files: list[FileItem] = []
             total_size = 0
 
             async def process_folder_key_contents(
-                current_folder_key: str, current_path: str
+                current_folder_key: str,
+                current_path: str,
             ):
                 nonlocal total_size  # To modify total_size from outer scope
                 # Get files in the current folder
                 files_content = await self._fetch_folder_content_page(
-                    current_folder_key, "files"
+                    current_folder_key,
+                    "files",
                 )
                 for file_info in files_content.get("files", []):
                     if "normal_download" not in file_info.get("links", {}):
@@ -228,7 +239,8 @@ class MediaFireResolver(BaseResolver):
                     # Assuming folder password applies to all, or files are public if folder is accessed.
                     try:
                         link_result = await self._resolve_file(
-                            file_url_page, password
+                            file_url_page,
+                            password,
                         )
                         file_item = FileItem(
                             filename=file_info.get("filename", "unknown_file"),
@@ -245,7 +257,8 @@ class MediaFireResolver(BaseResolver):
 
                 # Get subfolders and recurse
                 subfolders_content = await self._fetch_folder_content_page(
-                    current_folder_key, "folders"
+                    current_folder_key,
+                    "folders",
                 )
                 for subfolder_info in subfolders_content.get("folders", []):
                     subfolder_key = subfolder_info.get("folderkey")
@@ -292,16 +305,18 @@ class MediaFireResolver(BaseResolver):
 
             if not all_files:
                 raise ExtractionFailedException(
-                    f"No downloadable files found in MediaFire folder '{url}'."
+                    f"No downloadable files found in MediaFire folder '{url}'.",
                 )
 
             return FolderResult(
-                title=folder_title, contents=all_files, total_size=total_size
+                title=folder_title,
+                contents=all_files,
+                total_size=total_size,
             )
 
         except Exception as e:
             if isinstance(e, ExtractionFailedException | InvalidURLException):
                 raise
             raise ExtractionFailedException(
-                f"Failed to resolve MediaFire folder '{url}': {e!s}"
+                f"Failed to resolve MediaFire folder '{url}': {e!s}",
             ) from e

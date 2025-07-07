@@ -22,7 +22,7 @@ class StreamHubResolver(BaseResolver):
 
             if not path_segments:
                 raise InvalidURLException(
-                    "StreamHub: Invalid URL, no path segments found."
+                    "StreamHub: Invalid URL, no path segments found.",
                 )
 
             # Assume file code is the last part of the path
@@ -44,24 +44,24 @@ class StreamHubResolver(BaseResolver):
             if not form_inputs:
                 # Fallback: Try a more generic form search if 'F1' changes
                 form_inputs = html.xpath(
-                    '//form[contains(@action, "/d/")]//input | //form[button/@type="submit"]//input'
+                    '//form[contains(@action, "/d/")]//input | //form[button/@type="submit"]//input',
                 )
                 if not form_inputs:
                     # Check for error messages if form not found
                     error_div = html.xpath(
-                        '//div[contains(@class, "alert-danger")]/text()'
+                        '//div[contains(@class, "alert-danger")]/text()',
                     )  # More generic error check
                     if error_div:  # Get all text from error div
                         error_message = "".join(error_div).strip()
                         raise ExtractionFailedException(
-                            f"StreamHub error (page): {error_message}"
+                            f"StreamHub error (page): {error_message}",
                         )
                     if "File not found" in page_html_text:
                         raise ExtractionFailedException(
-                            "StreamHub error: File not found."
+                            "StreamHub error: File not found.",
                         )
                     raise ExtractionFailedException(
-                        "StreamHub error: Download form inputs not found on page."
+                        "StreamHub error: Download form inputs not found on page.",
                     )
 
             post_data = {}
@@ -79,7 +79,9 @@ class StreamHubResolver(BaseResolver):
 
             # POST the form data to the same download_page_url
             async with await self._post(
-                download_page_url, data=post_data, headers=post_headers
+                download_page_url,
+                data=post_data,
+                headers=post_headers,
             ) as post_response:
                 post_response_text = await post_response.text()
 
@@ -88,20 +90,20 @@ class StreamHubResolver(BaseResolver):
             # Extract direct link
             # Original XPath: //a[@class="btn btn-primary btn-go downloadbtn"]/@href
             direct_link_elements = post_html.xpath(
-                '//a[contains(@class,"downloadbtn")]/@href'
+                '//a[contains(@class,"downloadbtn")]/@href',
             )
             if not direct_link_elements:
                 # Check for error messages after POST
                 error_div_post = post_html.xpath(
-                    '//div[contains(@class, "alert-danger")]/text()'
+                    '//div[contains(@class, "alert-danger")]/text()',
                 )
                 if error_div_post:
                     error_message_post = "".join(error_div_post).strip()
                     raise ExtractionFailedException(
-                        f"StreamHub error (after POST): {error_message_post}"
+                        f"StreamHub error (after POST): {error_message_post}",
                     )
                 raise ExtractionFailedException(
-                    "StreamHub error: Direct download button/link not found after POST."
+                    "StreamHub error: Direct download button/link not found after POST.",
                 )
 
             direct_link = direct_link_elements[0]
@@ -109,11 +111,13 @@ class StreamHubResolver(BaseResolver):
             # Ensure link is absolute
             if not direct_link.startswith("http"):
                 direct_link = urljoin(
-                    download_page_url, direct_link
+                    download_page_url,
+                    direct_link,
                 )  # Use download_page_url as base
 
             filename, size = await self._fetch_file_details(
-                direct_link, custom_headers={"Referer": download_page_url}
+                direct_link,
+                custom_headers={"Referer": download_page_url},
             )
             return LinkResult(url=direct_link, filename=filename, size=size)
 

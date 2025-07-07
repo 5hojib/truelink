@@ -17,7 +17,7 @@ class WeTransferResolver(BaseResolver):
             # Follow initial redirects (e.g., from we.tl shortlinks)
             async with await self._get(url) as initial_response:
                 canonical_url = str(
-                    initial_response.url
+                    initial_response.url,
                 )  # This is the main transfer page URL
 
             parsed_url = urlparse(canonical_url)
@@ -41,7 +41,7 @@ class WeTransferResolver(BaseResolver):
                 # The transfer ID is what's used in the API path. The security hash is in the JSON body.
                 if not path_segments or path_segments[0] != "downloads":
                     raise InvalidURLException(
-                        f"Invalid WeTransfer URL format. Expected '/downloads/...' path: {canonical_url}"
+                        f"Invalid WeTransfer URL format. Expected '/downloads/...' path: {canonical_url}",
                     )
 
                 if (
@@ -64,11 +64,11 @@ class WeTransferResolver(BaseResolver):
                     # If canonical_url itself is /downloads/transfer_id, it's problematic.
                     # For now, assume the URL must contain the hash part.
                     raise InvalidURLException(
-                        f"WeTransfer URL does not seem to contain a security hash: {canonical_url}"
+                        f"WeTransfer URL does not seem to contain a security hash: {canonical_url}",
                     )
                 else:
                     raise InvalidURLException(
-                        f"Could not parse transfer_id and security_hash from WeTransfer URL: {canonical_url}"
+                        f"Could not parse transfer_id and security_hash from WeTransfer URL: {canonical_url}",
                     )
 
             api_url = (
@@ -89,13 +89,15 @@ class WeTransferResolver(BaseResolver):
             }
 
             async with await self._post(
-                api_url, json=json_data, headers=headers
+                api_url,
+                json=json_data,
+                headers=headers,
             ) as api_response:
                 if api_response.status != 200:
                     error_text = await api_response.text()
                     try:  # Try to parse JSON error from WeTransfer
                         json_err_data = await api_response.json(
-                            content_type=None
+                            content_type=None,
                         )  # Allow any content type for error
                         if "message" in json_err_data:
                             error_text = json_err_data["message"]
@@ -112,7 +114,7 @@ class WeTransferResolver(BaseResolver):
                 except Exception as e_json:
                     err_txt = await api_response.text()
                     raise ExtractionFailedException(
-                        f"WeTransfer API error: Failed to parse JSON. {e_json}. Response: {err_txt[:200]}"
+                        f"WeTransfer API error: Failed to parse JSON. {e_json}. Response: {err_txt[:200]}",
                     )
 
             if "direct_link" in json_resp_data:
@@ -120,34 +122,36 @@ class WeTransferResolver(BaseResolver):
                 # WeTransfer direct links are usually pre-signed and have filename in Content-Disposition.
                 # The API response might also contain filename and size.
                 filename = json_resp_data.get("display_name") or json_resp_data.get(
-                    "name"
+                    "name",
                 )
                 size_api = json_resp_data.get("size")  # Typically in bytes
 
                 # Fetch details from the link to confirm/get more accurate info
                 header_filename, header_size = await self._fetch_file_details(
-                    direct_link
+                    direct_link,
                 )
 
                 final_filename = header_filename if header_filename else filename
                 final_size = header_size if header_size is not None else size_api
 
                 return LinkResult(
-                    url=direct_link, filename=final_filename, size=final_size
+                    url=direct_link,
+                    filename=final_filename,
+                    size=final_size,
                 )
 
             # Handle other API responses (errors, etc.)
             if "message" in json_resp_data:
                 raise ExtractionFailedException(
-                    f"WeTransfer API error: {json_resp_data['message']}"
+                    f"WeTransfer API error: {json_resp_data['message']}",
                 )
             if "error" in json_resp_data:
                 raise ExtractionFailedException(
-                    f"WeTransfer API error: {json_resp_data['error']}"
+                    f"WeTransfer API error: {json_resp_data['error']}",
                 )
 
             raise ExtractionFailedException(
-                "WeTransfer error: 'direct_link' not found in API response and no specific error message."
+                "WeTransfer error: 'direct_link' not found in API response and no specific error message.",
             )
 
         except Exception as e:

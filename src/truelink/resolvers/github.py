@@ -30,7 +30,7 @@ class GitHubResolver(BaseResolver):
                 # Consider if only "releases/download" paths are supported.
                 if not re.search(r"github\.com.*/releases/", url):
                     raise InvalidURLException(
-                        f"URL '{url}' does not appear to be a GitHub Releases link."
+                        f"URL '{url}' does not appear to be a GitHub Releases link.",
                     )
 
             # For GitHub release assets, a GET request with allow_redirects=True
@@ -48,7 +48,8 @@ class GitHubResolver(BaseResolver):
 
             try:
                 async with await self._get(
-                    url, allow_redirects=True
+                    url,
+                    allow_redirects=True,
                 ) as response:  # Try HEAD first
                     # response.url will be the URL after all redirects
                     final_url_after_redirects = str(response.url)
@@ -58,7 +59,8 @@ class GitHubResolver(BaseResolver):
                     content_disposition = response.headers.get("Content-Disposition")
                     if content_disposition:
                         match_fn = re.search(
-                            r"filename=[\"']?([^\"']+)[\"']?", content_disposition
+                            r"filename=[\"']?([^\"']+)[\"']?",
+                            content_disposition,
                         )
                         if match_fn:
                             temp_filename = match_fn.group(1)
@@ -104,13 +106,13 @@ class GitHubResolver(BaseResolver):
 
             if not final_url_after_redirects:
                 raise ExtractionFailedException(
-                    f"GitHub: Unable to extract the final asset link from '{url}'."
+                    f"GitHub: Unable to extract the final asset link from '{url}'.",
                 )
 
             # Now that we have the final_url_after_redirects, fetch details if not already fetched
             if temp_filename is None or temp_size is None:
                 filename, size = await self._fetch_file_details(
-                    final_url_after_redirects
+                    final_url_after_redirects,
                 )
             else:
                 filename, size = temp_filename, temp_size
@@ -126,7 +128,9 @@ class GitHubResolver(BaseResolver):
                     pass  # Ignore if filename derivation fails
 
             return LinkResult(
-                url=final_url_after_redirects, filename=filename, size=size
+                url=final_url_after_redirects,
+                filename=filename,
+                size=size,
             )
 
         except Exception as e:

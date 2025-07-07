@@ -73,14 +73,15 @@ class TeraboxResolver(BaseResolver):
                 except Exception as json_error:
                     text_snippet = await response.text()
                     raise ExtractionFailedException(
-                        f"Terabox API error: Failed to parse JSON response. {json_error}. Response: {text_snippet[:200]}"
+                        f"Terabox API error: Failed to parse JSON response. {json_error}. Response: {text_snippet[:200]}",
                     )
 
             if "✅ Status" not in json_response or not json_response.get(
-                "📜 Extracted Info"
+                "📜 Extracted Info",
             ):
                 error_message = json_response.get(
-                    "message", "File not found or API failed to extract info."
+                    "message",
+                    "File not found or API failed to extract info.",
                 )
                 if "error" in json_response:  # Some APIs return an 'error' field
                     error_message = json_response["error"]
@@ -90,7 +91,7 @@ class TeraboxResolver(BaseResolver):
 
             if not isinstance(extracted_info, list) or not extracted_info:
                 raise ExtractionFailedException(
-                    "Terabox API error: '📜 Extracted Info' is not a valid list or is empty."
+                    "Terabox API error: '📜 Extracted Info' is not a valid list or is empty.",
                 )
 
             # If only one file in the extracted info, return as LinkResult
@@ -102,7 +103,7 @@ class TeraboxResolver(BaseResolver):
 
                 if not direct_link:
                     raise ExtractionFailedException(
-                        "Terabox API error: Missing download link for single file."
+                        "Terabox API error: Missing download link for single file.",
                     )
 
                 size_bytes = self._speed_string_to_bytes(size_str)
@@ -110,7 +111,7 @@ class TeraboxResolver(BaseResolver):
                 # Fetch details from the direct link to confirm/get more accurate filename/size if possible
                 # Filename from API might be better, but size from HEAD request is more reliable.
                 header_filename, header_size = await self._fetch_file_details(
-                    direct_link
+                    direct_link,
                 )
 
                 return LinkResult(
@@ -123,7 +124,8 @@ class TeraboxResolver(BaseResolver):
             folder_contents: list[FileItem] = []
             total_size_bytes = 0
             folder_title = extracted_info[0].get(
-                "📂 Title", "Terabox Folder"
+                "📂 Title",
+                "Terabox Folder",
             )  # Use first item's title for folder, or a generic one
 
             for item_data in extracted_info:
@@ -154,7 +156,7 @@ class TeraboxResolver(BaseResolver):
 
             if not folder_contents:
                 raise ExtractionFailedException(
-                    "Terabox: No valid files found in folder data from API."
+                    "Terabox: No valid files found in folder data from API.",
                 )
 
             return FolderResult(

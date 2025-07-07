@@ -22,7 +22,7 @@ class ShrdskResolver(BaseResolver):
 
             if not short_id:
                 raise InvalidURLException(
-                    f"Could not extract short ID from Shrdsk.me URL: {url}"
+                    f"Could not extract short ID from Shrdsk.me URL: {url}",
                 )
 
             # Step 1: Call the cloud function API
@@ -40,7 +40,7 @@ class ShrdskResolver(BaseResolver):
                 except Exception as e_json:
                     err_txt = await api_res1.text()
                     raise ExtractionFailedException(
-                        f"Shrdsk API1 error: Failed to parse JSON. {e_json}. Response: {err_txt[:200]}"
+                        f"Shrdsk API1 error: Failed to parse JSON. {e_json}. Response: {err_txt[:200]}",
                     )
 
             if "download_data" not in json_res1 or not json_res1["download_data"]:
@@ -58,7 +58,8 @@ class ShrdskResolver(BaseResolver):
             download_page_url = f"https://shrdsk.me/download/{download_data_param}"
 
             async with await self._get(
-                download_page_url, allow_redirects=False
+                download_page_url,
+                allow_redirects=False,
             ) as download_res:
                 # We expect a redirect (3xx status) with a 'Location' header
                 if not (
@@ -72,7 +73,7 @@ class ShrdskResolver(BaseResolver):
                         or "link has expired" in page_text
                     ):
                         raise ExtractionFailedException(
-                            "Shrdsk error: File not found or link expired on download page."
+                            "Shrdsk error: File not found or link expired on download page.",
                         )
                     raise ExtractionFailedException(
                         f"Shrdsk error: Expected redirect from {download_page_url} but got status {download_res.status}. "
@@ -82,7 +83,8 @@ class ShrdskResolver(BaseResolver):
                 direct_link = download_res.headers["Location"]
 
             filename, size = await self._fetch_file_details(
-                direct_link, custom_headers={"Referer": download_page_url}
+                direct_link,
+                custom_headers={"Referer": download_page_url},
             )
 
             return LinkResult(url=direct_link, filename=filename, size=size)

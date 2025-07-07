@@ -29,7 +29,7 @@ class BerkasDriveResolver(BaseResolver):
             # This can easily break if the page structure or script content changes.
 
             script_elements = html.xpath(
-                "//script/text()"
+                "//script/text()",
             )  # Get text content of all script tags
             b64_encoded_link = None
 
@@ -74,7 +74,8 @@ class BerkasDriveResolver(BaseResolver):
                     try:
                         # Attempt to decode. If it decodes to something URL-like, use it.
                         decoded_check = base64.b64decode(b64_candidate).decode(
-                            "utf-8", errors="ignore"
+                            "utf-8",
+                            errors="ignore",
                         )
                         if (
                             "http://" in decoded_check
@@ -96,7 +97,7 @@ class BerkasDriveResolver(BaseResolver):
                     or "has been deleted" in page_html_text
                 ):
                     raise ExtractionFailedException(
-                        "BerkasDrive error: File not found or has been deleted."
+                        "BerkasDrive error: File not found or has been deleted.",
                     )
                 raise ExtractionFailedException(
                     "BerkasDrive error: Could not find or extract the base64 encoded link from any script tag.",
@@ -112,11 +113,13 @@ class BerkasDriveResolver(BaseResolver):
             # Ensure the link is absolute if it's a path
             if not direct_link.startswith("http"):
                 direct_link = urljoin(
-                    url, direct_link
+                    url,
+                    direct_link,
                 )  # Use original page URL as base
 
             filename, size = await self._fetch_file_details(
-                direct_link, custom_headers={"Referer": url}
+                direct_link,
+                custom_headers={"Referer": url},
             )
 
             return LinkResult(url=direct_link, filename=filename, size=size)

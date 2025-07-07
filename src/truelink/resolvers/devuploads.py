@@ -20,7 +20,7 @@ class DevUploadsResolver(BaseResolver):
 
             if not (form_inputs := html.xpath("//input[@name]")):
                 raise ExtractionFailedException(
-                    "Unable to find link data on initial page"
+                    "Unable to find link data on initial page",
                 )
 
             data = {i.get("name"): i.get("value") for i in form_inputs}
@@ -31,14 +31,15 @@ class DevUploadsResolver(BaseResolver):
             # For now, I will replicate this behavior.
             # If gujjukhabar.in is not essential, this part might need adjustment.
             async with await self._post(
-                "https://gujjukhabar.in/", data=data
+                "https://gujjukhabar.in/",
+                data=data,
             ) as response_gujju:
                 response_gujju_text = await response_gujju.text()
 
             html_gujju = fromstring(response_gujju_text)
             if not (form_inputs_gujju := html_gujju.xpath("//input[@name]")):
                 raise ExtractionFailedException(
-                    "Unable to find link data on gujjukhabar.in"
+                    "Unable to find link data on gujjukhabar.in",
                 )
 
             data_gujju = {i.get("name"): i.get("value") for i in form_inputs_gujju}
@@ -49,7 +50,8 @@ class DevUploadsResolver(BaseResolver):
                 "Referer": "https://gujjukhabar.in/",
             }
             async with await self._get(
-                "https://du2.devuploads.com/dlhash.php", headers=headers_du2
+                "https://du2.devuploads.com/dlhash.php",
+                headers=headers_du2,
             ) as resp_ipp:
                 ipp_text = await resp_ipp.text()
                 if not ipp_text:
@@ -58,7 +60,7 @@ class DevUploadsResolver(BaseResolver):
 
             if not data_gujju.get("rand"):
                 raise ExtractionFailedException(
-                    "Unable to find rand value in form data"
+                    "Unable to find rand value in form data",
                 )
 
             # Fetching xd value
@@ -79,11 +81,11 @@ class DevUploadsResolver(BaseResolver):
             html_final = fromstring(final_response_text)
             if not (
                 direct_link_elements := html_final.xpath(
-                    "//input[@name='orilink']/@value"
+                    "//input[@name='orilink']/@value",
                 )
             ):
                 raise ExtractionFailedException(
-                    "Unable to find Direct Link in final page"
+                    "Unable to find Direct Link in final page",
                 )
 
             direct_link = direct_link_elements[0]

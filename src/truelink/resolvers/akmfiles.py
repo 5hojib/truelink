@@ -24,7 +24,7 @@ class AkmFilesResolver(BaseResolver):
 
             if not file_id:
                 raise InvalidURLException(
-                    f"Could not extract file ID from AkmFiles URL: {url}"
+                    f"Could not extract file ID from AkmFiles URL: {url}",
                 )
 
             post_data = {"op": "download2", "id": file_id}
@@ -39,17 +39,17 @@ class AkmFilesResolver(BaseResolver):
 
             # Original XPath: //a[contains(@class,'btn btn-dow')]/@href
             direct_link_elements = html.xpath(
-                "//a[contains(@class,'btn-dow') or contains(@class,'btn-download')]/@href"
+                "//a[contains(@class,'btn-dow') or contains(@class,'btn-download')]/@href",
             )
 
             if not direct_link_elements:
                 # Check for common error messages if link not found
                 error_msg = html.xpath(
-                    "//div[contains(@class,'alert-danger')]/text()"
+                    "//div[contains(@class,'alert-danger')]/text()",
                 )
                 if error_msg:
                     raise ExtractionFailedException(
-                        f"AkmFiles error: {error_msg[0].strip()}"
+                        f"AkmFiles error: {error_msg[0].strip()}",
                     )
 
                 if (
@@ -57,11 +57,11 @@ class AkmFilesResolver(BaseResolver):
                     or "No such file" in response_text
                 ):
                     raise ExtractionFailedException(
-                        f"AkmFiles error: File Not Found or link expired for ID {file_id}."
+                        f"AkmFiles error: File Not Found or link expired for ID {file_id}.",
                     )
 
                 raise ExtractionFailedException(
-                    "AkmFiles error: Direct download link not found on page."
+                    "AkmFiles error: Direct download link not found on page.",
                 )
 
             direct_link = direct_link_elements[0]
@@ -79,7 +79,8 @@ class AkmFilesResolver(BaseResolver):
                 direct_link = urljoin(url, direct_link)
 
             filename, size = await self._fetch_file_details(
-                direct_link, custom_headers={"Referer": url}
+                direct_link,
+                custom_headers={"Referer": url},
             )
 
             return LinkResult(url=direct_link, filename=filename, size=size)

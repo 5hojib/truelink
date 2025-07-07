@@ -17,7 +17,7 @@ class FilePressResolver(BaseResolver):
             file_id_match = url.split("/")
             if not file_id_match or not file_id_match[-1]:
                 raise InvalidURLException(
-                    "FilePress error: Could not extract file ID from URL."
+                    "FilePress error: Could not extract file ID from URL.",
                 )
             file_id = file_id_match[-1]
 
@@ -34,7 +34,7 @@ class FilePressResolver(BaseResolver):
             api_file_id = parsed_fb_url.path.split("/")[-1]
             if not api_file_id:
                 raise ExtractionFailedException(
-                    "FilePress error: Could not determine API file ID from filebee URL."
+                    "FilePress error: Could not determine API file ID from filebee URL.",
                 )
 
             # Step 2: First API POST request
@@ -49,27 +49,30 @@ class FilePressResolver(BaseResolver):
             headers1 = {"Referer": f"{api_base_scheme}://{api_base_host}"}
 
             async with await self._post(
-                api1_url, json=json_data1, headers=headers1
+                api1_url,
+                json=json_data1,
+                headers=headers1,
             ) as api_res1:
                 if api_res1.status != 200:
                     err_txt = await api_res1.text()
                     raise ExtractionFailedException(
-                        f"FilePress API1 error ({api_res1.status}): {err_txt[:200]}"
+                        f"FilePress API1 error ({api_res1.status}): {err_txt[:200]}",
                     )
                 try:
                     json_res1 = await api_res1.json()
                 except Exception as e_json:
                     err_txt = await api_res1.text()
                     raise ExtractionFailedException(
-                        f"FilePress API1 error: Failed to parse JSON. {e_json}. Response: {err_txt[:200]}"
+                        f"FilePress API1 error: Failed to parse JSON. {e_json}. Response: {err_txt[:200]}",
                     )
 
             if "data" not in json_res1 or not json_res1["data"]:
                 status_text = json_res1.get(
-                    "statusText", "Missing 'data' in API1 response or data is empty."
+                    "statusText",
+                    "Missing 'data' in API1 response or data is empty.",
                 )
                 raise ExtractionFailedException(
-                    f"FilePress API1 error: {status_text}"
+                    f"FilePress API1 error: {status_text}",
                 )
 
             intermediate_id = json_res1["data"]
@@ -84,27 +87,30 @@ class FilePressResolver(BaseResolver):
             headers2 = {"Referer": f"{api_base_scheme}://{api_base_host}"}
 
             async with await self._post(
-                api2_url, json=json_data2, headers=headers2
+                api2_url,
+                json=json_data2,
+                headers=headers2,
             ) as api_res2:
                 if api_res2.status != 200:
                     err_txt = await api_res2.text()
                     raise ExtractionFailedException(
-                        f"FilePress API2 error ({api_res2.status}): {err_txt[:200]}"
+                        f"FilePress API2 error ({api_res2.status}): {err_txt[:200]}",
                     )
                 try:
                     json_res2 = await api_res2.json()
                 except Exception as e_json:
                     err_txt = await api_res2.text()
                     raise ExtractionFailedException(
-                        f"FilePress API2 error: Failed to parse JSON. {e_json}. Response: {err_txt[:200]}"
+                        f"FilePress API2 error: Failed to parse JSON. {e_json}. Response: {err_txt[:200]}",
                     )
 
             if "data" not in json_res2 or not json_res2["data"]:
                 status_text = json_res2.get(
-                    "statusText", "Missing 'data' in API2 response or data is empty."
+                    "statusText",
+                    "Missing 'data' in API2 response or data is empty.",
                 )
                 raise ExtractionFailedException(
-                    f"FilePress API2 error: {status_text}"
+                    f"FilePress API2 error: {status_text}",
                 )
 
             gdrive_file_id = json_res2["data"]

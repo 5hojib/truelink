@@ -42,11 +42,11 @@ class SolidFilesResolver(BaseResolver):
                 html = fromstring(page_source)
                 # Look for common download button patterns
                 dl_links = html.xpath(
-                    '//a[contains(translate(@href, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz"), "solidfilesusercontent.com")]/@href'
+                    '//a[contains(translate(@href, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz"), "solidfilesusercontent.com")]/@href',
                 )
                 if not dl_links:
                     dl_links = html.xpath(
-                        '//a[contains(@class, "download-button") or contains(@id, "download-button")]/@href'
+                        '//a[contains(@class, "download-button") or contains(@id, "download-button")]/@href',
                     )
 
                 if dl_links:
@@ -97,7 +97,7 @@ class SolidFilesResolver(BaseResolver):
 
             # Filename might be in viewerOptions too, e.g., options_data.get('nodeName') or options_data.get('name')
             filename_from_options = options_data.get("nodeName") or options_data.get(
-                "name"
+                "name",
             )
 
             filename, size = await self._fetch_file_details(direct_link)

@@ -42,39 +42,44 @@ class GoFileResolver(BaseResolver):
         # headers = { "User-Agent": user_agent, "Accept-Encoding": "gzip, deflate, br", "Accept": "*/*", "Connection": "keep-alive"}
         # BaseResolver's session sets User-Agent. Others are standard.
         async with await self._post(
-            api_url, data=None
+            api_url,
+            data=None,
         ) as response:  # POST with no body
             if response.status != 200:
                 err_text = await response.text()
                 raise ExtractionFailedException(
-                    f"GoFile: Failed to get token (status {response.status}). {err_text[:200]}"
+                    f"GoFile: Failed to get token (status {response.status}). {err_text[:200]}",
                 )
             try:
                 json_data = await response.json()
             except Exception as e_json:
                 err_txt = await response.text()
                 raise ExtractionFailedException(
-                    f"GoFile: Failed to parse token JSON. {e_json}. Response: {err_txt[:200]}"
+                    f"GoFile: Failed to parse token JSON. {e_json}. Response: {err_txt[:200]}",
                 )
 
         if json_data.get("status") != "ok" or "token" not in json_data.get(
-            "data", {}
+            "data",
+            {},
         ):
             raise ExtractionFailedException(
-                f"GoFile: Failed to get valid token. API Response: {json_data.get('message', 'Unknown error')}"
+                f"GoFile: Failed to get valid token. API Response: {json_data.get('message', 'Unknown error')}",
             )
 
         return json_data["data"]["token"]
 
     async def _fetch_gofile_links_recursive(
-        self, content_id: str, password_hash: str, current_path: str = ""
+        self,
+        content_id: str,
+        password_hash: str,
+        current_path: str = "",
     ):
         """Recursively fetches file and folder listings from GoFile."""
         if self._folder_details is None:  # Should be initialized
             self._folder_details = FolderResult(title="", contents=[], total_size=0)
         if not self._account_token:  # Should be fetched by resolve()
             raise ExtractionFailedException(
-                "GoFile: Account token not available for fetching links."
+                "GoFile: Account token not available for fetching links.",
             )
 
         # wt=4fd6sg89d7s6&cache=true -> These seem like specific parameters, keeping them.
@@ -101,49 +106,49 @@ class GoFileResolver(BaseResolver):
                             # For now, using a generic message.
                             raise ExtractionFailedException(
                                 PASSWORD_ERROR_MESSAGE_GOFILE.format(
-                                    f"ID: {content_id}"
-                                )
+                                    f"ID: {content_id}",
+                                ),
                             )
                         if "error-passwordWrong" in status_msg:
                             raise ExtractionFailedException(
-                                "GoFile error: Incorrect password provided."
+                                "GoFile error: Incorrect password provided.",
                             )
                         if "error-notFound" in status_msg:
                             raise ExtractionFailedException(
-                                f"GoFile error: Content ID '{content_id}' not found."
+                                f"GoFile error: Content ID '{content_id}' not found.",
                             )
                         if "error-notPublic" in status_msg:
                             raise ExtractionFailedException(
-                                f"GoFile error: Folder ID '{content_id}' is not public."
+                                f"GoFile error: Folder ID '{content_id}' is not public.",
                             )
 
                         err_detail = json_err.get("message", await response.text())
                         raise ExtractionFailedException(
-                            f"GoFile API (contents) error {response.status}: {status_msg} - {err_detail[:200]}"
+                            f"GoFile API (contents) error {response.status}: {status_msg} - {err_detail[:200]}",
                         )
                     except Exception:  # If error response is not JSON
                         err_text = await response.text()
                         raise ExtractionFailedException(
-                            f"GoFile API (contents) error {response.status}: {err_text[:200]}"
+                            f"GoFile API (contents) error {response.status}: {err_text[:200]}",
                         )
                 json_data = await response.json()
         except Exception as e:
             if isinstance(e, ExtractionFailedException):
                 raise
             raise ExtractionFailedException(
-                f"GoFile API (contents) request for ID '{content_id}' failed: {e!s}"
+                f"GoFile API (contents) request for ID '{content_id}' failed: {e!s}",
             ) from e
 
         if json_data.get("status") != "ok":
             # This should ideally be caught by status code check above, but as a fallback.
             raise ExtractionFailedException(
-                f"GoFile API (contents) returned non-ok status: {json_data.get('status', 'Unknown status')}"
+                f"GoFile API (contents) returned non-ok status: {json_data.get('status', 'Unknown status')}",
             )
 
         data_node = json_data.get("data")
         if not data_node:
             raise ExtractionFailedException(
-                "GoFile API (contents) error: 'data' node missing in response."
+                "GoFile API (contents) error: 'data' node missing in response.",
             )
 
         if not self._folder_details.title:  # Set root folder title
@@ -162,7 +167,8 @@ class GoFileResolver(BaseResolver):
             child_name = child_content.get("name", child_id)
             if child_content.get("type") == "folder":
                 if not child_content.get(
-                    "public", True
+                    "public",
+                    True,
                 ):  # Skip non-public subfolders unless behavior changes
                     continue
                 new_path_segment = child_name
@@ -172,7 +178,9 @@ class GoFileResolver(BaseResolver):
                     else new_path_segment
                 )
                 await self._fetch_gofile_links_recursive(
-                    child_id, password_hash, full_new_path
+                    child_id,
+                    password_hash,
+                    full_new_path,
                 )
             else:  # It's a file
                 file_link = child_content.get("link")
@@ -183,7 +191,8 @@ class GoFileResolver(BaseResolver):
                 if "size" in child_content:
                     size_val = child_content["size"]
                     if isinstance(
-                        size_val, int | float
+                        size_val,
+                        int | float,
                     ):  # Gofile API usually provides size in bytes
                         size = int(size_val)
 
@@ -201,7 +210,9 @@ class GoFileResolver(BaseResolver):
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve GoFile.io URL"""
         self._folder_details = FolderResult(
-            title="", contents=[], total_size=0
+            title="",
+            contents=[],
+            total_size=0,
         )  # Reset
         self._account_token = None  # Reset
 
@@ -220,7 +231,7 @@ class GoFileResolver(BaseResolver):
 
         if not content_id:
             raise InvalidURLException(
-                "GoFile error: Could not extract content ID from URL."
+                "GoFile error: Could not extract content ID from URL.",
             )
 
         # Hash password if provided
@@ -231,19 +242,21 @@ class GoFileResolver(BaseResolver):
         try:
             self._account_token = await self._get_gofile_token()
             await self._fetch_gofile_links_recursive(
-                content_id, password_hash, ""
+                content_id,
+                password_hash,
+                "",
             )  # Start with empty path
 
         except ExtractionFailedException as e:
             # Specific error message for password required, if not handled deeper
             if "passwordRequired" in str(e) and not _password:
                 raise ExtractionFailedException(
-                    PASSWORD_ERROR_MESSAGE_GOFILE.format(request_url)
+                    PASSWORD_ERROR_MESSAGE_GOFILE.format(request_url),
                 ) from e
             raise e  # Re-raise other extraction failures
         except Exception as e_outer:
             raise ExtractionFailedException(
-                f"GoFile resolution failed: {e_outer!s}"
+                f"GoFile resolution failed: {e_outer!s}",
             ) from e_outer
 
         if not self._folder_details.contents:
@@ -255,7 +268,7 @@ class GoFileResolver(BaseResolver):
                 not self._folder_details.title
             ):  # No title and no contents often means failure
                 raise ExtractionFailedException(
-                    f"GoFile: No downloadable content found for ID '{content_id}'. It might be empty, private, or password protected."
+                    f"GoFile: No downloadable content found for ID '{content_id}'. It might be empty, private, or password protected.",
                 )
             # If title exists but no content, it's an empty folder.
 

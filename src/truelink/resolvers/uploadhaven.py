@@ -30,7 +30,7 @@ class UploadHavenResolver(BaseResolver):
             form_elements = html.xpath('//form[@method="POST"]//input')
             if not form_elements:
                 raise ExtractionFailedException(
-                    "Unable to find form data for POST request"
+                    "Unable to find form data for POST request",
                 )
 
             data = {i.get("name"): i.get("value") for i in form_elements}
@@ -40,33 +40,35 @@ class UploadHavenResolver(BaseResolver):
 
             post_headers = {"Referer": url}  # Referer for the POST is the URL itself
             async with await self._post(
-                url, data=data, headers=post_headers
+                url,
+                data=data,
+                headers=post_headers,
             ) as post_response:
                 post_response_text = await post_response.text()
 
             html_post = fromstring(post_response_text)
 
             success_link_elements = html_post.xpath(
-                '//div[@class="alert alert-success mb-0"]//a'
+                '//div[@class="alert alert-success mb-0"]//a',
             )
             if not success_link_elements:
                 # Attempt to find an error message if the success link isn't there
                 error_elements = html_post.xpath(
-                    '//div[contains(@class, "alert-danger")]/text()'
+                    '//div[contains(@class, "alert-danger")]/text()',
                 )
                 if error_elements:
                     error_message = "".join(error_elements).strip()
                     raise ExtractionFailedException(
-                        f"UploadHaven error: {error_message}"
+                        f"UploadHaven error: {error_message}",
                     )
                 raise ExtractionFailedException(
-                    "Unable to find download link after POST"
+                    "Unable to find download link after POST",
                 )
 
             direct_link = success_link_elements[0].get("href")
             if not direct_link:
                 raise ExtractionFailedException(
-                    "Found link element but href is missing"
+                    "Found link element but href is missing",
                 )
 
             filename, size = await self._fetch_file_details(direct_link)
