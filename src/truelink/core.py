@@ -88,7 +88,6 @@ class TrueLinkResolver:
             "gofile.io": GoFileResolver,
             "send.cm": SendCmResolver,
             "tmpsend.com": TmpSendResolver,
-            "easyupload.io": BaseResolver,  # Placeholder, original script had easyupload.io but no function
             "streamvid.net": StreamvidResolver,
             "shrdsk.me": ShrdskResolver,
             "u.pcloud.link": PCloudResolver,  # pCloud short links
@@ -128,9 +127,7 @@ class TrueLinkResolver:
             "lbx.to": LinkBoxResolver,  # Alias
             "teltobx.net": LinkBoxResolver,  # Alias
             "telbx.net": LinkBoxResolver,  # Alias
-            "filepress.net": FilePressResolver,  # Assuming .net, original had 'filepress' in domain
-            "filepress.com": FilePressResolver,  # Common TLD
-            "filepress.org": FilePressResolver,  # Common TLD
+            "filepress": FilePressResolver,  # Assuming .net, original had 'filepress' in domain
             "wetransfer.com": WeTransferResolver,
             "we.tl": WeTransferResolver,  # Alias
             "terabox.com": TeraboxResolver,
