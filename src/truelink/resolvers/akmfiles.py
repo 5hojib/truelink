@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from urllib.parse import urlparse
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlparse
+
 from lxml.html import fromstring
 
 from truelink.exceptions import ExtractionFailedException, InvalidURLException
@@ -74,7 +74,6 @@ class AkmFilesResolver(BaseResolver):
                     f"{parsed_url.scheme}://{parsed_url.netloc}{direct_link}"
                 )
             elif not direct_link.startswith("http"):
-
                 direct_link = urljoin(url, direct_link)
 
             filename, size = await self._fetch_file_details(

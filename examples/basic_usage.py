@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 import asyncio
-from truelink.types import FolderResult, LinkResult
+
 from truelink import TrueLinkResolver
+from truelink.types import FolderResult, LinkResult
 
 
 async def main():
@@ -11,8 +12,8 @@ async def main():
     urls = [
         "https://www.lulacloud.com/d/nuNbCVcYq31-fbi-s07e14-hitched-awafim-tv-mkv",
         "https://buzzheavier.com/rnk4ut0lci9y",
-        "https://terabox.com/s/1vDkjtJWtIOcwr8swIOIBwQ", # folder
-        "https://teraboxapp.com/s/1SZjA6tA5qVS0XOT2zSeqlw", # file
+        "https://terabox.com/s/1vDkjtJWtIOcwr8swIOIBwQ",  # folder
+        "https://teraboxapp.com/s/1SZjA6tA5qVS0XOT2zSeqlw",  # file
     ]
 
     print("--- Output from resolver ---")

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from urllib.parse import urlparse, urlunparse
+
 from lxml.html import fromstring
 
 from truelink.exceptions import ExtractionFailedException, InvalidURLException

@@ -1,7 +1,6 @@
 # ruff: noqa: F405, F403
 from __future__ import annotations
 
-import asyncio
 from typing import TYPE_CHECKING
 from urllib.parse import urlparse
 

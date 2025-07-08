@@ -53,7 +53,7 @@ class TeraboxResolver(BaseResolver):
                 file_data = extracted_info[0]
                 direct_link = file_data.get("🔽 Direct Download Link")
                 filename = file_data.get("📂 Title")
-                size_str = file_data.get("📏 Size", "0")
+                file_data.get("📏 Size", "0")
 
                 if not direct_link:
                     raise ExtractionFailedException(
