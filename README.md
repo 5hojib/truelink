@@ -19,14 +19,14 @@
 - ✅ pixeldrain
 - ⬜ qiwi (later)
 - ⬜ sendcm (todo)
-- ⬜ streamtape (later)
+- ⬜ streamtape (todo)
 - ⬜ swisstransfer (later)
 - ✅ terabox
-- ⬜ tmpsend  
-- ⬜ uploadee  
-- ⬜ uploadhaven  
-- ⬜ wetransfer  
-- ⬜ yandexlink  
+- ✅ tmpsend
+- ✅ uploadee
+- ⬜ uploadhaven (different)
+- ⬜ wetransfer (later)
+- ✅ yandexlink
 
 ## Disclaimer
 

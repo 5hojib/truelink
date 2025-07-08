@@ -19,6 +19,8 @@ async def main():
         "https://www.linkbox.cloud/a/f/X2WPE4l",
         "https://mediafile.cc/d689ae178d6aa83e",
         "https://pixeldra.in/u/Z4S2Upby",
+        "https://tmpsend.com/jo83PlU1",
+        "https://www.upload.ee/files/18302589/VID-20250705-WA0001.mp4.html",
     ]
 
     print("--- Output from resolver ---")
