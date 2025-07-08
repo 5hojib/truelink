@@ -36,8 +36,6 @@ class TrueLinkResolver:
             "mediafire.com": MediaFireResolver,
             # osdn
             "osdn.net": OsdnResolver,
-            # GitHub
-            "github.com": GitHubResolver,
             # hxfile
             "hxfile.co": HxFileResolver,
             # OneDrive
@@ -115,6 +113,7 @@ class TrueLinkResolver:
             # linkbox
             "linkbox.to": LinkBoxResolver,
             "lbx.to": LinkBoxResolver,
+            "linkbox.cloud": LinkBoxResolver,
             "teltobx.net": LinkBoxResolver,
             "telbx.net": LinkBoxResolver,
             # file press

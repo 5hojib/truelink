@@ -1,40 +1,39 @@
 # truelink
 
 ## supported sites:
-- buzzheavier
-- devuploads
-- doodstream
-- 1fichier
-- filepress
-- fuckingfast
-- github
-- gofile
-- hxfile
-- krakenfiles
-- linobox
-- lulacloud
-- mediafile
-- mediafire
-- mp4upload
-- onedrive
-- osdn
-- pcloud
-- pixeldrain
-- qiwi
-- recaty
-- sendcm
-- shrdsk
-- solidfiles
-- streamhub
-- streamtape
-- streamvid
-- swisstransfer
-- terabox
-- tmpsend
-- uploadee
-- uploadhaven
-- wetransfer
-- yandexlink
+- ✅ buzzheavier
+- ⬜ devuploads (todo)
+- ❌ doodstream
+- ✅ 1fichier
+- ⬜ filepress (todo)
+- ✅ fuckingfast
+- ✅ gofile
+- ⬜️ hxfile (server maintenance)
+- ❌ krakenfiles
+- ✅ linkbox
+- ✅ lulacloud
+- ✅ mediafile (size persing left)
+- ⬜ mediafire
+- ⬜ mp4upload  
+- ⬜ onedrive  
+- ⬜ osdn  
+- ⬜ pcloud  
+- ⬜ pixeldrain  
+- ⬜ qiwi  
+- ⬜ recaty  
+- ⬜ sendcm  
+- ⬜ shrdsk  
+- ⬜ solidfiles  
+- ⬜ streamhub  
+- ⬜ streamtape  
+- ⬜ streamvid  
+- ⬜ swisstransfer  
+- ⬜ terabox  
+- ⬜ tmpsend  
+- ⬜ uploadee  
+- ⬜ uploadhaven  
+- ⬜ wetransfer  
+- ⬜ yandexlink  
 
 ## Disclaimer
 

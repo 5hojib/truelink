@@ -7,7 +7,6 @@ from .doodstream import DoodStreamResolver
 from .fichier import FichierResolver
 from .filepress import FilePressResolver
 from .fuckingfast import FuckingFastResolver
-from .github import GitHubResolver
 from .gofile import GoFileResolver
 from .hxfile import HxFileResolver
 from .krakenfiles import KrakenFilesResolver
@@ -44,7 +43,6 @@ __all__ = [
     "FichierResolver",
     "FilePressResolver",
     "FuckingFastResolver",
-    "GitHubResolver",
     "GoFileResolver",
     "HxFileResolver",
     "KrakenFilesResolver",
