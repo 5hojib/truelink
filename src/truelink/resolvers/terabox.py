@@ -8,27 +8,6 @@ from truelink.types import FileItem, FolderResult, LinkResult
 from .base import BaseResolver
 
 
-def _speed_string_to_bytes(size_str: str) -> int:
-    size_str = (size_str or "").upper().strip()
-    num_part = "".join(filter(lambda x: x.isdigit() or x == ".", size_str))
-    if not num_part:
-        return 0
-
-    num = float(num_part)
-
-    if "TB" in size_str or "TIB" in size_str:
-        return int(num * (1024**4))
-    if "GB" in size_str or "GIB" in size_str:
-        return int(num * (1024**3))
-    if "MB" in size_str or "MIB" in size_str:
-        return int(num * (1024**2))
-    if "KB" in size_str or "KIB" in size_str:
-        return int(num * 1024)
-    if "B" in size_str:
-        return int(num)
-    return int(num)
-
-
 class TeraboxResolver(BaseResolver):
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         if "/file/" in url and ("terabox.com" in url or "teraboxapp.com" in url):
@@ -81,7 +60,6 @@ class TeraboxResolver(BaseResolver):
                         "Terabox API error: Missing download link for single file.",
                     )
 
-                size_bytes = _speed_string_to_bytes(size_str)
                 header_filename, header_size = await self._fetch_file_details(
                     direct_link,
                 )
@@ -89,31 +67,30 @@ class TeraboxResolver(BaseResolver):
                 return LinkResult(
                     url=direct_link,
                     filename=header_filename if header_filename else filename,
-                    size=header_size if header_size is not None else size_bytes,
+                    size=header_size,
                 )
 
             folder_contents: list[FileItem] = []
-            total_size_bytes = 0
+            total_size = 0
             folder_title = extracted_info[0].get("📂 Title", "Terabox Folder")
 
             for item_data in extracted_info:
                 item_link = item_data.get("🔽 Direct Download Link")
-                item_filename = item_data.get("📂 Title")
-                item_size_str = item_data.get("📏 Size", "0")
-
-                if not item_link or not item_filename:
+                item_filename, item_size = await self._fetch_file_details(
+                    item_link,
+                )
+                if not item_link:
                     continue
 
-                item_size_bytes = _speed_string_to_bytes(item_size_str)
                 folder_contents.append(
                     FileItem(
                         filename=item_filename,
                         url=item_link,
-                        size=item_size_bytes if item_size_bytes > 0 else None,
+                        size=item_size,
                         path="",
                     ),
                 )
-                total_size_bytes += item_size_bytes
+                total_size += item_size
 
             if not folder_contents:
                 raise ExtractionFailedException(
@@ -123,7 +100,7 @@ class TeraboxResolver(BaseResolver):
             return FolderResult(
                 title=folder_title,
                 contents=folder_contents,
-                total_size=total_size_bytes,
+                total_size=total_size,
             )
 
         except Exception as e:

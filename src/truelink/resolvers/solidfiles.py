@@ -5,9 +5,9 @@ import re
 
 from truelink.exceptions import ExtractionFailedException
 from truelink.types import FolderResult, LinkResult  # FolderResult for type hint
-
+from lxml.html import fromstring  # Local import if only used here
 from .base import BaseResolver
-
+from urllib.parse import urljoin
 
 class SolidFilesResolver(BaseResolver):
     """Resolver for SolidFiles.com URLs"""
@@ -37,7 +37,6 @@ class SolidFilesResolver(BaseResolver):
                 # Fallback: Try to find a download button or link directly if viewerOptions isn't there
                 # This is a guess, as SolidFiles structure might vary.
                 # Example: <a href="some_download_link" class="button">Download</a>
-                from lxml.html import fromstring  # Local import if only used here
 
                 html = fromstring(page_source)
                 # Look for common download button patterns
@@ -52,7 +51,6 @@ class SolidFilesResolver(BaseResolver):
                 if dl_links:
                     direct_link = dl_links[0]
                     if not direct_link.startswith("http"):  # If relative path
-                        from urllib.parse import urljoin
 
                         direct_link = urljoin(url, direct_link)
 

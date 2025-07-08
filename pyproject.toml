@@ -100,7 +100,7 @@ required-imports = ["from __future__ import annotations"]
 
 [tool.ruff.lint.pylint]
 max-statements = 75
-max-branches = 20
+max-branches = 30
 allow-magic-value-types = ["int", "str", "bytes"]
 
 [tool.ruff.lint.mccabe]
@@ -138,5 +138,6 @@ select = [
 ignore = [
     "E501",
     "N818",
+    "B904",
     "COM812",
 ]

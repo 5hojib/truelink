@@ -3,7 +3,7 @@ from __future__ import annotations
 import json  # For attempting to parse JSON if applicable
 import re
 from urllib.parse import unquote
-
+from urllib.parse import urlparse
 from truelink.exceptions import ExtractionFailedException
 from truelink.types import FolderResult, LinkResult  # FolderResult for type hint
 

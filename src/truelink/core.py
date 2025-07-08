@@ -1,4 +1,4 @@
-# ruff: noqa: F405
+# ruff: noqa: F405, F403
 from __future__ import annotations
 
 import asyncio
@@ -177,18 +177,6 @@ class TrueLinkResolver:
         resolver_instance = self._get_resolver(url)
         async with resolver_instance:
             return await resolver_instance.resolve(url)
-
-    def resolve_sync(self, url: str) -> LinkResult | FolderResult:
-        """
-        Synchronous version of resolve()
-
-        Args:
-            url: The URL to resolve
-
-        Returns:
-            A LinkResult or FolderResult object.
-        """
-        return asyncio.run(self.resolve(url))
 
     def is_supported(self, url: str) -> bool:
         """
