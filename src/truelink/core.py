@@ -34,8 +34,6 @@ class TrueLinkResolver:
             "mediafile.cc": MediaFileResolver,
             # MediaFire
             "mediafire.com": MediaFireResolver,
-            # osdn
-            "osdn.net": OsdnResolver,
             # hxfile
             "hxfile.co": HxFileResolver,
             # OneDrive
@@ -52,13 +50,8 @@ class TrueLinkResolver:
             "streamtape.net": StreamtapeResolver,
             "streamta.pe": StreamtapeResolver,
             "streamtape.xyz": StreamtapeResolver,
-            # Recaty
-            "racaty.net": RacatyResolver,
-            "racaty.io": RacatyResolver,
-            # Dicgier
+            # 1fichier
             "1fichier.com": FichierResolver,
-            # solidfiles
-            "solidfiles.com": SolidFilesResolver,
             # Krakenfiles
             "krakenfiles.com": KrakenFilesResolver,
             # upload ee
@@ -69,17 +62,11 @@ class TrueLinkResolver:
             "send.cm": SendCmResolver,
             # tmpsend
             "tmpsend.com": TmpSendResolver,
-            # streamvid
-            "streamvid.net": StreamvidResolver,
-            # shrdsk
-            "shrdsk.me": ShrdskResolver,
             # pcloud
             "u.pcloud.link": PCloudResolver,
             "pcloud.com": PCloudResolver,
             # qiwi
             "qiwi.gg": QiwiResolver,
-            # mp4upload
-            "mp4upload.com": Mp4UploadResolver,
             # Swisstrensfer
             "swisstransfer.com": SwissTransferResolver,
             # DoodStream
@@ -107,9 +94,6 @@ class TrueLinkResolver:
             "do0od.com": DoodStreamResolver,
             "d000d.com": DoodStreamResolver,
             "vide0.net": DoodStreamResolver,
-            # Streamhub
-            "streamhub.ink": StreamHubResolver,
-            "streamhub.to": StreamHubResolver,
             # linkbox
             "linkbox.to": LinkBoxResolver,
             "lbx.to": LinkBoxResolver,

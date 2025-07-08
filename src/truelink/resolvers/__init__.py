@@ -14,19 +14,12 @@ from .linkbox import LinkBoxResolver
 from .lulacloud import LulaCloudResolver
 from .mediafile import MediaFileResolver
 from .mediafire import MediaFireResolver
-from .mp4upload import Mp4UploadResolver
 from .onedrive import OneDriveResolver
-from .osdn import OsdnResolver
 from .pcloud import PCloudResolver
 from .pixeldrain import PixelDrainResolver
 from .qiwi import QiwiResolver
-from .racaty import RacatyResolver
 from .sendcm import SendCmResolver
-from .shrdsk import ShrdskResolver
-from .solidfiles import SolidFilesResolver
-from .streamhub import StreamHubResolver
 from .streamtape import StreamtapeResolver
-from .streamvid import StreamvidResolver
 from .swisstransfer import SwissTransferResolver
 from .terabox import TeraboxResolver
 from .tmpsend import TmpSendResolver
@@ -50,19 +43,12 @@ __all__ = [
     "LulaCloudResolver",
     "MediaFileResolver",
     "MediaFireResolver",
-    "Mp4UploadResolver",
     "OneDriveResolver",
-    "OsdnResolver",
     "PCloudResolver",
     "PixelDrainResolver",
     "QiwiResolver",
-    "RacatyResolver",
     "SendCmResolver",
-    "ShrdskResolver",
-    "SolidFilesResolver",
-    "StreamHubResolver",
     "StreamtapeResolver",
-    "StreamvidResolver",
     "SwissTransferResolver",
     "TeraboxResolver",
     "TmpSendResolver",

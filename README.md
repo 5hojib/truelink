@@ -13,22 +13,15 @@
 - ✅ linkbox
 - ✅ lulacloud
 - ✅ mediafile (size persing left)
-- ⬜ mediafire
-- ⬜ mp4upload  
-- ⬜ onedrive  
-- ⬜ osdn  
-- ⬜ pcloud  
-- ⬜ pixeldrain  
-- ⬜ qiwi  
-- ⬜ recaty  
-- ⬜ sendcm  
-- ⬜ shrdsk  
-- ⬜ solidfiles  
-- ⬜ streamhub  
-- ⬜ streamtape  
-- ⬜ streamvid  
-- ⬜ swisstransfer  
-- ⬜ terabox  
+- ⬜ mediafire (todo)
+- ⬜ onedrive (later)
+- ⬜ pcloud (later check)
+- ✅ pixeldrain
+- ⬜ qiwi (later)
+- ⬜ sendcm (todo)
+- ⬜ streamtape (later)
+- ⬜ swisstransfer (later)
+- ✅ terabox
 - ⬜ tmpsend  
 - ⬜ uploadee  
 - ⬜ uploadhaven  

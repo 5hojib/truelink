@@ -18,6 +18,7 @@ async def main():
         "https://gofile.io/d/JcxE4Y",
         "https://www.linkbox.cloud/a/f/X2WPE4l",
         "https://mediafile.cc/d689ae178d6aa83e",
+        "https://pixeldra.in/u/Z4S2Upby",
     ]
 
     print("--- Output from resolver ---")
