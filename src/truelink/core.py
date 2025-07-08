@@ -108,7 +108,7 @@ class TrueLinkResolver:
             "ds2video.com": DoodStreamResolver,
             "do0od.com": DoodStreamResolver,
             "d000d.com": DoodStreamResolver,
-            "vide0.net" DoodStreamResolver,
+            "vide0.net": DoodStreamResolver,
             # Streamhub
             "streamhub.ink": StreamHubResolver,
             "streamhub.to": StreamHubResolver,
