@@ -82,13 +82,8 @@ class TrueLinkResolver:
             "qiwi.gg": QiwiResolver,
             # mp4upload
             "mp4upload.com": Mp4UploadResolver,
-            # berkasdrive
-            "berkasdrive.com": BerkasDriveResolver,
             # Swisstrensfer
             "swisstransfer.com": SwissTransferResolver,
-            # akmfiles
-            "akmfiles.com": AkmFilesResolver,
-            "akmfls.xyz": AkmFilesResolver,
             # DoodStream
             "dood.watch": DoodStreamResolver,
             "doodstream.com": DoodStreamResolver,
@@ -113,6 +108,7 @@ class TrueLinkResolver:
             "ds2video.com": DoodStreamResolver,
             "do0od.com": DoodStreamResolver,
             "d000d.com": DoodStreamResolver,
+            "vide0.net" DoodStreamResolver,
             # Streamhub
             "streamhub.ink": StreamHubResolver,
             "streamhub.to": StreamHubResolver,

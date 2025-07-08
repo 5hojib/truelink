@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-from .akmfiles import AkmFilesResolver
 from .base import BaseResolver
-from .berkasdrive import BerkasDriveResolver
 from .buzzheavier import BuzzHeavierResolver
 from .devuploads import DevUploadsResolver
 from .doodstream import DoodStreamResolver
@@ -39,9 +37,7 @@ from .wetransfer import WeTransferResolver
 from .yandexdisk import YandexDiskResolver
 
 __all__ = [
-    "AkmFilesResolver",
     "BaseResolver",
-    "BerkasDriveResolver",
     "BuzzHeavierResolver",
     "DevUploadsResolver",
     "DoodStreamResolver",

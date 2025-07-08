@@ -1,4 +1,40 @@
-# automatic-broccoli
+# truelink
+
+## supported sites:
+- buzzheavier
+- devuploads
+- doodstream
+- 1fichier
+- filepress
+- fuckingfast
+- github
+- gofile
+- hxfile
+- krakenfiles
+- linobox
+- lulacloud
+- mediafile
+- mediafire
+- mp4upload
+- onedrive
+- osdn
+- pcloud
+- pixeldrain
+- qiwi
+- recaty
+- sendcm
+- shrdsk
+- solidfiles
+- streamhub
+- streamtape
+- streamvid
+- swisstransfer
+- terabox
+- tmpsend
+- uploadee
+- uploadhaven
+- wetransfer
+- yandexlink
 
 ## Disclaimer
 
