@@ -13,7 +13,7 @@
 - ✅ linkbox
 - ✅ lulacloud
 - ✅ mediafile (size persing left)
-- ⬜ mediafire (todo)
+- ✅ mediafire
 - ⬜ onedrive (later)
 - ⬜ pcloud (later check)
 - ✅ pixeldrain
