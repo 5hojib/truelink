@@ -17,7 +17,7 @@ async def main():
         "https://1fichier.com/?te04fuktzjfv3jktkvy1",
         "https://gofile.io/d/JcxE4Y",
         "https://www.linkbox.cloud/a/f/X2WPE4l",
-        "https://mediafile.cc/d689ae178d6aa83e"
+        "https://mediafile.cc/d689ae178d6aa83e",
     ]
 
     print("--- Output from resolver ---")
