@@ -28,6 +28,8 @@ dependencies = [
     "aiohttp>=3.8.0",
     "lxml>=4.9.0",
     "validators>=0.20.0",
+    "httpx>=0.20.0", # Added httpx
+    "cloudscraper>=1.2.71", # Added cloudscraper
 ]
 
 [project.optional-dependencies]

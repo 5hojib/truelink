@@ -18,7 +18,7 @@
 - ⬜ pcloud (later check)
 - ✅ pixeldrain
 - ⬜ qiwi (later)
-- ⬜ streamtape (todo)
+- ✅ streamtape
 - ⬜ swisstransfer (later)
 - ✅ terabox
 - ✅ tmpsend
