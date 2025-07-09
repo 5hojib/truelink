@@ -58,8 +58,6 @@ class TrueLinkResolver:
             "upload.ee": UploadEeResolver,
             # Gofile
             "gofile.io": GoFileResolver,
-            # send cm
-            "send.cm": SendCmResolver,
             # tmpsend
             "tmpsend.com": TmpSendResolver,
             # pcloud
