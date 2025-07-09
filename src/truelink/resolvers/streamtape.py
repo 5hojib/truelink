@@ -17,7 +17,9 @@ class StreamtapeResolver(BaseResolver):
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve Streamtape URL"""
         try:
-            _id = url.split("/")[4] if len(url.split("/")) >= 6 else url.split("/")[-1]
+            _id = (
+                url.split("/")[4] if len(url.split("/")) >= 6 else url.split("/")[-1]
+            )
 
             async with await self._get(url, allow_redirects=True) as response:
                 html_content = await response.text()
