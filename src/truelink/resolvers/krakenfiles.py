@@ -23,7 +23,6 @@ class KrakenFilesResolver(BaseResolver):
 
             post_url_elements = html.xpath('//form[@id="dl-form"]/@action')
             if not post_url_elements:
-                # Fallback: Try to find form action by other means if ID is missing/changed
                 post_url_elements = html.xpath(
                     '//form[contains(@action, "/download/")]/@action',
                 )
@@ -33,7 +32,6 @@ class KrakenFilesResolver(BaseResolver):
                     )
 
             post_url_path = post_url_elements[0]
-            # Ensure post_url is absolute
             if post_url_path.startswith("//"):
                 post_url = f"{response.url.scheme}:{post_url_path}"
             elif post_url_path.startswith("/"):
@@ -41,16 +39,12 @@ class KrakenFilesResolver(BaseResolver):
                     f"{response.url.scheme}://{response.url.host}{post_url_path}"
                 )
             elif not post_url_path.startswith("http"):
-                post_url = urljoin(
-                    str(response.url),
-                    post_url_path,
-                )  # Use response.url as base
+                post_url = urljoin(str(response.url), post_url_path)
             else:
                 post_url = post_url_path
 
             token_elements = html.xpath('//input[@id="dl-token"]/@value')
             if not token_elements:
-                # Fallback: look for input with name 'token'
                 token_elements = html.xpath(
                     '//form[@id="dl-form"]//input[@name="token"]/@value',
                 )
@@ -62,10 +56,9 @@ class KrakenFilesResolver(BaseResolver):
             token = token_elements[0]
             post_data = {"token": token}
 
-            # Headers for POST might be important, e.g., Referer
             post_headers = {
                 "Referer": url,
-                "X-Requested-With": "XMLHttpRequest",  # Often used for such POST requests
+                "X-Requested-With": "XMLHttpRequest",
             }
             async with await self._post(
                 post_url,
@@ -74,10 +67,7 @@ class KrakenFilesResolver(BaseResolver):
             ) as post_response:
                 try:
                     json_response = await post_response.json()
-                except (
-                    Exception
-                ) as json_error:  # More specific error for JSON parsing
-                    # Check if response text contains clues if not JSON
+                except Exception as json_error:
                     text_response_snippet = await post_response.text()
                     if "captcha" in text_response_snippet.lower():
                         raise ExtractionFailedException(
@@ -92,14 +82,10 @@ class KrakenFilesResolver(BaseResolver):
                     "message",
                     "POST request did not return 'ok' status.",
                 )
-                if (
-                    "url" not in json_response
-                ):  # If status is not ok AND no url, it's likely an error
+                if "url" not in json_response:
                     raise ExtractionFailedException(
                         f"KrakenFiles error: {error_message}",
                     )
-                # If status is not 'ok' but 'url' exists, we might try to use it, but it's risky.
-                # For now, strict check on status == 'ok'.
 
             if "url" not in json_response:
                 raise ExtractionFailedException(

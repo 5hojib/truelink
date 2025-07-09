@@ -16,14 +16,9 @@ class UploadHavenResolver(BaseResolver):
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve UploadHaven URL"""
         try:
-            # Original code had a specific Referer.
             headers = {"Referer": "http://steamunlocked.net/"}
             async with await self._get(url, headers=headers) as response:
                 response_text = await response.text()
-                # Storing cookies from the response if they are needed for the POST.
-                # aiohttp handles cookies automatically within a session,
-                # but if specific cookie handling was implied, this might need review.
-                # For now, assuming session cookies are sufficient.
 
             html = fromstring(response_text)
 
@@ -35,10 +30,9 @@ class UploadHavenResolver(BaseResolver):
 
             data = {i.get("name"): i.get("value") for i in form_elements}
 
-            # Original code: sleep(15)
             await asyncio.sleep(15)
 
-            post_headers = {"Referer": url}  # Referer for the POST is the URL itself
+            post_headers = {"Referer": url}
             async with await self._post(
                 url,
                 data=data,
@@ -52,7 +46,6 @@ class UploadHavenResolver(BaseResolver):
                 '//div[@class="alert alert-success mb-0"]//a',
             )
             if not success_link_elements:
-                # Attempt to find an error message if the success link isn't there
                 error_elements = html_post.xpath(
                     '//div[contains(@class, "alert-danger")]/text()',
                 )

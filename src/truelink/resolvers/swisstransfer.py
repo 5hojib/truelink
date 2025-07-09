@@ -19,23 +19,16 @@ class SwissTransferResolver(BaseResolver):
     ) -> dict:
         """Fetches metadata for a given transfer_id."""
         api_url = f"https://www.swisstransfer.com/api/links/{transfer_id}"
-        headers = {
-            "User-Agent": self.USER_AGENT,
-        }  # BaseResolver's session already has UA
+        headers = {"User-Agent": self.USER_AGENT}
         if password_b64:
             headers["Authorization"] = password_b64
-            # Original script had: "Content-Type": "" if password else "application/json"
-            # For GET, Content-Type is usually not needed. If API requires it empty for password,
-            # aiohttp might send a default one. This should be fine.
         else:
-            headers["Content-Type"] = (
-                "application/json"  # As per original if no password
-            )
+            headers["Content-Type"] = "application/json"
 
         async with await self._get(api_url, headers=headers) as response:
             if response.status != 200:
                 err_text = await response.text()
-                try:  # Try to parse JSON error
+                try:
                     json_err = await response.json(content_type=None)
                     if "message" in json_err:
                         err_text = json_err["message"]
@@ -64,11 +57,8 @@ class SwissTransferResolver(BaseResolver):
             "User-Agent": self.USER_AGENT,
             "Content-Type": "application/json",
         }
-        # Password in body is the raw password string, not b64 encoded one for header.
         payload = {
-            "password": password_str
-            if password_str
-            else "",  # API expects string, even if empty
+            "password": password_str if password_str else "",
             "containerUUID": container_uuid,
             "fileUUID": file_uuid,
         }
@@ -80,7 +70,7 @@ class SwissTransferResolver(BaseResolver):
         ) as response:
             if response.status != 200:
                 err_text = await response.text()
-                try:  # Try to parse JSON error
+                try:
                     json_err = await response.json(content_type=None)
                     if "message" in json_err:
                         err_text = json_err["message"]
@@ -89,16 +79,12 @@ class SwissTransferResolver(BaseResolver):
                 raise ExtractionFailedException(
                     f"SwissTransfer API (token) error {response.status}: {err_text[:200]}",
                 )
-            # Token is returned as plain text, possibly quoted.
             token_text = await response.text()
-            return token_text.strip().replace('"', "")  # Remove quotes if any
+            return token_text.strip().replace('"', "")
 
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve SwissTransfer.com URL"""
 
-        # Regex from original: r"https://www\.swisstransfer\.com/d/([\w-]+)(?:\:\:(\w+))?"
-        # This matches URLs like: https://www.swisstransfer.com/d/transfer-id-123
-        # Or with password: https://www.swisstransfer.com/d/transfer-id-123::password
         match = re.match(
             r"https://www\.swisstransfer\.com/d/([\w-]+)(?:::(\S+))?",
             url,
@@ -109,9 +95,7 @@ class SwissTransferResolver(BaseResolver):
             )
 
         transfer_id, password_str = match.groups()
-        password_str = (
-            password_str or None
-        )  # Ensure it's None if not present, not empty string from regex
+        password_str = password_str or None
 
         password_b64 = None
         if password_str:
@@ -119,7 +103,7 @@ class SwissTransferResolver(BaseResolver):
                 password_b64 = base64.b64encode(password_str.encode("utf-8")).decode(
                     "utf-8",
                 )
-            except Exception as e_b64:  # Should not happen with valid string
+            except Exception as e_b64:
                 raise InvalidURLException(
                     f"Failed to base64 encode password: {e_b64}",
                 )
@@ -129,9 +113,7 @@ class SwissTransferResolver(BaseResolver):
         try:
             data_node = metadata_response["data"]
             container_uuid = data_node["containerUUID"]
-            download_host = data_node[
-                "downloadHost"
-            ]  # e.g., "dl11.swisstransfer.com"
+            download_host = data_node["downloadHost"]
             files_list = data_node["container"]["files"]
             folder_name = (
                 data_node["container"].get("message")
@@ -147,15 +129,11 @@ class SwissTransferResolver(BaseResolver):
                 "SwissTransfer error: No files found in the transfer metadata.",
             )
 
-        # If only one file, return LinkResult
         if len(files_list) == 1:
             file_info = files_list[0]
             file_uuid = file_info.get("UUID")
-            file_display_name = file_info.get(
-                "fileName",
-                "unknown_file",
-            )  # API provides fileName
-            file_size_bytes = file_info.get("fileSizeInBytes")  # API provides size
+            file_display_name = file_info.get("fileName", "unknown_file")
+            file_size_bytes = file_info.get("fileSizeInBytes")
 
             if not file_uuid:
                 raise ExtractionFailedException(
@@ -167,17 +145,12 @@ class SwissTransferResolver(BaseResolver):
                 container_uuid,
                 file_uuid,
             )
-            if not token:  # Should raise in helper if fails, but as a safeguard
+            if not token:
                 raise ExtractionFailedException(
                     "SwissTransfer error: Failed to generate download token for single file.",
                 )
 
             direct_download_url = f"https://{download_host}/api/download/{transfer_id}/{file_uuid}?token={token}"
-
-            # We can use filename/size from API directly or use _fetch_file_details to confirm.
-            # For now, let's use API data as it's likely accurate.
-            # _fetch_file_details(direct_download_url) could be used if needed.
-            # The original script's header "User-Agent:Mozilla/5.0" is handled by BaseResolver.
 
             return LinkResult(
                 url=direct_download_url,
@@ -185,7 +158,6 @@ class SwissTransferResolver(BaseResolver):
                 size=file_size_bytes,
             )
 
-        # If multiple files, return FolderResult
         folder_contents: list[FileItem] = []
         total_folder_size = 0
 
@@ -195,7 +167,7 @@ class SwissTransferResolver(BaseResolver):
             file_size_bytes = file_info.get("fileSizeInBytes")
 
             if not (file_uuid and file_display_name):
-                continue  # Skip if essential info missing for a file in folder
+                continue
 
             try:
                 token = await self._generate_download_token(
@@ -204,10 +176,8 @@ class SwissTransferResolver(BaseResolver):
                     file_uuid,
                 )
                 if not token:
-                    continue  # Skip if token generation fails for this file
-            except (
-                ExtractionFailedException
-            ):  # Catch if token gen specifically fails
+                    continue
+            except ExtractionFailedException:
                 continue
 
             item_download_url = f"https://{download_host}/api/download/{transfer_id}/{file_uuid}?token={token}"
@@ -216,15 +186,13 @@ class SwissTransferResolver(BaseResolver):
                     filename=file_display_name,
                     url=item_download_url,
                     size=file_size_bytes,
-                    path="",  # SwissTransfer shares are flat, no subfolders in this structure
+                    path="",
                 ),
             )
-            if file_size_bytes is not None:  # Ensure it's a number
+            if file_size_bytes is not None:
                 total_folder_size += file_size_bytes
 
-        if (
-            not folder_contents
-        ):  # If all files failed token generation or had missing info
+        if not folder_contents:
             raise ExtractionFailedException(
                 "SwissTransfer error: No valid files could be processed in the multi-file transfer.",
             )

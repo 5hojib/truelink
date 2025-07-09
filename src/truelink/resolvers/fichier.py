@@ -9,7 +9,6 @@ from truelink.types import FolderResult, LinkResult  # FolderResult for type hin
 
 from .base import BaseResolver
 
-# Assuming PASSWORD_ERROR_MESSAGE is available, similar to MediaFire
 PASSWORD_ERROR_MESSAGE_FICHIER = (
     "1Fichier link {} requires a password (append ::password to the URL)."
 )
@@ -26,13 +25,8 @@ class FichierResolver(BaseResolver):
         if not re.match(
             regex_1fichier,
             url.split("::")[0],
-        ):  # Check URL part before password
-            # A more common 1fichier link is like https://1fichier.com/?xxxxxxxxxx
-            # Or https://1fichier.com/?xxxxxxxxxx&e=123456 (temp links)
-            # Or https://username.1fichier.com/fz/doc_id (shared from account) - this regex won't match these
-            # For now, sticking to the original regex's scope.
-            # Consider broadening if other 1fichier URL patterns are common.
-            pass  # Allow proceeding, actual request will determine validity.
+        ):
+            pass
 
         _password = None
         request_url = url
@@ -46,7 +40,6 @@ class FichierResolver(BaseResolver):
             if _password:
                 post_data["pass"] = _password
 
-            # POST request to the URL, with password if provided
             async with await self._post(request_url, data=post_data) as response:
                 if response.status == 404:
                     raise ExtractionFailedException(
@@ -60,7 +53,6 @@ class FichierResolver(BaseResolver):
 
             html = fromstring(response_text)
 
-            # Check for direct download button
             dl_url_elements = html.xpath(
                 '//a[@class="ok btn-general btn-orange"]/@href',
             )
@@ -72,10 +64,8 @@ class FichierResolver(BaseResolver):
                 )
                 return LinkResult(url=direct_link, filename=filename, size=size)
 
-            # If no direct link, check for warning messages
             ct_warn_elements = html.xpath('//div[@class="ct_warn"]')
             if not ct_warn_elements:
-                # This case implies the page structure is unexpected if no link and no warning
                 if (
                     "In order to access this file, you will have to validate a first download."
                     in response_text
@@ -87,12 +77,7 @@ class FichierResolver(BaseResolver):
                     "1Fichier error: No download link found and no warning messages. Page structure might have changed.",
                 )
 
-            # Analyze warning messages (logic from original script)
-            # Number of ct_warn elements can indicate different states
-
-            # This logic for ct_warn is specific and might need adjustment if 1fichier changes layout.
             if len(ct_warn_elements) >= 1:
-                # Check the last warning message first for common issues
                 last_warn_text_content = (
                     "".join(ct_warn_elements[-1].xpath(".//text()")).lower().strip()
                 )
@@ -120,7 +105,6 @@ class FichierResolver(BaseResolver):
                         "1Fichier error: This link may require a premium account.",
                     )
 
-                # Check for password prompt if password was not provided
                 if (
                     "protect access to this file" in last_warn_text_content
                     or "enter the password" in last_warn_text_content
@@ -128,13 +112,7 @@ class FichierResolver(BaseResolver):
                     raise ExtractionFailedException(
                         PASSWORD_ERROR_MESSAGE_FICHIER.format(request_url),
                     )
-                    # If password was provided but still see this, it might be a generic message before password check
-                    # or the password check failed and led to a different error handled above.
 
-            # If the logic above didn't catch a specific error, raise a general one.
-            # The original script had more complex logic based on len(ct_warn) == 3 or 4.
-            # For simplicity, if no download link and warnings exist, assume an issue.
-            # Concatenate warning texts for a more informative message.
             all_warnings = " | ".join(
                 ["".join(w.xpath(".//text()")).strip() for w in ct_warn_elements],
             )

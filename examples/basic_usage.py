@@ -12,8 +12,8 @@ async def main():
     urls = [
         "https://www.lulacloud.com/d/nuNbCVcYq31-fbi-s07e14-hitched-awafim-tv-mkv",
         "https://buzzheavier.com/rnk4ut0lci9y",
-        "https://terabox.com/s/1vDkjtJWtIOcwr8swIOIBwQ",  # folder
-        "https://teraboxapp.com/s/1SZjA6tA5qVS0XOT2zSeqlw",  # file
+        "https://terabox.com/s/1vDkjtJWtIOcwr8swIOIBwQ",
+        "https://teraboxapp.com/s/1SZjA6tA5qVS0XOT2zSeqlw",
         "https://1fichier.com/?te04fuktzjfv3jktkvy1",
         "https://gofile.io/d/JcxE4Y",
         "https://www.linkbox.cloud/a/f/X2WPE4l",

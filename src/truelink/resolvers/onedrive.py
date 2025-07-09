@@ -15,8 +15,6 @@ class OneDriveResolver(BaseResolver):
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve OneDrive URL"""
         try:
-            # Step 1: Follow initial redirect if it's a short URL (e.g., 1drv.ms)
-            # allow_redirects=True is default for self._get
             async with await self._get(url) as initial_response:
                 final_url_after_redirects = str(initial_response.url)
 
@@ -43,18 +41,10 @@ class OneDriveResolver(BaseResolver):
                 )
             authkey = authkey_list[0]
 
-            # Construct the API URL
-            # Example folder_id: DRIVEID!ITEMID
             drive_id_part = folder_id.split("!", 1)[0]
             api_url = f"https://api.onedrive.com/v1.0/drives/{drive_id_part}/items/{folder_id}?$select=id,@content.downloadUrl&ump=1&authKey={authkey}"
 
-            # The original script uses a complex multipart POST with X-HTTP-Method-Override: GET.
-            # Let's first try a direct GET to the API URL, as this is more standard.
-            # Many APIs that support X-HTTP-Method-Override also support the direct method.
-            api_headers = {
-                "User-Agent": self.USER_AGENT,
-                # "Prefer": "Migration=EnableRedirect;FailOnMigratedFiles" # This was in the multipart body
-            }
+            api_headers = {"User-Agent": self.USER_AGENT}
 
             try:
                 async with await self._get(
@@ -64,25 +54,15 @@ class OneDriveResolver(BaseResolver):
                     if api_response.status == 200:
                         json_resp = await api_response.json()
                     else:
-                        # If direct GET fails, try to replicate the X-HTTP-Method-Override behavior
-                        # This is less common with aiohttp directly.
-                        # The original body is specific.
-                        # We'll try POSTing this body.
                         boundary = str(uuid4())
-                        # The body in the original script has an empty JSON object part "{}"
-                        # but the Content-Type is application/json for that part.
-                        # The overall Content-Type for the request is multipart/form-data.
-
-                        # This is a very custom body, not standard multipart form fields.
-                        # aiohttp's FormData might not be suitable. We send raw bytes.
                         custom_body_parts = [
                             f"--{boundary}",
-                            'Content-Disposition: form-data; name="data"',  # Name 'data' is arbitrary here
+                            'Content-Disposition: form-data; name="data"',
                             "Prefer: Migration=EnableRedirect;FailOnMigratedFiles",
                             "X-HTTP-Method-Override: GET",
-                            "Content-Type: application/json",  # For the empty JSON payload part
+                            "Content-Type: application/json",
                             "",
-                            "{}",  # Empty JSON payload
+                            "{}",
                             f"--{boundary}--",
                             "",
                         ]
@@ -105,10 +85,7 @@ class OneDriveResolver(BaseResolver):
                             json_resp = await post_api_response.json()
 
             except Exception as e_api:
-                if isinstance(
-                    e_api,
-                    ExtractionFailedException,
-                ):  # re-raise if already specific
+                if isinstance(e_api, ExtractionFailedException):
                     raise
                 raise ExtractionFailedException(
                     f"OneDrive API request failed: {e_api!s}",
@@ -123,21 +100,16 @@ class OneDriveResolver(BaseResolver):
 
             direct_link = json_resp["@content.downloadUrl"]
 
-            # OneDrive download URLs are usually pre-signed and may not have Content-Disposition always.
-            # The API response might include 'name' and 'size'.
             filename = json_resp.get("name")
-            size = json_resp.get("size")  # This is often in bytes
+            size = json_resp.get("size")
 
-            # If details are not in API response, _fetch_file_details will try.
             if not filename or size is None:
                 details_filename, details_size = await self._fetch_file_details(
                     direct_link,
                 )
                 if details_filename and not filename:
                     filename = details_filename
-                if (
-                    details_size is not None and size is None
-                ):  # Only update if API didn't provide it
+                if details_size is not None and size is None:
                     size = details_size
 
             return LinkResult(url=direct_link, filename=filename, size=size)

@@ -21,31 +21,22 @@ class FilePressResolver(BaseResolver):
                 )
             file_id = file_id_match[-1]
 
-            # Step 1: GET request to filebee.xyz to potentially follow redirects or get canonical URL
             filebee_url = f"https://filebee.xyz/file/{file_id}"
             async with await self._get(filebee_url) as fb_response:
-                # The final URL after redirects from filebee.xyz
-                # This URL's hostname and scheme will be used for subsequent API calls.
                 resolved_filebee_url = str(fb_response.url)
 
             parsed_fb_url = urlparse(resolved_filebee_url)
-            # The ID for the API might be different from the initial file_id if filebee redirects
-            # to a new path.
             api_file_id = parsed_fb_url.path.split("/")[-1]
             if not api_file_id:
                 raise ExtractionFailedException(
                     "FilePress error: Could not determine API file ID from filebee URL.",
                 )
 
-            # Step 2: First API POST request
             api_base_scheme = parsed_fb_url.scheme
             api_base_host = parsed_fb_url.hostname
 
-            api1_url = f"{api_base_scheme}://{api_base_host}/api/file/downlaod/"  # Note: 'downlaod' typo is in original
-            json_data1 = {
-                "id": api_file_id,
-                "method": "publicDownlaod",
-            }  # 'publicDownlaod' typo
+            api1_url = f"{api_base_scheme}://{api_base_host}/api/file/downlaod/"
+            json_data1 = {"id": api_file_id, "method": "publicDownlaod"}
             headers1 = {"Referer": f"{api_base_scheme}://{api_base_host}"}
 
             async with await self._post(
@@ -77,13 +68,8 @@ class FilePressResolver(BaseResolver):
 
             intermediate_id = json_res1["data"]
 
-            # Step 3: Second API POST request
-            api2_url = f"{api_base_scheme}://{api_base_host}/api/file/downlaod2/"  # 'downlaod2' typo
-            json_data2 = {
-                "id": intermediate_id,
-                "method": "publicDownlaod",
-            }  # 'publicDownlaod' typo
-            # Referer for the second call might still be the main filebee page or the first API, using main page for now.
+            api2_url = f"{api_base_scheme}://{api_base_host}/api/file/downlaod2/"
+            json_data2 = {"id": intermediate_id, "method": "publicDownlaod"}
             headers2 = {"Referer": f"{api_base_scheme}://{api_base_host}"}
 
             async with await self._post(
@@ -118,9 +104,6 @@ class FilePressResolver(BaseResolver):
                 f"https://drive.google.com/uc?id={gdrive_file_id}&export=download"
             )
 
-            # This is a Google Drive link. Fetching details might be subject to GDrive's behavior.
-            # It might also be a large file that GDrive serves via a warning page first.
-            # _fetch_file_details will attempt to get them.
             filename, size = await self._fetch_file_details(direct_link)
 
             return LinkResult(url=direct_link, filename=filename, size=size)

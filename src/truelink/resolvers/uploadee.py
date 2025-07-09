@@ -19,19 +19,13 @@ class UploadEeResolver(BaseResolver):
 
             html = fromstring(response_text)
 
-            # Original XPath: //a[@id='d_l']/@href
             direct_link_elements = html.xpath("//a[@id='d_l']/@href")
 
             if not direct_link_elements:
-                # Fallback: Upload.ee might have changed its structure.
-                # Look for other common download button patterns.
-                # Example: <a ... class="...download..." href="...">
-                # This is a guess and might need refinement based on actual page structure.
                 fallback_links = html.xpath(
                     "//a[contains(translate(@class, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'download') and @href]/@href",
                 )
                 if not fallback_links:
-                    # Check for error messages on page
                     error_messages = html.xpath(
                         "//div[contains(@class, 'alert-danger')]/text() | //div[contains(@class, 'error')]/text()",
                     )
@@ -54,8 +48,6 @@ class UploadEeResolver(BaseResolver):
             else:
                 direct_link = direct_link_elements[0]
 
-            # The link from Upload.ee is usually direct.
-            # Using the original URL as referer for fetching details, just in case.
             filename, size = await self._fetch_file_details(
                 direct_link,
                 custom_headers={"Referer": url},
