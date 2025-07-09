@@ -2,8 +2,9 @@ from __future__ import annotations
 
 import re
 from urllib.parse import urlparse
-from lxml.etree import HTML # Changed from lxml.html import fromstring
-import httpx # Added for synchronous requests
+
+import httpx  # Added for synchronous requests
+from lxml.etree import HTML  # Changed from lxml.html import fromstring
 
 from truelink.exceptions import ExtractionFailedException, InvalidURLException
 from truelink.types import FolderResult, LinkResult
@@ -31,12 +32,16 @@ class StreamtapeResolver(BaseResolver):
                 # The BaseResolver's self.session is async.
                 # Using httpx directly for a sync call.
                 response = httpx.get(url, follow_redirects=True)
-                response.raise_for_status() # Raise an exception for bad status codes
+                response.raise_for_status()  # Raise an exception for bad status codes
                 html_content = response.text
             except httpx.HTTPStatusError as e:
-                raise ExtractionFailedException(f"Streamtape request failed: {e.response.status_code} - {e.request.url}") from e
+                raise ExtractionFailedException(
+                    f"Streamtape request failed: {e.response.status_code} - {e.request.url}"
+                ) from e
             except httpx.RequestError as e:
-                raise ExtractionFailedException(f"Streamtape request error: {e.__class__.__name__} for {e.request.url}") from e
+                raise ExtractionFailedException(
+                    f"Streamtape request error: {e.__class__.__name__} for {e.request.url}"
+                ) from e
 
             html = HTML(html_content)
             parsed_original_url = urlparse(url)
@@ -129,27 +134,36 @@ class StreamtapeResolver(BaseResolver):
             try:
                 # Perform a HEAD request to get headers for filename and size
                 # Need to use a synchronous client again.
-                head_response = httpx.head(direct_link, headers={"Referer": url}, follow_redirects=True)
+                head_response = httpx.head(
+                    direct_link, headers={"Referer": url}, follow_redirects=True
+                )
                 head_response.raise_for_status()
 
-                content_disposition = head_response.headers.get("content-disposition")
+                content_disposition = head_response.headers.get(
+                    "content-disposition"
+                )
                 filename = None
                 if content_disposition:
                     # Extract filename from content-disposition, e.g., "attachment; filename=\"video.mp4\""
-                    fn_match = re.search(r"filename\*?=['\"]?([^'\"]+)['\"]?", content_disposition)
+                    fn_match = re.search(
+                        r"filename\*?=['\"]?([^'\"]+)['\"]?", content_disposition
+                    )
                     if fn_match:
                         filename = fn_match.group(1)
 
-                if not filename: # Fallback if filename not in content-disposition
+                if not filename:  # Fallback if filename not in content-disposition
                     # Try to get filename from URL path
                     parsed_link_url = urlparse(direct_link)
                     filename_from_path = parsed_link_url.path.split("/")[-1]
-                    if filename_from_path: # Ensure it's not empty
+                    if filename_from_path:  # Ensure it's not empty
                         filename = filename_from_path
 
-
                 content_length = head_response.headers.get("content-length")
-                size = int(content_length) if content_length and content_length.isdigit() else None
+                size = (
+                    int(content_length)
+                    if content_length and content_length.isdigit()
+                    else None
+                )
 
             except httpx.HTTPStatusError as e:
                 # If HEAD request fails, it might be that HEAD is not allowed or link is bad
@@ -163,15 +177,14 @@ class StreamtapeResolver(BaseResolver):
                     f"Streamtape: Network error while fetching file details from '{direct_link}'. Error: {e.__class__.__name__}",
                 ) from e
 
-
-            if not filename: # If filename is still None
+            if not filename:  # If filename is still None
                 # Default filename if not found
-                filename = _id # Or some other default like "streamtape_video.mp4"
+                filename = _id  # Or some other default like "streamtape_video.mp4"
 
             return LinkResult(url=direct_link, filename=filename, size=size)
 
         except Exception as e:
-            if isinstance(e, (ExtractionFailedException, InvalidURLException)):
+            if isinstance(e, ExtractionFailedException | InvalidURLException):
                 raise
             # Catch any other unexpected errors during the process
             raise ExtractionFailedException(
