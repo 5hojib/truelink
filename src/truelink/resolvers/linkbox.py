@@ -125,7 +125,11 @@ class LinkBoxResolver(BaseResolver):
             self._folder_details.title = data["dirName"] or "LinkBox Folder"
 
         contents_list = data.get("list", [])
-        if not contents_list and parent_id == 0 and not self._folder_details.contents:
+        if (
+            not contents_list
+            and parent_id == 0
+            and not self._folder_details.contents
+        ):
             pass
 
         for content_item in contents_list:

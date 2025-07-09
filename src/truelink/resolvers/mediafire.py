@@ -6,7 +6,6 @@ import re
 from urllib.parse import unquote, urlparse
 
 import cloudscraper  # For Cloudflare bypass
-
 from lxml.etree import HTML
 
 from truelink.exceptions import ExtractionFailedException, InvalidURLException
