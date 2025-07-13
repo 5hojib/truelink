@@ -8,6 +8,7 @@ from truelink.types import FileItem, FolderResult, LinkResult
 
 from .base import BaseResolver
 
+
 # todo
 class LinkBoxResolver(BaseResolver):
     """Resolver for LinkBox.to URLs"""
