@@ -9,7 +9,9 @@ from truelink.types import FileItem, FolderResult, LinkResult
 
 from .base import BaseResolver
 
-PASSWORD_ERROR_MESSAGE = "GoFile link {} requires a password (append ::password to the URL)."
+PASSWORD_ERROR_MESSAGE = (
+    "GoFile link {} requires a password (append ::password to the URL)."
+)
 
 
 class GoFileResolver(BaseResolver):
@@ -55,7 +57,9 @@ class GoFileResolver(BaseResolver):
         if not self._account_token:
             raise ExtractionFailedException("GoFile: Missing account token.")
 
-        api_url = f"https://api.gofile.io/contents/{content_id}?wt=4fd6sg89d7s6&cache=true"
+        api_url = (
+            f"https://api.gofile.io/contents/{content_id}?wt=4fd6sg89d7s6&cache=true"
+        )
         if password_hash:
             api_url += f"&password={password_hash}"
 
@@ -93,15 +97,16 @@ class GoFileResolver(BaseResolver):
             if content.get("type") == "folder":
                 if not content.get("public", True):
                     continue
-                next_path = os.path.join(current_path, name) if current_path else name
+                next_path = (
+                    os.path.join(current_path, name) if current_path else name
+                )
                 await self._fetch_folder_contents(child_id, password_hash, next_path)
             else:
                 url = content.get("link")
                 if not url:
                     continue
                 filename, size, mime_type = await self._fetch_file_details(
-                    url,
-                    {"Cookie": f"accountToken={self._account_token}"}
+                    url, {"Cookie": f"accountToken={self._account_token}"}
                 )
                 self._folder_details.contents.append(
                     FileItem(
@@ -120,13 +125,19 @@ class GoFileResolver(BaseResolver):
             status = error_data.get("status", "")
             message = error_data.get("message", "")
             if "error-passwordRequired" in status:
-                raise ExtractionFailedException(PASSWORD_ERROR_MESSAGE.format(f"ID: {content_id}"))
+                raise ExtractionFailedException(
+                    PASSWORD_ERROR_MESSAGE.format(f"ID: {content_id}")
+                )
             if "error-passwordWrong" in status:
                 raise ExtractionFailedException("GoFile error: Incorrect password.")
             if "error-notFound" in status:
-                raise ExtractionFailedException(f"GoFile error: ID '{content_id}' not found.")
+                raise ExtractionFailedException(
+                    f"GoFile error: ID '{content_id}' not found."
+                )
             if "error-notPublic" in status:
-                raise ExtractionFailedException(f"GoFile error: Folder ID '{content_id}' is not public.")
+                raise ExtractionFailedException(
+                    f"GoFile error: Folder ID '{content_id}' is not public."
+                )
             raise ExtractionFailedException(
                 f"GoFile API error {response.status}: {status} - {message[:200]}"
             )
@@ -155,7 +166,9 @@ class GoFileResolver(BaseResolver):
             await self._fetch_folder_contents(content_id, password_hash)
         except ExtractionFailedException as e:
             if "passwordRequired" in str(e) and not password:
-                raise ExtractionFailedException(PASSWORD_ERROR_MESSAGE.format(request_url)) from e
+                raise ExtractionFailedException(
+                    PASSWORD_ERROR_MESSAGE.format(request_url)
+                ) from e
             raise
         except Exception as e:
             raise ExtractionFailedException(f"GoFile resolution failed: {e}") from e
@@ -169,7 +182,8 @@ class GoFileResolver(BaseResolver):
 
         if (
             len(self._folder_details.contents) == 1
-            and self._folder_details.title == self._folder_details.contents[0].filename
+            and self._folder_details.title
+            == self._folder_details.contents[0].filename
             and not self._folder_details.contents[0].path
         ):
             item = self._folder_details.contents[0]

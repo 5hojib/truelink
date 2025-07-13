@@ -28,7 +28,9 @@ class FuckingFastResolver(BaseResolver):
             download_url = match.group(2)
             filename, size, mime_type = await self._fetch_file_details(download_url)
 
-            return LinkResult(url=download_url, filename=filename, mime_type=mime_type,size=size)
+            return LinkResult(
+                url=download_url, filename=filename, mime_type=mime_type, size=size
+            )
 
         except Exception as e:
             raise ExtractionFailedException(

@@ -9,6 +9,7 @@ from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
 
+
 # todo
 class PCloudResolver(BaseResolver):
     """Resolver for pCloud.link URLs"""

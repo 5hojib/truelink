@@ -53,7 +53,9 @@ class UploadEeResolver(BaseResolver):
                 headers={"Referer": url},
             )
 
-            return LinkResult(url=direct_link, filename=filename, mime_type=mime_type, size=size)
+            return LinkResult(
+                url=direct_link, filename=filename, mime_type=mime_type, size=size
+            )
 
         except Exception as e:
             if isinstance(e, ExtractionFailedException):

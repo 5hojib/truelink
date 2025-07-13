@@ -11,6 +11,7 @@ from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
 
+
 # todo
 class DoodStreamResolver(BaseResolver):
     """Resolver for DoodStream URLs (dood.watch, dood.to, etc.)"""

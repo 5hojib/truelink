@@ -7,6 +7,7 @@ from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
 
+
 # todo
 class DevUploadsResolver(BaseResolver):
     """Resolver for DevUploads URLs"""

@@ -7,6 +7,7 @@ from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
 
+
 # ToDo
 class WeTransferResolver(BaseResolver):
     """Resolver for WeTransfer.com URLs"""

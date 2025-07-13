@@ -1,12 +1,15 @@
 from __future__ import annotations
 
 import re
+
 from truelink.exceptions import ExtractionFailedException, InvalidURLException
 from truelink.types import FolderResult, LinkResult
+
 from .base import BaseResolver
 
-
-YANDEX_DISK_URL_PATTERN = re.compile(r"https?://(yadi\.sk|disk\.yandex\.(?:com|ru))/\S+")
+YANDEX_DISK_URL_PATTERN = re.compile(
+    r"https?://(yadi\.sk|disk\.yandex\.(?:com|ru))/\S+"
+)
 
 
 class YandexDiskResolver(BaseResolver):
@@ -27,17 +30,28 @@ class YandexDiskResolver(BaseResolver):
                 json_data = await response.json()
 
                 if response.status != 200:
-                    error_msg = json_data.get("description") or json_data.get("message") or "Unknown error"
-                    raise ExtractionFailedException(f"Yandex API error ({response.status}): {error_msg}")
+                    error_msg = (
+                        json_data.get("description")
+                        or json_data.get("message")
+                        or "Unknown error"
+                    )
+                    raise ExtractionFailedException(
+                        f"Yandex API error ({response.status}): {error_msg}"
+                    )
 
                 direct_link = json_data.get("href")
                 if not direct_link:
-                    error_msg = json_data.get("description") or json_data.get("message") \
-                                or "Direct download link (href) not found in Yandex API response."
+                    error_msg = (
+                        json_data.get("description")
+                        or json_data.get("message")
+                        or "Direct download link (href) not found in Yandex API response."
+                    )
                     raise ExtractionFailedException(error_msg)
 
             filename, size, mime_type = await self._fetch_file_details(direct_link)
-            return LinkResult(url=direct_link, filename=filename, mime_type=mime_type, size=size)
+            return LinkResult(
+                url=direct_link, filename=filename, mime_type=mime_type, size=size
+            )
 
         except (InvalidURLException, ExtractionFailedException):
             raise

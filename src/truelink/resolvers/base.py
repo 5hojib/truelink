@@ -70,14 +70,18 @@ class BaseResolver(ABC):
 
     def _extract_filename(self, content_disposition: str) -> str | None:
         """Extract filename from Content-Disposition header"""
-        match = re.search(r"filename\*=UTF-8''([^']+)$", content_disposition, re.IGNORECASE)
+        match = re.search(
+            r"filename\*=UTF-8''([^']+)$", content_disposition, re.IGNORECASE
+        )
         if match:
             return unquote(match.group(1))
-        
-        match = re.search(r"filename=\"([^\"]+)\"", content_disposition, re.IGNORECASE)
+
+        match = re.search(
+            r"filename=\"([^\"]+)\"", content_disposition, re.IGNORECASE
+        )
         if match:
             return match.group(1)
-        
+
         return None
 
     def _get_filename_from_url(self, url: str) -> str | None:
@@ -95,7 +99,7 @@ class BaseResolver(ABC):
     ) -> tuple[str | None, int | None, str | None]:
         """
         Fetch filename, size, and mime_type from URL.
-        
+
         Returns:
             tuple: (filename, size, mime_type)
         """
@@ -116,20 +120,24 @@ class BaseResolver(ABC):
         request_headers = headers.copy() if headers else {}
 
         try:
-            async with self.session.head(url, headers=request_headers, allow_redirects=True) as resp:
+            async with self.session.head(
+                url, headers=request_headers, allow_redirects=True
+            ) as resp:
                 if resp.status == 200:
                     content_disposition = resp.headers.get("Content-Disposition")
                     if content_disposition:
                         filename = self._extract_filename(content_disposition)
-                    
+
                     if not filename:
                         filename = self._get_filename_from_url(url)
 
                     content_length = resp.headers.get("Content-Length")
                     if content_length and content_length.isdigit():
                         size = int(content_length)
-                    
-                    mime_type = resp.headers.get("Content-Type", "").split(";")[0].strip()
+
+                    mime_type = (
+                        resp.headers.get("Content-Type", "").split(";")[0].strip()
+                    )
 
                     if session_created_here:
                         await self._close_session()
@@ -141,14 +149,16 @@ class BaseResolver(ABC):
         try:
             range_headers = request_headers.copy()
             range_headers["Range"] = "bytes=0-0"
-            
-            async with self.session.get(url, headers=range_headers, allow_redirects=True) as resp:
+
+            async with self.session.get(
+                url, headers=range_headers, allow_redirects=True
+            ) as resp:
                 if resp.status in (200, 206):
                     if not filename:
                         content_disposition = resp.headers.get("Content-Disposition")
                         if content_disposition:
                             filename = self._extract_filename(content_disposition)
-                        
+
                         if not filename:
                             filename = self._get_filename_from_url(url)
 
@@ -156,9 +166,13 @@ class BaseResolver(ABC):
                     if content_range:
                         with contextlib.suppress(ValueError, IndexError):
                             size = int(content_range.split("/")[-1])
-                    
+
                     if not mime_type:
-                        mime_type = resp.headers.get("Content-Type", "").split(";")[0].strip()
+                        mime_type = (
+                            resp.headers.get("Content-Type", "")
+                            .split(";")[0]
+                            .strip()
+                        )
 
         except Exception:
             pass

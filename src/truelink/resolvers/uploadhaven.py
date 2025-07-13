@@ -9,6 +9,7 @@ from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
 
+
 # ToDo
 class UploadHavenResolver(BaseResolver):
     """Resolver for UploadHaven URLs"""

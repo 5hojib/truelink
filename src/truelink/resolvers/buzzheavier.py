@@ -44,7 +44,12 @@ class BuzzHeavierResolver(BaseResolver):
                     download_url,
                     headers=buzz_headers,
                 )
-                return LinkResult(url=download_url, filename=filename, mime_type=mime_type, size=size)
+                return LinkResult(
+                    url=download_url,
+                    filename=filename,
+                    mime_type=mime_type,
+                    size=size,
+                )
 
             folder_elements = tree.xpath("//tbody[@id='tbody']/tr")
             if folder_elements:
@@ -99,14 +104,19 @@ class BuzzHeavierResolver(BaseResolver):
                         "hx-request": "true",
                         "priority": "u=1, i",
                     }
-                    actual_filename, item_size, mime_type = await self._fetch_file_details(
+                    (
+                        actual_filename,
+                        item_size,
+                        mime_type,
+                    ) = await self._fetch_file_details(
                         download_url,
                         headers=buzz_headers,
                     )
 
                     contents.append(
                         FileItem(
-                            filename=actual_filename, mime_type=mime_type,
+                            filename=actual_filename,
+                            mime_type=mime_type,
                             url=download_url,
                             size=item_size,
                             path="",

@@ -10,6 +10,7 @@ from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
 
+
 # todo
 class HxFileResolver(BaseResolver):
     """Resolver for HxFile.co URLs"""

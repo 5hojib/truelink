@@ -7,7 +7,8 @@ from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
 
-# Todo 
+
+# Todo
 class FilePressResolver(BaseResolver):
     """Resolver for FilePress URLs (via filebee.xyz)"""
 

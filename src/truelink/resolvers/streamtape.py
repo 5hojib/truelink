@@ -56,7 +56,9 @@ class StreamtapeResolver(BaseResolver):
                 direct_url, headers={"Referer": url}
             )
 
-            return LinkResult(url=direct_url, filename=filename, mime_type=mime_type, size=size)
+            return LinkResult(
+                url=direct_url, filename=filename, mime_type=mime_type, size=size
+            )
 
         except Exception as e:
             if isinstance(e, ExtractionFailedException | InvalidURLException):

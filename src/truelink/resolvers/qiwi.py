@@ -9,6 +9,7 @@ from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
 
+
 # todo
 class QiwiResolver(BaseResolver):
     """Resolver for Qiwi.gg URLs"""

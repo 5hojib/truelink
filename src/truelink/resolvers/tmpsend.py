@@ -44,7 +44,8 @@ class TmpSendResolver(BaseResolver):
 
             return LinkResult(
                 url=direct_download_link,
-                filename=filename, mime_type=mime_type,
+                filename=filename,
+                mime_type=mime_type,
                 size=size,
                 headers=headers,
             )

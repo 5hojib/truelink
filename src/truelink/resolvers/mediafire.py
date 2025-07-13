@@ -17,6 +17,7 @@ PASSWORD_ERROR_MESSAGE = (
     "ERROR: This link is password protected. Please provide the password for: {}"
 )
 
+
 # todo
 class MediaFireResolver(BaseResolver):
     """Resolver for MediaFire URLs (files and folders)"""

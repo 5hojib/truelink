@@ -24,7 +24,9 @@ class LulaCloudResolver(BaseResolver):
 
                 filename, size, mime_type = await self._fetch_file_details(location)
 
-                return LinkResult(url=location, filename=filename, mime_type=mime_type, size=size)
+                return LinkResult(
+                    url=location, filename=filename, mime_type=mime_type, size=size
+                )
 
         except Exception as e:
             raise ExtractionFailedException(

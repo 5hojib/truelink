@@ -8,6 +8,7 @@ from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
 
+
 # todo
 class OneDriveResolver(BaseResolver):
     """Resolver for OneDrive (1drv.ms) URLs"""
