@@ -58,13 +58,13 @@ class TeraboxResolver(BaseResolver):
                         "Terabox API error: Missing download link for single file.",
                     )
 
-                header_filename, header_size = await self._fetch_file_details(
+                header_filename, header_size, mime_type = await self._fetch_file_details(
                     direct_link,
                 )
 
                 return LinkResult(
                     url=direct_link,
-                    filename=header_filename,
+                    filename=header_filename, mime_type=mime_type,
                     size=header_size,
                 )
 

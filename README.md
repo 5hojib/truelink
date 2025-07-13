@@ -86,6 +86,7 @@ The `resolve()` method returns one of two result types:
 {
     "url": "direct_download_url",
     "filename": "original_filename",
+    "mime_type": "video/mp4",
     "size": 1234567,  # Size in bytes (optional)
     "headers": {"Authorization": "Bearer token"}  # Custom headers if needed (optional)
 }
@@ -98,12 +99,14 @@ The `resolve()` method returns one of two result types:
     "contents": [
         {
             "filename": "file1.pdf",
+            "mime_type": "application/pdf",
             "url": "direct_download_url_1",
             "size": 1234567,
             "path": "subfolder/file1.pdf"
         },
         {
-            "filename": "file2.jpg", 
+            "filename": "file2.jpg",
+            "mime_type": "image/jpeg",
             "url": "direct_download_url_2",
             "size": 987654,
             "path": "file2.jpg"

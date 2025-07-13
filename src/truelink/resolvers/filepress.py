@@ -7,7 +7,7 @@ from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
 
-
+# Todo 
 class FilePressResolver(BaseResolver):
     """Resolver for FilePress URLs (via filebee.xyz)"""
 
@@ -104,7 +104,7 @@ class FilePressResolver(BaseResolver):
                 f"https://drive.google.com/uc?id={gdrive_file_id}&export=download"
             )
 
-            filename, size = await self._fetch_file_details(direct_link)
+            filename, size, _ = await self._fetch_file_details(direct_link)
 
             return LinkResult(url=direct_link, filename=filename, size=size)
 

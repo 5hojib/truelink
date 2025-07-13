@@ -17,7 +17,7 @@ PASSWORD_ERROR_MESSAGE = (
     "ERROR: This link is password protected. Please provide the password for: {}"
 )
 
-
+# todo
 class MediaFireResolver(BaseResolver):
     """Resolver for MediaFire URLs (files and folders)"""
 
@@ -90,7 +90,7 @@ class MediaFireResolver(BaseResolver):
         """
         if re.search(r"https?:\/\/download\d+\.mediafire\.com\/\S+\/\S+\/\S+", url):
             try:
-                filename, size = await self._fetch_file_details(url)
+                filename, size, _ = await self._fetch_file_details(url)
             except Exception:
                 filename = unquote(url.split("/")[-1])
                 size = None
@@ -161,7 +161,7 @@ class MediaFireResolver(BaseResolver):
                 )
 
             try:
-                dl_filename, dl_size = await self._fetch_file_details(final_link)
+                dl_filename, dl_size, _ = await self._fetch_file_details(final_link)
             except Exception:
                 dl_filename = unquote(final_link.split("/")[-1].split("?")[0])
                 dl_size = None

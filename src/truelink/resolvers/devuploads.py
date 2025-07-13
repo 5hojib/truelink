@@ -7,7 +7,7 @@ from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
 
-
+# todo
 class DevUploadsResolver(BaseResolver):
     """Resolver for DevUploads URLs"""
 
@@ -82,7 +82,7 @@ class DevUploadsResolver(BaseResolver):
 
             direct_link = direct_link_elements[0]
 
-            filename, size = await self._fetch_file_details(direct_link)
+            filename, size, _ = await self._fetch_file_details(direct_link)
             return LinkResult(url=direct_link, filename=filename, size=size)
 
         except Exception as e:

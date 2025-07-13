@@ -3,10 +3,10 @@ name = "truelink"
 dynamic = ["version"]
 description = "Extract direct download links from various URL formats"
 authors = [
-    {name = "5hojib", email = "yesiamshojib@ganil.com"}
+    {name = "5hojib", email = "yesiamshojib@gmail.com"}
 ]
 maintainers = [
-    {name = "5hojib", email = "yesiamshojib@ganil.com"}
+    {name = "5hojib", email = "yesiamshojib@gmail.com"}
 ]
 license = {text = "MIT"}
 readme = "README.md"

@@ -57,11 +57,11 @@ class FichierResolver(BaseResolver):
             )
             if dl_url_elements:
                 direct_link = dl_url_elements[0]
-                filename, size = await self._fetch_file_details(
+                filename, size, mime_type = await self._fetch_file_details(
                     direct_link,
                     headers={"Referer": request_url},
                 )
-                return LinkResult(url=direct_link, filename=filename, size=size)
+                return LinkResult(url=direct_link, filename=filename, mime_type=mime_type, size=size)
 
             ct_warn_elements = html.xpath('//div[@class="ct_warn"]')
             if not ct_warn_elements:

@@ -68,19 +68,40 @@ class BaseResolver(ABC):
             ExtractionFailedException: If extraction fails
         """
 
+    def _extract_filename(self, content_disposition: str) -> str | None:
+        """Extract filename from Content-Disposition header"""
+        match = re.search(r"filename\*=UTF-8''([^']+)$", content_disposition, re.IGNORECASE)
+        if match:
+            return unquote(match.group(1))
+        
+        match = re.search(r"filename=\"([^\"]+)\"", content_disposition, re.IGNORECASE)
+        if match:
+            return match.group(1)
+        
+        return None
+
+    def _get_filename_from_url(self, url: str) -> str | None:
+        """Extract filename from URL path"""
+        parsed_url = urlparse(url)
+        if parsed_url.path:
+            path_filename = unquote(parsed_url.path.split("/")[-1])
+            return path_filename if path_filename else None
+        return None
+
     async def _fetch_file_details(
         self,
         url: str,
         headers: dict[str, str] | None = None,
-    ) -> tuple[str | None, int | None]:
+    ) -> tuple[str | None, int | None, str | None]:
         """
-        Fetch filename and size from URL.
-        Uses HEAD request first, then falls back to GET with Range header for size if needed.
-        Attempts to extract filename from Content-Disposition or URL.
-        Accepts optional headers to be used for the requests.
+        Fetch filename, size, and mime_type from URL.
+        
+        Returns:
+            tuple: (filename, size, mime_type)
         """
         filename: str | None = None
         size: int | None = None
+        mime_type: str | None = None
 
         session_created_here = False
         if not self.session:
@@ -90,97 +111,55 @@ class BaseResolver(ABC):
         if not self.session:
             if session_created_here:
                 await self._close_session()
-            return None, None
+            return None, None, None
 
-        request_headers = {}
-        if headers:
-            request_headers.update(headers)
+        request_headers = headers.copy() if headers else {}
 
         try:
-            async with self.session.head(
-                url,
-                headers=request_headers,
-                allow_redirects=True,
-            ) as resp:
+            async with self.session.head(url, headers=request_headers, allow_redirects=True) as resp:
                 if resp.status == 200:
                     content_disposition = resp.headers.get("Content-Disposition")
                     if content_disposition:
-                        match_utf8 = re.search(
-                            r"filename\*=UTF-8''([^']+)$",
-                            content_disposition,
-                            re.IGNORECASE,
-                        )
-                        if match_utf8:
-                            filename = unquote(match_utf8.group(1))
-                        else:
-                            match_ascii = re.search(
-                                r"filename=\"([^\"]+)\"",
-                                content_disposition,
-                                re.IGNORECASE,
-                            )
-                            if match_ascii:
-                                filename = match_ascii.group(1)
-
+                        filename = self._extract_filename(content_disposition)
+                    
                     if not filename:
-                        parsed_url = urlparse(url)
-                        if parsed_url.path:
-                            path_filename = unquote(parsed_url.path.split("/")[-1])
-                            if path_filename:
-                                filename = path_filename
+                        filename = self._get_filename_from_url(url)
 
                     content_length = resp.headers.get("Content-Length")
                     if content_length and content_length.isdigit():
                         size = int(content_length)
-                        if session_created_here:
-                            await self._close_session()
-                        return filename, size
-        except aiohttp.ClientError:
-            pass
+                    
+                    mime_type = resp.headers.get("Content-Type", "").split(";")[0].strip()
+
+                    if session_created_here:
+                        await self._close_session()
+                    return filename, size, mime_type
+
         except Exception:
             pass
 
         try:
-            get_range_headers = request_headers.copy()
-            get_range_headers["Range"] = "bytes=0-0"
-            async with self.session.get(
-                url,
-                headers=get_range_headers,
-                allow_redirects=True,
-            ) as resp:
+            range_headers = request_headers.copy()
+            range_headers["Range"] = "bytes=0-0"
+            
+            async with self.session.get(url, headers=range_headers, allow_redirects=True) as resp:
                 if resp.status in (200, 206):
                     if not filename:
                         content_disposition = resp.headers.get("Content-Disposition")
                         if content_disposition:
-                            match_utf8 = re.search(
-                                r"filename\*=UTF-8''([^']+)$",
-                                content_disposition,
-                                re.IGNORECASE,
-                            )
-                            if match_utf8:
-                                filename = unquote(match_utf8.group(1))
-                            else:
-                                match_ascii = re.search(
-                                    r"filename=\"([^\"]+)\"",
-                                    content_disposition,
-                                    re.IGNORECASE,
-                                )
-                                if match_ascii:
-                                    filename = match_ascii.group(1)
+                            filename = self._extract_filename(content_disposition)
+                        
                         if not filename:
-                            parsed_url = urlparse(url)
-                            if parsed_url.path:
-                                path_filename = unquote(
-                                    parsed_url.path.split("/")[-1],
-                                )
-                                if path_filename:
-                                    filename = path_filename
+                            filename = self._get_filename_from_url(url)
 
                     content_range = resp.headers.get("Content-Range")
                     if content_range:
                         with contextlib.suppress(ValueError, IndexError):
                             size = int(content_range.split("/")[-1])
-        except aiohttp.ClientError:
-            pass
+                    
+                    if not mime_type:
+                        mime_type = resp.headers.get("Content-Type", "").split(";")[0].strip()
+
         except Exception:
             pass
 
@@ -188,4 +167,4 @@ class BaseResolver(ABC):
             if session_created_here:
                 await self._close_session()
 
-        return filename, size
+        return filename, size, mime_type

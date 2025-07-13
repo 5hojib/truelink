@@ -48,12 +48,12 @@ class UploadEeResolver(BaseResolver):
             else:
                 direct_link = direct_link_elements[0]
 
-            filename, size = await self._fetch_file_details(
+            filename, size, mime_type = await self._fetch_file_details(
                 direct_link,
                 headers={"Referer": url},
             )
 
-            return LinkResult(url=direct_link, filename=filename, size=size)
+            return LinkResult(url=direct_link, filename=filename, mime_type=mime_type, size=size)
 
         except Exception as e:
             if isinstance(e, ExtractionFailedException):

@@ -11,7 +11,7 @@ from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
 
-
+# todo
 class DoodStreamResolver(BaseResolver):
     """Resolver for DoodStream URLs (dood.watch, dood.to, etc.)"""
 
@@ -92,7 +92,7 @@ class DoodStreamResolver(BaseResolver):
                 )
 
             fetch_referer = f"{parsed_url.scheme}://{parsed_url.netloc}/"
-            filename, size = await self._fetch_file_details(
+            filename, size, _ = await self._fetch_file_details(
                 direct_link,
                 headers={"Referer": fetch_referer},
             )

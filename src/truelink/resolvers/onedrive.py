@@ -8,7 +8,7 @@ from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
 
-
+# todo
 class OneDriveResolver(BaseResolver):
     """Resolver for OneDrive (1drv.ms) URLs"""
 
@@ -103,7 +103,7 @@ class OneDriveResolver(BaseResolver):
             size = json_resp.get("size")
 
             if not filename or size is None:
-                details_filename, details_size = await self._fetch_file_details(
+                details_filename, details_size, _ = await self._fetch_file_details(
                     direct_link,
                 )
                 if details_filename and not filename:

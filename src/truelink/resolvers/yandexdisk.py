@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import re
-
 from truelink.exceptions import ExtractionFailedException, InvalidURLException
 from truelink.types import FolderResult, LinkResult
-
 from .base import BaseResolver
+
+
+YANDEX_DISK_URL_PATTERN = re.compile(r"https?://(yadi\.sk|disk\.yandex\.(?:com|ru))/\S+")
 
 
 class YandexDiskResolver(BaseResolver):
@@ -13,74 +14,40 @@ class YandexDiskResolver(BaseResolver):
 
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve Yandex.Disk URL"""
+        if not YANDEX_DISK_URL_PATTERN.match(url):
+            raise InvalidURLException(f"Invalid Yandex.Disk URL format: {url}")
+
+        api_url = (
+            "https://cloud-api.yandex.net/v1/disk/public/resources/download"
+            f"?public_key={url}"
+        )
+
         try:
-            match = re.match(
-                r"https?://(yadi\.sk|disk\.yandex\.(?:com|ru))/\S+",
-                url,
-            )
-            if not match:
-                raise InvalidURLException(f"Invalid Yandex.Disk URL format: {url}")
-
-            public_key = url
-
-            api_url = f"https://cloud-api.yandex.net/v1/disk/public/resources/download?public_key={public_key}"
-
             async with await self._get(api_url) as response:
-                if response.status != 200:
-                    error_detail = "Unknown error"
-                    try:
-                        json_error = await response.json()
-                        error_detail = json_error.get("message", error_detail)
-                        if "description" in json_error:
-                            error_detail = json_error["description"]
-                    except Exception:
-                        pass
-                    raise ExtractionFailedException(
-                        f"Yandex API error ({response.status}): {error_detail}",
-                    )
-
                 json_data = await response.json()
 
-            if "href" not in json_data:
-                error_msg = json_data.get(
-                    "message",
-                    "Direct download link (href) not found in Yandex API response.",
-                )
-                if "description" in json_data:
-                    error_msg = json_data["description"]
-                raise ExtractionFailedException(error_msg)
+                if response.status != 200:
+                    error_msg = json_data.get("description") or json_data.get("message") or "Unknown error"
+                    raise ExtractionFailedException(f"Yandex API error ({response.status}): {error_msg}")
 
-            direct_link = json_data["href"]
+                direct_link = json_data.get("href")
+                if not direct_link:
+                    error_msg = json_data.get("description") or json_data.get("message") \
+                                or "Direct download link (href) not found in Yandex API response."
+                    raise ExtractionFailedException(error_msg)
 
-            filename = json_data.get("name")
-            size = None
+            filename, size, mime_type = await self._fetch_file_details(direct_link)
+            return LinkResult(url=direct_link, filename=filename, mime_type=mime_type, size=size)
 
-            (
-                filename_from_details,
-                size_from_details,
-            ) = await self._fetch_file_details(direct_link)
-
-            if filename_from_details:
-                filename = filename_from_details
-            if size_from_details is not None:
-                size = size_from_details
-
-            if not filename:
-                try:
-                    parsed_original_url = self.session._prepare_url(url)
-                    [s for s in parsed_original_url.path.split("/") if s]
-                except Exception:
-                    pass
-
-            return LinkResult(url=direct_link, filename=filename, size=size)
-
-        except Exception as e:
-            if isinstance(e, ExtractionFailedException | InvalidURLException):
-                raise
-            if isinstance(e, KeyError) and "href" in str(e):
+        except (InvalidURLException, ExtractionFailedException):
+            raise
+        except KeyError as e:
+            if "href" in str(e):
                 raise ExtractionFailedException(
-                    "Yandex error: File not found or download limit reached (missing 'href').",
+                    "Yandex error: File not found or download limit reached (missing 'href')."
                 ) from e
+            raise
+        except Exception as e:
             raise ExtractionFailedException(
-                f"Failed to resolve Yandex.Disk URL '{url}': {e!s}",
+                f"Failed to resolve Yandex.Disk URL '{url}': {e!s}"
             ) from e

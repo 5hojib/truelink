@@ -10,7 +10,7 @@ from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
 
-
+# todo
 class HxFileResolver(BaseResolver):
     """Resolver for HxFile.co URLs"""
 
@@ -87,7 +87,7 @@ class HxFileResolver(BaseResolver):
             direct_link = direct_link_elements[0]
 
             fetch_headers = {"Referer": normalized_url}
-            filename, size = await self._fetch_file_details(
+            filename, size, _ = await self._fetch_file_details(
                 direct_link,
                 headers=fetch_headers,
             )

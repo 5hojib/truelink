@@ -9,7 +9,7 @@ from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
 
-
+# todo
 class PCloudResolver(BaseResolver):
     """Resolver for pCloud.link URLs"""
 
@@ -105,7 +105,7 @@ class PCloudResolver(BaseResolver):
 
             direct_link = unquote(direct_link)
 
-            filename, size = await self._fetch_file_details(
+            filename, size, _ = await self._fetch_file_details(
                 direct_link,
                 headers={"Referer": url},
             )

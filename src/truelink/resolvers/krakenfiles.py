@@ -9,7 +9,7 @@ from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
 
-
+# todo
 class KrakenFilesResolver(BaseResolver):
     """Resolver for KrakenFiles.com URLs"""
 
@@ -94,7 +94,7 @@ class KrakenFilesResolver(BaseResolver):
 
             direct_link = json_response["url"]
 
-            filename, size = await self._fetch_file_details(
+            filename, size, _ = await self._fetch_file_details(
                 direct_link,
                 headers={"Referer": url},
             )

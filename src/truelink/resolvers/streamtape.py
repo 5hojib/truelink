@@ -52,14 +52,11 @@ class StreamtapeResolver(BaseResolver):
 
             suffix = match[-1]
             direct_url = f"{parsed_url.scheme}://{parsed_url.netloc}/get_video?id={_id}{suffix}"
-            filename, size = await self._fetch_file_details(
+            filename, size, mime_type = await self._fetch_file_details(
                 direct_url, headers={"Referer": url}
             )
 
-            if not filename:
-                filename = _id
-
-            return LinkResult(url=direct_url, filename=filename, size=size)
+            return LinkResult(url=direct_url, filename=filename, mime_type=mime_type, size=size)
 
         except Exception as e:
             if isinstance(e, ExtractionFailedException | InvalidURLException):

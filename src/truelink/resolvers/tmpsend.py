@@ -37,14 +37,14 @@ class TmpSendResolver(BaseResolver):
             direct_download_link = f"https://tmpsend.com/download?d={file_id}"
 
             headers = {"Referer": referer_url}
-            filename, size = await self._fetch_file_details(
+            filename, size, mime_type = await self._fetch_file_details(
                 direct_download_link,
                 headers=headers,
             )
 
             return LinkResult(
                 url=direct_download_link,
-                filename=filename,
+                filename=filename, mime_type=mime_type,
                 size=size,
                 headers=headers,
             )

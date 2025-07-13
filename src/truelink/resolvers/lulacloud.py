@@ -22,9 +22,9 @@ class LulaCloudResolver(BaseResolver):
                 if not location:
                     raise ExtractionFailedException("No redirect location found")
 
-                filename, size = await self._fetch_file_details(location)
+                filename, size, mime_type = await self._fetch_file_details(location)
 
-                return LinkResult(url=location, filename=filename, size=size)
+                return LinkResult(url=location, filename=filename, mime_type=mime_type, size=size)
 
         except Exception as e:
             raise ExtractionFailedException(

@@ -7,7 +7,7 @@ from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
 
-
+# ToDo
 class WeTransferResolver(BaseResolver):
     """Resolver for WeTransfer.com URLs"""
 
@@ -85,7 +85,7 @@ class WeTransferResolver(BaseResolver):
                 )
                 size_api = json_resp_data.get("size")
 
-                header_filename, header_size = await self._fetch_file_details(
+                header_filename, header_size, _ = await self._fetch_file_details(
                     direct_link,
                 )
 

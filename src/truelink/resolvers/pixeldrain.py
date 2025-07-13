@@ -50,12 +50,9 @@ class PixelDrainResolver(BaseResolver):
 
             direct_link = temp_base_url + file_or_list_code
 
-            filename, size = await self._fetch_file_details(direct_link)
+            filename, size, mime_type = await self._fetch_file_details(direct_link)
 
-            if not filename:
-                filename = file_or_list_code
-
-            return LinkResult(url=direct_link, filename=filename, size=size)
+            return LinkResult(url=direct_link, filename=filename, mime_type=mime_type, size=size)
 
         except Exception as e:
             if isinstance(e, ExtractionFailedException | InvalidURLException):

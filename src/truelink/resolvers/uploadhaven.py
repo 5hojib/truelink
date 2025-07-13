@@ -9,7 +9,7 @@ from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
 
-
+# ToDo
 class UploadHavenResolver(BaseResolver):
     """Resolver for UploadHaven URLs"""
 
@@ -64,7 +64,7 @@ class UploadHavenResolver(BaseResolver):
                     "Found link element but href is missing",
                 )
 
-            filename, size = await self._fetch_file_details(direct_link)
+            filename, size, _ = await self._fetch_file_details(direct_link)
             return LinkResult(url=direct_link, filename=filename, size=size)
 
         except Exception as e:

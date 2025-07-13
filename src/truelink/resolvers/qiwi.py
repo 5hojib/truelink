@@ -9,7 +9,7 @@ from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
 
-
+# todo
 class QiwiResolver(BaseResolver):
     """Resolver for Qiwi.gg URLs"""
 
@@ -70,7 +70,7 @@ class QiwiResolver(BaseResolver):
 
             direct_link = f"https://spyderrock.com/{file_id}.{file_extension}"
 
-            filename_from_details, size = await self._fetch_file_details(
+            filename_from_details, size, _ = await self._fetch_file_details(
                 direct_link,
                 headers={"Referer": url},
             )

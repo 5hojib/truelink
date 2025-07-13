@@ -95,11 +95,11 @@ class MediaFileResolver(BaseResolver):
             else:
                 direct_link = token_links[1]
 
-            filename, size = await self._fetch_file_details(
+            filename, size, mime_type = await self._fetch_file_details(
                 direct_link,
                 headers={"Referer": download_url},
             )
-            return LinkResult(url=direct_link, filename=filename, size=size)
+            return LinkResult(url=direct_link, filename=filename, mime_type=mime_type, size=size)
 
         except Exception as e:
             if isinstance(e, ExtractionFailedException):
