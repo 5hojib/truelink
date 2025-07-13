@@ -98,16 +98,16 @@ The `resolve()` method returns one of two result types:
     "title": "Folder Name",
     "contents": [
         {
+            "url": "direct_download_url_1",
             "filename": "file1.pdf",
             "mime_type": "application/pdf",
-            "url": "direct_download_url_1",
             "size": 1234567,
             "path": "subfolder/file1.pdf"
         },
         {
+            "url": "direct_download_url_2",
             "filename": "file2.jpg",
             "mime_type": "image/jpeg",
-            "url": "direct_download_url_2",
             "size": 987654,
             "path": "file2.jpg"
         }

@@ -115,9 +115,9 @@ class BuzzHeavierResolver(BaseResolver):
 
                     contents.append(
                         FileItem(
+                            url=download_url,
                             filename=actual_filename,
                             mime_type=mime_type,
-                            url=download_url,
                             size=item_size,
                             path="",
                         ),

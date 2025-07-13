@@ -309,8 +309,8 @@ class MediaFireResolver(BaseResolver):
                                 item_size = int(size_str)
 
                         file_item = FileItem(
-                            filename=item_filename,
                             url=link_result.url,
+                            filename=item_filename,
                             size=item_size,
                             path=ospath.join(current_path_prefix, item_filename),
                         )

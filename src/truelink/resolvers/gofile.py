@@ -110,9 +110,9 @@ class GoFileResolver(BaseResolver):
                 )
                 self._folder_details.contents.append(
                     FileItem(
+                        url=url,
                         filename=filename,
                         mime_type=mime_type,
-                        url=url,
                         size=size,
                         path=current_path,
                     )

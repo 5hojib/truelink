@@ -8,7 +8,7 @@ from truelink.types import FileItem, FolderResult, LinkResult
 
 from .base import BaseResolver
 
-
+# todo
 class LinkBoxResolver(BaseResolver):
     """Resolver for LinkBox.to URLs"""
 
@@ -78,7 +78,7 @@ class LinkBoxResolver(BaseResolver):
                 size = int(size_val)
 
         self._folder_details.contents.append(
-            FileItem(filename=filename, url=item_url, size=size, path=""),
+            FileItem(url=item_url, filename=filename, size=size, path=""),
         )
         if size:
             self._folder_details.total_size += size
@@ -169,8 +169,8 @@ class LinkBoxResolver(BaseResolver):
 
                 self._folder_details.contents.append(
                     FileItem(
-                        filename=filename,
                         url=item_url,
+                        filename=filename,
                         size=size,
                         path=current_path,
                     ),

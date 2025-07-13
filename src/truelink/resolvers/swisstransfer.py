@@ -183,8 +183,8 @@ class SwissTransferResolver(BaseResolver):
             item_download_url = f"https://{download_host}/api/download/{transfer_id}/{file_uuid}?token={token}"
             folder_contents.append(
                 FileItem(
-                    filename=file_display_name,
                     url=item_download_url,
+                    filename=file_display_name,
                     size=file_size_bytes,
                     path="",
                 ),

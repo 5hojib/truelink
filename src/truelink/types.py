@@ -39,7 +39,7 @@ class LinkResult(PrettyPrintDataClass):
 
     url: str
     filename: str | None = None
-    mime_type: str | None
+    mime_type: str | None = None
     size: int | None = None
     headers: dict | None = None
 
@@ -48,9 +48,9 @@ class LinkResult(PrettyPrintDataClass):
 class FileItem(PrettyPrintDataClass):
     """Individual file in a folder"""
 
-    filename: str
-    mime_type: str | None
     url: str
+    filename: str
+    mime_type: str | None = None
     size: int | None = None
     path: str = ""
 

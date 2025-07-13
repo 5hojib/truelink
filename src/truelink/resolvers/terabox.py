@@ -87,8 +87,8 @@ class TeraboxResolver(BaseResolver):
 
                 folder_contents.append(
                     FileItem(
-                        filename=item_filename,
                         url=item_link,
+                        filename=item_filename,
                         size=item_size,
                         path="",
                     ),
