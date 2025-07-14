@@ -10,17 +10,27 @@ Main functions for type guessing:
 - guess_all_extensions(type, strict=True) -- guess all extensions for a MIME type
 """
 
+from __future__ import annotations
+
 import os
-import sys
-import urllib.parse
 import posixpath
-import warnings
+import urllib.parse
 
 __all__ = [
-    "knownfiles", "inited", "MimeTypes",
-    "guess_type", "guess_file_type", "guess_all_extensions", "guess_extension",
-    "add_type", "init", "read_mime_types",
-    "suffix_map", "encodings_map", "types_map", "common_types"
+    "MimeTypes",
+    "add_type",
+    "common_types",
+    "encodings_map",
+    "guess_all_extensions",
+    "guess_extension",
+    "guess_file_type",
+    "guess_type",
+    "init",
+    "inited",
+    "knownfiles",
+    "read_mime_types",
+    "suffix_map",
+    "types_map",
 ]
 
 # Try to import Windows registry support
@@ -36,14 +46,14 @@ except ImportError:
 
 knownfiles = [
     "/etc/mime.types",
-    "/etc/httpd/mime.types",                    # Mac OS X
-    "/etc/httpd/conf/mime.types",               # Apache
-    "/etc/apache/mime.types",                   # Apache 1
-    "/etc/apache2/mime.types",                  # Apache 2
+    "/etc/httpd/mime.types",  # Mac OS X
+    "/etc/httpd/conf/mime.types",  # Apache
+    "/etc/apache/mime.types",  # Apache 1
+    "/etc/apache2/mime.types",  # Apache 2
     "/usr/local/etc/httpd/conf/mime.types",
     "/usr/local/lib/netscape/mime.types",
-    "/usr/local/etc/httpd/conf/mime.types",     # Apache 1.2
-    "/usr/local/etc/mime.types",                # Apache 1.3
+    "/usr/local/etc/httpd/conf/mime.types",  # Apache 1.2
+    "/usr/local/etc/mime.types",  # Apache 1.3
 ]
 
 inited = False
@@ -60,19 +70,19 @@ class MimeTypes:
         self.suffix_map = _suffix_map_default.copy()
         self.types_map = ({}, {})  # dict for (non-strict, strict)
         self.types_map_inv = ({}, {})
-        for (ext, type) in _types_map_default.items():
+        for ext, type in _types_map_default.items():
             self.add_type(type, ext, True)
-        for (ext, type) in _common_types_default.items():
+        for ext, type in _common_types_default.items():
             self.add_type(type, ext, False)
         for name in filenames:
             self.read(name, strict)
 
     def add_type(self, type, ext, strict=True):
         """Add a mapping between a type and an extension."""
-        if ext and not ext.startswith('.'):
+        if ext and not ext.startswith("."):
             # Handle deprecated undotted extensions gracefully
             pass
-        
+
         if not type:
             return
         self.types_map[strict][ext] = type
@@ -89,18 +99,15 @@ class MimeTypes:
             url = p.path
         else:
             return self.guess_file_type(url, strict=strict)
-        
-        if scheme == 'data':
-            comma = url.find(',')
+
+        if scheme == "data":
+            comma = url.find(",")
             if comma < 0:
                 return None, None
-            semi = url.find(';', 0, comma)
-            if semi >= 0:
-                type = url[:semi]
-            else:
-                type = url[:comma]
-            if '=' in type or '/' not in type:
-                type = 'text/plain'
+            semi = url.find(";", 0, comma)
+            type = url[:semi] if semi >= 0 else url[:comma]
+            if "=" in type or "/" not in type:
+                type = "text/plain"
             return type, None
 
         return self._guess_file_type(url, strict, posixpath.splitext)
@@ -117,25 +124,24 @@ class MimeTypes:
         while ext_lower in self.suffix_map:
             base, ext = splitext(base + self.suffix_map[ext_lower])
             ext_lower = ext.lower()
-        
+
         if ext in self.encodings_map:
             encoding = self.encodings_map[ext]
             base, ext = splitext(base)
         else:
             encoding = None
-        
+
         ext = ext.lower()
         types_map = self.types_map[True]
         if ext in types_map:
             return types_map[ext], encoding
-        elif strict:
+        if strict:
             return None, encoding
-        
+
         types_map = self.types_map[False]
         if ext in types_map:
             return types_map[ext], encoding
-        else:
-            return None, encoding
+        return None, encoding
 
     def guess_all_extensions(self, type, strict=True):
         """Guess all extensions for a file based on its MIME type."""
@@ -156,7 +162,7 @@ class MimeTypes:
 
     def read(self, filename, strict=True):
         """Read a single mime.types-format file."""
-        with open(filename, encoding='utf-8') as fp:
+        with open(filename, encoding="utf-8") as fp:
             self.readfp(fp, strict)
 
     def readfp(self, fp, strict=True):
@@ -164,14 +170,14 @@ class MimeTypes:
         for line in fp:
             words = line.split()
             for i in range(len(words)):
-                if words[i][0] == '#':
+                if words[i][0] == "#":
                     del words[i:]
                     break
             if not words:
                 continue
             type, suffixes = words[0], words[1:]
             for suff in suffixes:
-                self.add_type(type, '.' + suff, strict)
+                self.add_type(type, "." + suff, strict)
 
     def read_windows_registry(self, strict=True):
         """Load the MIME types database from Windows registry."""
@@ -180,7 +186,9 @@ class MimeTypes:
 
         add_type = self.add_type
         if strict:
-            add_type = lambda type, ext: self.add_type(type, ext, True)
+
+            def add_type(type, ext):
+                return self.add_type(type, ext, True)
 
         if _mimetypes_read_windows_registry:
             _mimetypes_read_windows_registry(add_type)
@@ -197,18 +205,19 @@ class MimeTypes:
                 except OSError:
                     break
                 else:
-                    if '\0' not in ctype:
+                    if "\0" not in ctype:
                         yield ctype
                 i += 1
 
-        with _winreg.OpenKey(_winreg.HKEY_CLASSES_ROOT, '') as hkcr:
+        with _winreg.OpenKey(_winreg.HKEY_CLASSES_ROOT, "") as hkcr:
             for subkeyname in enum_types(hkcr):
                 try:
                     with _winreg.OpenKey(hkcr, subkeyname) as subkey:
                         if not subkeyname.startswith("."):
                             continue
                         mimetype, datatype = _winreg.QueryValueEx(
-                            subkey, 'Content Type')
+                            subkey, "Content Type"
+                        )
                         if datatype != _winreg.REG_SZ:
                             continue
                         add_type(mimetype, subkeyname)
@@ -261,17 +270,14 @@ def init(files=None):
         db = MimeTypes()
         db.read_windows_registry()
 
-        if files is None:
-            files = knownfiles
-        else:
-            files = knownfiles + list(files)
+        files = knownfiles if files is None else knownfiles + list(files)
     else:
         db = _db
 
     for file in files:
         if os.path.isfile(file):
             db.read(file)
-    
+
     encodings_map = db.encodings_map
     suffix_map = db.suffix_map
     types_map = db.types_map[True]
@@ -282,7 +288,7 @@ def init(files=None):
 def read_mime_types(file):
     """Read a single mime.types-format file and return types mapping."""
     try:
-        f = open(file, encoding='utf-8')
+        f = open(file, encoding="utf-8")
     except OSError:
         return None
     with f:
@@ -299,235 +305,235 @@ def _default_mime_types():
     global common_types, _common_types_default
 
     suffix_map = _suffix_map_default = {
-        '.svgz': '.svg.gz',
-        '.tgz': '.tar.gz',
-        '.taz': '.tar.gz',
-        '.tz': '.tar.gz',
-        '.tbz2': '.tar.bz2',
-        '.txz': '.tar.xz',
+        ".svgz": ".svg.gz",
+        ".tgz": ".tar.gz",
+        ".taz": ".tar.gz",
+        ".tz": ".tar.gz",
+        ".tbz2": ".tar.bz2",
+        ".txz": ".tar.xz",
     }
 
     encodings_map = _encodings_map_default = {
-        '.gz': 'gzip',
-        '.Z': 'compress',
-        '.bz2': 'bzip2',
-        '.xz': 'xz',
-        '.br': 'br',
+        ".gz": "gzip",
+        ".Z": "compress",
+        ".bz2": "bzip2",
+        ".xz": "xz",
+        ".br": "br",
     }
 
     # Enhanced types from Python 3.14
     types_map = _types_map_default = {
-        '.js': 'text/javascript',
-        '.mjs': 'text/javascript',
-        '.epub': 'application/epub+zip',
-        '.gz': 'application/gzip',
-        '.json': 'application/json',
-        '.webmanifest': 'application/manifest+json',
-        '.doc': 'application/msword',
-        '.dot': 'application/msword',
-        '.wiz': 'application/msword',
-        '.nq': 'application/n-quads',
-        '.nt': 'application/n-triples',
-        '.bin': 'application/octet-stream',
-        '.a': 'application/octet-stream',
-        '.dll': 'application/octet-stream',
-        '.exe': 'application/octet-stream',
-        '.o': 'application/octet-stream',
-        '.obj': 'application/octet-stream',
-        '.so': 'application/octet-stream',
-        '.oda': 'application/oda',
-        '.ogx': 'application/ogg',
-        '.pdf': 'application/pdf',
-        '.p7c': 'application/pkcs7-mime',
-        '.ps': 'application/postscript',
-        '.ai': 'application/postscript',
-        '.eps': 'application/postscript',
-        '.trig': 'application/trig',
-        '.m3u': 'application/vnd.apple.mpegurl',
-        '.m3u8': 'application/vnd.apple.mpegurl',
-        '.xls': 'application/vnd.ms-excel',
-        '.xlb': 'application/vnd.ms-excel',
-        '.eot': 'application/vnd.ms-fontobject',
-        '.ppt': 'application/vnd.ms-powerpoint',
-        '.pot': 'application/vnd.ms-powerpoint',
-        '.ppa': 'application/vnd.ms-powerpoint',
-        '.pps': 'application/vnd.ms-powerpoint',
-        '.pwz': 'application/vnd.ms-powerpoint',
-        '.odg': 'application/vnd.oasis.opendocument.graphics',
-        '.odp': 'application/vnd.oasis.opendocument.presentation',
-        '.ods': 'application/vnd.oasis.opendocument.spreadsheet',
-        '.odt': 'application/vnd.oasis.opendocument.text',
-        '.pptx': 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-        '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        '.rar': 'application/vnd.rar',
-        '.wasm': 'application/wasm',
-        '.7z': 'application/x-7z-compressed',
-        '.bcpio': 'application/x-bcpio',
-        '.cpio': 'application/x-cpio',
-        '.csh': 'application/x-csh',
-        '.deb': 'application/x-debian-package',
-        '.dvi': 'application/x-dvi',
-        '.gtar': 'application/x-gtar',
-        '.hdf': 'application/x-hdf',
-        '.h5': 'application/x-hdf5',
-        '.latex': 'application/x-latex',
-        '.mif': 'application/x-mif',
-        '.cdf': 'application/x-netcdf',
-        '.nc': 'application/x-netcdf',
-        '.p12': 'application/x-pkcs12',
-        '.php': 'application/x-httpd-php',
-        '.pfx': 'application/x-pkcs12',
-        '.ram': 'application/x-pn-realaudio',
-        '.pyc': 'application/x-python-code',
-        '.pyo': 'application/x-python-code',
-        '.rpm': 'application/x-rpm',
-        '.sh': 'application/x-sh',
-        '.shar': 'application/x-shar',
-        '.swf': 'application/x-shockwave-flash',
-        '.sv4cpio': 'application/x-sv4cpio',
-        '.sv4crc': 'application/x-sv4crc',
-        '.tar': 'application/x-tar',
-        '.tcl': 'application/x-tcl',
-        '.tex': 'application/x-tex',
-        '.texi': 'application/x-texinfo',
-        '.texinfo': 'application/x-texinfo',
-        '.roff': 'application/x-troff',
-        '.t': 'application/x-troff',
-        '.tr': 'application/x-troff',
-        '.man': 'application/x-troff-man',
-        '.me': 'application/x-troff-me',
-        '.ms': 'application/x-troff-ms',
-        '.ustar': 'application/x-ustar',
-        '.src': 'application/x-wais-source',
-        '.xsl': 'application/xml',
-        '.rdf': 'application/xml',
-        '.wsdl': 'application/xml',
-        '.xpdl': 'application/xml',
-        '.yaml': 'application/yaml',
-        '.yml': 'application/yaml',
-        '.zip': 'application/zip',
-        '.3gp': 'audio/3gpp',
-        '.3gpp': 'audio/3gpp',
-        '.3g2': 'audio/3gpp2',
-        '.3gpp2': 'audio/3gpp2',
-        '.aac': 'audio/aac',
-        '.adts': 'audio/aac',
-        '.loas': 'audio/aac',
-        '.ass': 'audio/aac',
-        '.au': 'audio/basic',
-        '.snd': 'audio/basic',
-        '.flac': 'audio/flac',
-        '.mka': 'audio/matroska',
-        '.m4a': 'audio/mp4',
-        '.mp3': 'audio/mpeg',
-        '.mp2': 'audio/mpeg',
-        '.ogg': 'audio/ogg',
-        '.opus': 'audio/opus',
-        '.aif': 'audio/x-aiff',
-        '.aifc': 'audio/x-aiff',
-        '.aiff': 'audio/x-aiff',
-        '.ra': 'audio/x-pn-realaudio',
-        '.wav': 'audio/vnd.wave',
-        '.otf': 'font/otf',
-        '.ttf': 'font/ttf',
-        '.weba': 'audio/webm',
-        '.woff': 'font/woff',
-        '.woff2': 'font/woff2',
-        '.avif': 'image/avif',
-        '.bmp': 'image/bmp',
-        '.emf': 'image/emf',
-        '.fits': 'image/fits',
-        '.g3': 'image/g3fax',
-        '.gif': 'image/gif',
-        '.ief': 'image/ief',
-        '.jp2': 'image/jp2',
-        '.jpg': 'image/jpeg',
-        '.jpe': 'image/jpeg',
-        '.jpeg': 'image/jpeg',
-        '.jpm': 'image/jpm',
-        '.jpx': 'image/jpx',
-        '.heic': 'image/heic',
-        '.heif': 'image/heif',
-        '.png': 'image/png',
-        '.svg': 'image/svg+xml',
-        '.t38': 'image/t38',
-        '.tiff': 'image/tiff',
-        '.tif': 'image/tiff',
-        '.tfx': 'image/tiff-fx',
-        '.ico': 'image/vnd.microsoft.icon',
-        '.webp': 'image/webp',
-        '.wmf': 'image/wmf',
-        '.ras': 'image/x-cmu-raster',
-        '.pnm': 'image/x-portable-anymap',
-        '.pbm': 'image/x-portable-bitmap',
-        '.pgm': 'image/x-portable-graymap',
-        '.ppm': 'image/x-portable-pixmap',
-        '.rgb': 'image/x-rgb',
-        '.xbm': 'image/x-xbitmap',
-        '.xpm': 'image/x-xpixmap',
-        '.xwd': 'image/x-xwindowdump',
-        '.eml': 'message/rfc822',
-        '.mht': 'message/rfc822',
-        '.mhtml': 'message/rfc822',
-        '.nws': 'message/rfc822',
-        '.gltf': 'model/gltf+json',
-        '.glb': 'model/gltf-binary',
-        '.stl': 'model/stl',
-        '.css': 'text/css',
-        '.csv': 'text/csv',
-        '.html': 'text/html',
-        '.htm': 'text/html',
-        '.md': 'text/markdown',
-        '.markdown': 'text/markdown',
-        '.n3': 'text/n3',
-        '.txt': 'text/plain',
-        '.bat': 'text/plain',
-        '.c': 'text/plain',
-        '.h': 'text/plain',
-        '.ksh': 'text/plain',
-        '.pl': 'text/plain',
-        '.srt': 'text/plain',
-        '.rtx': 'text/richtext',
-        '.rtf': 'text/rtf',
-        '.tsv': 'text/tab-separated-values',
-        '.vtt': 'text/vtt',
-        '.py': 'text/x-python',
-        '.rst': 'text/x-rst',
-        '.etx': 'text/x-setext',
-        '.sgm': 'text/x-sgml',
-        '.sgml': 'text/x-sgml',
-        '.vcf': 'text/x-vcard',
-        '.xml': 'text/xml',
-        '.mkv': 'video/matroska',
-        '.mk3d': 'video/matroska-3d',
-        '.mp4': 'video/mp4',
-        '.mpeg': 'video/mpeg',
-        '.m1v': 'video/mpeg',
-        '.mpa': 'video/mpeg',
-        '.mpe': 'video/mpeg',
-        '.mpg': 'video/mpeg',
-        '.ogv': 'video/ogg',
-        '.mov': 'video/quicktime',
-        '.qt': 'video/quicktime',
-        '.webm': 'video/webm',
-        '.avi': 'video/vnd.avi',
-        '.m4v': 'video/x-m4v',
-        '.wmv': 'video/x-ms-wmv',
-        '.movie': 'video/x-sgi-movie',
+        ".js": "text/javascript",
+        ".mjs": "text/javascript",
+        ".epub": "application/epub+zip",
+        ".gz": "application/gzip",
+        ".json": "application/json",
+        ".webmanifest": "application/manifest+json",
+        ".doc": "application/msword",
+        ".dot": "application/msword",
+        ".wiz": "application/msword",
+        ".nq": "application/n-quads",
+        ".nt": "application/n-triples",
+        ".bin": "application/octet-stream",
+        ".a": "application/octet-stream",
+        ".dll": "application/octet-stream",
+        ".exe": "application/octet-stream",
+        ".o": "application/octet-stream",
+        ".obj": "application/octet-stream",
+        ".so": "application/octet-stream",
+        ".oda": "application/oda",
+        ".ogx": "application/ogg",
+        ".pdf": "application/pdf",
+        ".p7c": "application/pkcs7-mime",
+        ".ps": "application/postscript",
+        ".ai": "application/postscript",
+        ".eps": "application/postscript",
+        ".trig": "application/trig",
+        ".m3u": "application/vnd.apple.mpegurl",
+        ".m3u8": "application/vnd.apple.mpegurl",
+        ".xls": "application/vnd.ms-excel",
+        ".xlb": "application/vnd.ms-excel",
+        ".eot": "application/vnd.ms-fontobject",
+        ".ppt": "application/vnd.ms-powerpoint",
+        ".pot": "application/vnd.ms-powerpoint",
+        ".ppa": "application/vnd.ms-powerpoint",
+        ".pps": "application/vnd.ms-powerpoint",
+        ".pwz": "application/vnd.ms-powerpoint",
+        ".odg": "application/vnd.oasis.opendocument.graphics",
+        ".odp": "application/vnd.oasis.opendocument.presentation",
+        ".ods": "application/vnd.oasis.opendocument.spreadsheet",
+        ".odt": "application/vnd.oasis.opendocument.text",
+        ".pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        ".rar": "application/vnd.rar",
+        ".wasm": "application/wasm",
+        ".7z": "application/x-7z-compressed",
+        ".bcpio": "application/x-bcpio",
+        ".cpio": "application/x-cpio",
+        ".csh": "application/x-csh",
+        ".deb": "application/x-debian-package",
+        ".dvi": "application/x-dvi",
+        ".gtar": "application/x-gtar",
+        ".hdf": "application/x-hdf",
+        ".h5": "application/x-hdf5",
+        ".latex": "application/x-latex",
+        ".mif": "application/x-mif",
+        ".cdf": "application/x-netcdf",
+        ".nc": "application/x-netcdf",
+        ".p12": "application/x-pkcs12",
+        ".php": "application/x-httpd-php",
+        ".pfx": "application/x-pkcs12",
+        ".ram": "application/x-pn-realaudio",
+        ".pyc": "application/x-python-code",
+        ".pyo": "application/x-python-code",
+        ".rpm": "application/x-rpm",
+        ".sh": "application/x-sh",
+        ".shar": "application/x-shar",
+        ".swf": "application/x-shockwave-flash",
+        ".sv4cpio": "application/x-sv4cpio",
+        ".sv4crc": "application/x-sv4crc",
+        ".tar": "application/x-tar",
+        ".tcl": "application/x-tcl",
+        ".tex": "application/x-tex",
+        ".texi": "application/x-texinfo",
+        ".texinfo": "application/x-texinfo",
+        ".roff": "application/x-troff",
+        ".t": "application/x-troff",
+        ".tr": "application/x-troff",
+        ".man": "application/x-troff-man",
+        ".me": "application/x-troff-me",
+        ".ms": "application/x-troff-ms",
+        ".ustar": "application/x-ustar",
+        ".src": "application/x-wais-source",
+        ".xsl": "application/xml",
+        ".rdf": "application/xml",
+        ".wsdl": "application/xml",
+        ".xpdl": "application/xml",
+        ".yaml": "application/yaml",
+        ".yml": "application/yaml",
+        ".zip": "application/zip",
+        ".3gp": "audio/3gpp",
+        ".3gpp": "audio/3gpp",
+        ".3g2": "audio/3gpp2",
+        ".3gpp2": "audio/3gpp2",
+        ".aac": "audio/aac",
+        ".adts": "audio/aac",
+        ".loas": "audio/aac",
+        ".ass": "audio/aac",
+        ".au": "audio/basic",
+        ".snd": "audio/basic",
+        ".flac": "audio/flac",
+        ".mka": "audio/matroska",
+        ".m4a": "audio/mp4",
+        ".mp3": "audio/mpeg",
+        ".mp2": "audio/mpeg",
+        ".ogg": "audio/ogg",
+        ".opus": "audio/opus",
+        ".aif": "audio/x-aiff",
+        ".aifc": "audio/x-aiff",
+        ".aiff": "audio/x-aiff",
+        ".ra": "audio/x-pn-realaudio",
+        ".wav": "audio/vnd.wave",
+        ".otf": "font/otf",
+        ".ttf": "font/ttf",
+        ".weba": "audio/webm",
+        ".woff": "font/woff",
+        ".woff2": "font/woff2",
+        ".avif": "image/avif",
+        ".bmp": "image/bmp",
+        ".emf": "image/emf",
+        ".fits": "image/fits",
+        ".g3": "image/g3fax",
+        ".gif": "image/gif",
+        ".ief": "image/ief",
+        ".jp2": "image/jp2",
+        ".jpg": "image/jpeg",
+        ".jpe": "image/jpeg",
+        ".jpeg": "image/jpeg",
+        ".jpm": "image/jpm",
+        ".jpx": "image/jpx",
+        ".heic": "image/heic",
+        ".heif": "image/heif",
+        ".png": "image/png",
+        ".svg": "image/svg+xml",
+        ".t38": "image/t38",
+        ".tiff": "image/tiff",
+        ".tif": "image/tiff",
+        ".tfx": "image/tiff-fx",
+        ".ico": "image/vnd.microsoft.icon",
+        ".webp": "image/webp",
+        ".wmf": "image/wmf",
+        ".ras": "image/x-cmu-raster",
+        ".pnm": "image/x-portable-anymap",
+        ".pbm": "image/x-portable-bitmap",
+        ".pgm": "image/x-portable-graymap",
+        ".ppm": "image/x-portable-pixmap",
+        ".rgb": "image/x-rgb",
+        ".xbm": "image/x-xbitmap",
+        ".xpm": "image/x-xpixmap",
+        ".xwd": "image/x-xwindowdump",
+        ".eml": "message/rfc822",
+        ".mht": "message/rfc822",
+        ".mhtml": "message/rfc822",
+        ".nws": "message/rfc822",
+        ".gltf": "model/gltf+json",
+        ".glb": "model/gltf-binary",
+        ".stl": "model/stl",
+        ".css": "text/css",
+        ".csv": "text/csv",
+        ".html": "text/html",
+        ".htm": "text/html",
+        ".md": "text/markdown",
+        ".markdown": "text/markdown",
+        ".n3": "text/n3",
+        ".txt": "text/plain",
+        ".bat": "text/plain",
+        ".c": "text/plain",
+        ".h": "text/plain",
+        ".ksh": "text/plain",
+        ".pl": "text/plain",
+        ".srt": "text/plain",
+        ".rtx": "text/richtext",
+        ".rtf": "text/rtf",
+        ".tsv": "text/tab-separated-values",
+        ".vtt": "text/vtt",
+        ".py": "text/x-python",
+        ".rst": "text/x-rst",
+        ".etx": "text/x-setext",
+        ".sgm": "text/x-sgml",
+        ".sgml": "text/x-sgml",
+        ".vcf": "text/x-vcard",
+        ".xml": "text/xml",
+        ".mkv": "video/matroska",
+        ".mk3d": "video/matroska-3d",
+        ".mp4": "video/mp4",
+        ".mpeg": "video/mpeg",
+        ".m1v": "video/mpeg",
+        ".mpa": "video/mpeg",
+        ".mpe": "video/mpeg",
+        ".mpg": "video/mpeg",
+        ".ogv": "video/ogg",
+        ".mov": "video/quicktime",
+        ".qt": "video/quicktime",
+        ".webm": "video/webm",
+        ".avi": "video/vnd.avi",
+        ".m4v": "video/x-m4v",
+        ".wmv": "video/x-ms-wmv",
+        ".movie": "video/x-sgi-movie",
     }
 
     # Common non-standard types
     common_types = _common_types_default = {
-        '.rtf': 'application/rtf',
-        '.apk': 'application/vnd.android.package-archive',
-        '.midi': 'audio/midi',
-        '.mid': 'audio/midi',
-        '.jpg': 'image/jpg',
-        '.pict': 'image/pict',
-        '.pct': 'image/pict',
-        '.pic': 'image/pict',
-        '.xul': 'text/xul',
+        ".rtf": "application/rtf",
+        ".apk": "application/vnd.android.package-archive",
+        ".midi": "audio/midi",
+        ".mid": "audio/midi",
+        ".jpg": "image/jpg",
+        ".pict": "image/pict",
+        ".pct": "image/pict",
+        ".pic": "image/pict",
+        ".xul": "text/xul",
     }
 
 
