@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-import logging
-import mimetypes
+import .mimetypes
 import os
 from urllib.parse import urlparse
 
@@ -45,11 +44,7 @@ class LinkBoxResolver(BaseResolver):
         if not self._folder.contents:
             raise ExtractionFailedException("LinkBox: No files found in folder.")
 
-        logging.info(len(self._folder.contents))
-        if (
-            len(self._folder.contents) == 1
-            and self._folder.title == self._folder.contents[0].filename
-        ):
+        if len(self._folder.contents) == 1:
             file = self._folder.contents[0]
             return LinkResult(
                 url=file.url,
