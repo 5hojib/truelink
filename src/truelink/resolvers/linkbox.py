@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import logging 
+import mimetypes
 import os
 from urllib.parse import urlparse
 
@@ -43,6 +45,7 @@ class LinkBoxResolver(BaseResolver):
         if not self._folder.contents:
             raise ExtractionFailedException("LinkBox: No files found in folder.")
 
+        logging.info(len(self._folder.contents))
         if (
             len(self._folder.contents) == 1
             and self._folder.title == self._folder.contents[0].filename
@@ -98,9 +101,11 @@ class LinkBoxResolver(BaseResolver):
                     os.path.join(current_path, name) if current_path else name,
                 )
             elif "url" in item:
+                filename = self._finalize_filename(item)
                 url = item["url"]
-                filename, size, mime_type = await self._fetch_file_details(url)
-                self._add_file(filename, url, size, mime_type, current_path)
+                size = self._extract_size(item.get("size"))
+                mime_type, _ = mimetypes.guess_type("example.txt")
+                self._add_file(filename, url, mime_type, size, current_path)
 
     async def _api_call(self, endpoint: str, params: dict) -> dict:
         try:
@@ -146,12 +151,7 @@ class LinkBoxResolver(BaseResolver):
         return name
 
     def _add_file(
-        self,
-        filename: str,
-        url: str,
-        size: int | None,
-        mime_type: str | None,
-        path: str = "",
+        self, filename: str, url: str, mime_type: str| None, size: int | None, path: str = ""
     ) -> None:
         self._folder.contents.append(
             FileItem(
