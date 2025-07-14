@@ -90,7 +90,9 @@ class MediaFireResolver(BaseResolver):
         """
         if re.search(r"https?:\/\/download\d+\.mediafire\.com\/\S+\/\S+\/\S+", url):
             filename, size, mime_type = await self._fetch_file_details(url)
-            return LinkResult(url=url, filename=filename, size=size, mime_type=mime_type)
+            return LinkResult(
+                url=url, filename=filename, size=size, mime_type=mime_type
+            )
 
         if scraper_session_override:
             scraper = scraper_session_override
@@ -157,7 +159,9 @@ class MediaFireResolver(BaseResolver):
                 )
 
             filename, size, mime_type = await self._fetch_file_details(final_link)
-            return LinkResult(url=final_link, filename=filename, size=size, mime_type=mime_type)
+            return LinkResult(
+                url=final_link, filename=filename, size=size, mime_type=mime_type
+            )
 
         except cloudscraper.exceptions.CloudflareException as e:
             raise ExtractionFailedException(

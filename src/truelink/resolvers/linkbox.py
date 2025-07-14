@@ -57,7 +57,7 @@ class LinkBoxResolver(BaseResolver):
             )
 
         filename, size, mime_type = await self._fetch_file_details(item_url)
-        
+
         if not self._folder_details.title:
             self._folder_details.title = filename
 
@@ -118,7 +118,7 @@ class LinkBoxResolver(BaseResolver):
 
         for content_item in contents_list:
             item_name = content_item.get("name", "unknown_item")
-            
+
             if content_item.get("type") == "dir" and "url" not in content_item:
                 subfolder_id = content_item.get("id")
                 if subfolder_id is not None:
@@ -136,7 +136,7 @@ class LinkBoxResolver(BaseResolver):
                 # Handle file
                 item_url = content_item["url"]
                 filename, size, mime_type = await self._fetch_file_details(item_url)
-                
+
                 self._folder_details.contents.append(
                     FileItem(
                         url=item_url,
