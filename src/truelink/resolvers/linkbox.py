@@ -48,7 +48,7 @@ class LinkBoxResolver(BaseResolver):
             and self._folder.title == self._folder.contents[0].filename
         ):
             file = self._folder.contents[0]
-            return LinkResult(url=file.url, filename=file.filename, size=file.size)
+            return LinkResult(url=file.url, filename=file.filename, mime_type=file.mime_type, size=file.size)
 
         return self._folder
 
@@ -93,10 +93,9 @@ class LinkBoxResolver(BaseResolver):
                     os.path.join(current_path, name) if current_path else name,
                 )
             elif "url" in item:
-                filename = self._finalize_filename(item)
                 url = item["url"]
-                size = self._extract_size(item.get("size"))
-                self._add_file(filename, url, size, current_path)
+                filename, size, mime_type = await self._fetch_file_details(url)
+                self._add_file(filename, url, size, mime_type, current_path)
 
     async def _api_call(self, endpoint: str, params: dict) -> dict:
         try:
@@ -142,10 +141,10 @@ class LinkBoxResolver(BaseResolver):
         return name
 
     def _add_file(
-        self, filename: str, url: str, size: int | None, path: str = ""
+        self, filename: str, url: str, size: int | None, mime_type: str | None, path: str = ""
     ) -> None:
         self._folder.contents.append(
-            FileItem(filename=filename, url=url, size=size, path=path)
+            FileItem(url=url, filename=filename, mime_type=mime_type, size=size, path=path)
         )
         if size:
             self._folder.total_size += size
