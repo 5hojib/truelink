@@ -3,8 +3,7 @@ from __future__ import annotations
 import os
 from urllib.parse import urlparse
 
-from .. import custom_mimetypes as mimetypes
-
+from truelink import custom_mimetypes as mimetypes
 from truelink.exceptions import ExtractionFailedException, InvalidURLException
 from truelink.types import FileItem, FolderResult, LinkResult
 
