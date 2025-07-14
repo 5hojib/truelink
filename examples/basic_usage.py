@@ -6,7 +6,7 @@ from truelink import TrueLinkResolver
 from truelink.types import FolderResult, LinkResult
 
 
-async def main():
+async def main() -> None:
     resolver = TrueLinkResolver()
 
     urls = [

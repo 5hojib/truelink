@@ -62,7 +62,7 @@ _db = None
 class MimeTypes:
     """MIME-types datastore with enhanced type detection."""
 
-    def __init__(self, filenames=(), strict=True):
+    def __init__(self, filenames=(), strict=True) -> None:
         if not inited:
             init()
         self.encodings_map = _encodings_map_default.copy()
@@ -74,7 +74,7 @@ class MimeTypes:
         for name in filenames:
             self.read(name, strict)
 
-    def add_type(self, type, ext, strict=True):
+    def add_type(self, type, ext, strict=True) -> None:
         """Add a mapping between a type and an extension."""
         if ext and not ext.startswith("."):
             # Handle deprecated undotted extensions gracefully
@@ -157,12 +157,12 @@ class MimeTypes:
             return None
         return extensions[0]
 
-    def read(self, filename, strict=True):
+    def read(self, filename, strict=True) -> None:
         """Read a single mime.types-format file."""
         with open(filename, encoding="utf-8") as fp:
             self.readfp(fp, strict)
 
-    def readfp(self, fp, strict=True):
+    def readfp(self, fp, strict=True) -> None:
         """Read a single mime.types-format file from file pointer."""
         for line in fp:
             words = line.split()
@@ -176,7 +176,7 @@ class MimeTypes:
             for suff in suffixes:
                 self.add_type(type, "." + suff, strict)
 
-    def read_windows_registry(self, strict=True):
+    def read_windows_registry(self, strict=True) -> None:
         """Load the MIME types database from Windows registry."""
         if not _mimetypes_read_windows_registry and not _winreg:
             return
@@ -193,7 +193,7 @@ class MimeTypes:
             self._read_windows_registry(add_type)
 
     @classmethod
-    def _read_windows_registry(cls, add_type):
+    def _read_windows_registry(cls, add_type) -> None:
         def enum_types(mimedb):
             i = 0
             while True:
@@ -257,7 +257,7 @@ def add_type(type, ext, strict=True):
     return _db.add_type(type, ext, strict)
 
 
-def init(files=None):
+def init(files=None) -> None:
     """Initialize the module."""
     global suffix_map, types_map, encodings_map
     global inited, _db
@@ -293,7 +293,7 @@ def read_mime_types(file):
         return db.types_map[True]
 
 
-def _default_mime_types():
+def _default_mime_types() -> None:
     """Initialize default MIME type mappings."""
     global suffix_map, _suffix_map_default
     global encodings_map, _encodings_map_default

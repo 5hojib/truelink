@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 class TrueLinkResolver:
     """Main resolver class for extracting direct download links"""
 
-    def __init__(self, timeout: int = 30, max_retries: int = 3):
+    def __init__(self, timeout: int = 30, max_retries: int = 3) -> None:
         """Initialize TrueLinkResolver
 
         Args:

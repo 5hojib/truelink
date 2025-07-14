@@ -173,7 +173,7 @@ class MediaFireResolver(BaseResolver):
             all_files: list[FileItem] = []
             total_size = 0
 
-            async def collect_files(folder_key: str, path_prefix: str):
+            async def collect_files(folder_key: str, path_prefix: str) -> None:
                 nonlocal total_size
                 files_data = await self._api_request(
                     scraper,

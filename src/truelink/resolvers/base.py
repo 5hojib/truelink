@@ -17,7 +17,7 @@ class BaseResolver(ABC):
 
     USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0"
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.session: aiohttp.ClientSession | None = None
 
     async def __aenter__(self):
@@ -27,7 +27,7 @@ class BaseResolver(ABC):
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         await self._close_session()
 
-    async def _create_session(self):
+    async def _create_session(self) -> None:
         """Create HTTP session"""
         if not self.session:
             self.session = aiohttp.ClientSession(
@@ -35,7 +35,7 @@ class BaseResolver(ABC):
                 timeout=aiohttp.ClientTimeout(total=30),
             )
 
-    async def _close_session(self):
+    async def _close_session(self) -> None:
         """Close HTTP session"""
         if self.session:
             await self.session.close()

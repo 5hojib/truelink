@@ -17,7 +17,7 @@ PASSWORD_ERROR_MESSAGE = (
 class GoFileResolver(BaseResolver):
     """Resolver for GoFile.io URLs."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self._folder_details: FolderResult | None = None
         self._account_token: str | None = None
@@ -50,7 +50,7 @@ class GoFileResolver(BaseResolver):
         content_id: str,
         password_hash: str,
         current_path: str = "",
-    ):
+    ) -> None:
         if self._folder_details is None:
             self._folder_details = FolderResult(title="", contents=[], total_size=0)
 
@@ -119,7 +119,7 @@ class GoFileResolver(BaseResolver):
                 )
                 self._folder_details.total_size += size
 
-    async def _handle_api_error(self, response, content_id: str):
+    async def _handle_api_error(self, response, content_id: str) -> None:
         try:
             error_data = await response.json()
             status = error_data.get("status", "")

@@ -15,7 +15,7 @@ class LinkBoxResolver(BaseResolver):
 
     BASE_API = "https://www.linkbox.to/api/file"
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self._folder: FolderResult | None = None
 
