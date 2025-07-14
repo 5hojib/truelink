@@ -5,6 +5,7 @@ from urllib.parse import urlparse
 
 from truelink.exceptions import ExtractionFailedException, InvalidURLException
 from truelink.types import FileItem, FolderResult, LinkResult
+
 from .base import BaseResolver
 
 
@@ -21,12 +22,19 @@ class LinkBoxResolver(BaseResolver):
         """Resolve LinkBox.to URL"""
         self._folder = FolderResult(title="", contents=[], total_size=0)
         share_token = self._extract_share_token(url)
-        initial_data = await self._api_call("share_out_list", {"shareToken": share_token, "pageSize": 1, "pid": 0})
+        initial_data = await self._api_call(
+            "share_out_list", {"shareToken": share_token, "pageSize": 1, "pid": 0}
+        )
 
         if not initial_data:
-            raise ExtractionFailedException("LinkBox: No data in initial API response.")
+            raise ExtractionFailedException(
+                "LinkBox: No data in initial API response."
+            )
 
-        if initial_data.get("shareType") == "singleItem" and "itemId" in initial_data:
+        if (
+            initial_data.get("shareType") == "singleItem"
+            and "itemId" in initial_data
+        ):
             await self._fetch_item_detail(initial_data["itemId"])
         else:
             self._folder.title = initial_data.get("dirName") or "LinkBox Content"
@@ -35,7 +43,10 @@ class LinkBoxResolver(BaseResolver):
         if not self._folder.contents:
             raise ExtractionFailedException("LinkBox: No files found in folder.")
 
-        if len(self._folder.contents) == 1 and self._folder.title == self._folder.contents[0].filename:
+        if (
+            len(self._folder.contents) == 1
+            and self._folder.title == self._folder.contents[0].filename
+        ):
             file = self._folder.contents[0]
             return LinkResult(url=file.url, filename=file.filename, size=file.size)
 
@@ -45,7 +56,9 @@ class LinkBoxResolver(BaseResolver):
         data = await self._api_call("detail", {"itemId": item_id})
         item_info = data.get("itemInfo") if data else None
         if not item_info:
-            raise ExtractionFailedException("LinkBox API: Missing itemInfo in response.")
+            raise ExtractionFailedException(
+                "LinkBox API: Missing itemInfo in response."
+            )
 
         filename = self._finalize_filename(item_info)
         url = item_info.get("url")
@@ -56,14 +69,21 @@ class LinkBoxResolver(BaseResolver):
         self._folder.title = filename
         self._add_file(filename, url, size)
 
-    async def _fetch_list_recursive(self, share_token: str, parent_id: int = 0, current_path: str = "") -> None:
-        data = await self._api_call("share_out_list", {"shareToken": share_token, "pageSize": 1000, "pid": parent_id})
+    async def _fetch_list_recursive(
+        self, share_token: str, parent_id: int = 0, current_path: str = ""
+    ) -> None:
+        data = await self._api_call(
+            "share_out_list",
+            {"shareToken": share_token, "pageSize": 1000, "pid": parent_id},
+        )
 
         if data.get("shareType") == "singleItem" and "itemId" in data:
             await self._fetch_item_detail(data["itemId"])
             return
 
-        self._folder.title = self._folder.title or data.get("dirName") or "LinkBox Folder"
+        self._folder.title = (
+            self._folder.title or data.get("dirName") or "LinkBox Folder"
+        )
         for item in data.get("list", []):
             name = item.get("name", "unknown_item")
             if item.get("type") == "dir" and "url" not in item:
@@ -80,7 +100,9 @@ class LinkBoxResolver(BaseResolver):
 
     async def _api_call(self, endpoint: str, params: dict) -> dict:
         try:
-            async with await self._get(f"{self.BASE_API}/{endpoint}", params=params) as response:
+            async with await self._get(
+                f"{self.BASE_API}/{endpoint}", params=params
+            ) as response:
                 if response.status != 200:
                     msg = await response.text()
                     raise ExtractionFailedException(
@@ -88,12 +110,16 @@ class LinkBoxResolver(BaseResolver):
                     )
                 json_data = await response.json()
                 if "data" not in json_data:
-                    raise ExtractionFailedException(f"LinkBox API ({endpoint}) error: {json_data.get('msg')}")
+                    raise ExtractionFailedException(
+                        f"LinkBox API ({endpoint}) error: {json_data.get('msg')}"
+                    )
                 return json_data["data"]
         except ExtractionFailedException:
             raise
         except Exception as e:
-            raise ExtractionFailedException(f"LinkBox API ({endpoint}) failed: {e!s}") from e
+            raise ExtractionFailedException(
+                f"LinkBox API ({endpoint}) failed: {e!s}"
+            ) from e
 
     def _extract_share_token(self, url: str) -> str:
         token = urlparse(url).path.strip("/").split("/")[-1]
@@ -104,7 +130,7 @@ class LinkBoxResolver(BaseResolver):
     def _extract_size(self, size_val) -> int | None:
         if isinstance(size_val, str) and size_val.isdigit():
             return int(size_val)
-        if isinstance(size_val, (int, float)):
+        if isinstance(size_val, int | float):
             return int(size_val)
         return None
 
@@ -115,7 +141,11 @@ class LinkBoxResolver(BaseResolver):
             name += f".{sub_type}"
         return name
 
-    def _add_file(self, filename: str, url: str, size: int | None, path: str = "") -> None:
-        self._folder.contents.append(FileItem(filename=filename, url=url, size=size, path=path))
+    def _add_file(
+        self, filename: str, url: str, size: int | None, path: str = ""
+    ) -> None:
+        self._folder.contents.append(
+            FileItem(filename=filename, url=url, size=size, path=path)
+        )
         if size:
             self._folder.total_size += size
