@@ -39,9 +39,18 @@ class MediaFireResolver(BaseResolver):
             self._resolve_folder if "/folder/" in base_url else self._resolve_file
         )(url, password)
 
-    async def _get_content(self, scraper, url: str, method: str = "get", data: dict = None, params: dict = None):
+    async def _get_content(
+        self,
+        scraper,
+        url: str,
+        method: str = "get",
+        data: dict | None = None,
+        params: dict | None = None,
+    ):
         func = scraper.post if method == "post" else scraper.get
-        response = await self._run_sync(func, url, data=data, params=params, timeout=20)
+        response = await self._run_sync(
+            func, url, data=data, params=params, timeout=20
+        )
         response.raise_for_status()
         return response.json() if method == "post" or "api" in url else response.text
 
