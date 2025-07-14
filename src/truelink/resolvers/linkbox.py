@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import .mimetypes
+import custom_mimetypes as mimetypes
 import os
 from urllib.parse import urlparse
 
