@@ -18,7 +18,6 @@ PASSWORD_ERROR_MESSAGE = (
 )
 
 
-# todo
 class MediaFireResolver(BaseResolver):
     """Resolver for MediaFire URLs (files and folders)"""
 
@@ -90,12 +89,8 @@ class MediaFireResolver(BaseResolver):
         Accepts an optional scraper_session_override to reuse a session (e.g., from _repair_download).
         """
         if re.search(r"https?:\/\/download\d+\.mediafire\.com\/\S+\/\S+\/\S+", url):
-            try:
-                filename, size, _ = await self._fetch_file_details(url)
-            except Exception:
-                filename = unquote(url.split("/")[-1])
-                size = None
-            return LinkResult(url=url, filename=filename, size=size)
+            filename, size, mime_type = await self._fetch_file_details(url)
+            return LinkResult(url=url, filename=filename, size=size, mime_type=mime_type)
 
         if scraper_session_override:
             scraper = scraper_session_override
@@ -161,12 +156,8 @@ class MediaFireResolver(BaseResolver):
                     final_link, password, scraper_session_override=scraper
                 )
 
-            try:
-                dl_filename, dl_size, _ = await self._fetch_file_details(final_link)
-            except Exception:
-                dl_filename = unquote(final_link.split("/")[-1].split("?")[0])
-                dl_size = None
-            return LinkResult(url=final_link, filename=dl_filename, size=dl_size)
+            filename, size, mime_type = await self._fetch_file_details(final_link)
+            return LinkResult(url=final_link, filename=filename, size=size, mime_type=mime_type)
 
         except cloudscraper.exceptions.CloudflareException as e:
             raise ExtractionFailedException(
@@ -301,22 +292,20 @@ class MediaFireResolver(BaseResolver):
                             file_page_url, password
                         )
 
-                        item_filename = file_api_data.get("filename", "unknown_file")
-                        item_size = link_result.size
-                        if item_size is None and "size" in file_api_data:
-                            size_str = str(file_api_data["size"])
-                            if size_str.isdigit():
-                                item_size = int(size_str)
+                        filename = link_result.filename
+                        size = link_result.size
+                        mime_type = link_result.mime_type
 
                         file_item = FileItem(
                             url=link_result.url,
-                            filename=item_filename,
-                            size=item_size,
-                            path=ospath.join(current_path_prefix, item_filename),
+                            filename=filename,
+                            size=size,
+                            mime_type=mime_type,
+                            path=ospath.join(current_path_prefix, filename),
                         )
                         all_files.append(file_item)
-                        if item_size:
-                            total_size_bytes += item_size
+                        if size:
+                            total_size_bytes += size
 
                     except ExtractionFailedException:
                         pass

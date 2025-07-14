@@ -9,7 +9,6 @@ from truelink.types import FileItem, FolderResult, LinkResult
 from .base import BaseResolver
 
 
-# todo
 class LinkBoxResolver(BaseResolver):
     """Resolver for LinkBox.to URLs"""
 
@@ -51,35 +50,25 @@ class LinkBoxResolver(BaseResolver):
                 "LinkBox API (detail) error: itemInfo not found",
             )
 
-        filename = item_info.get("name", "unknown_file")
-        sub_type = item_info.get("sub_type")
-        if (
-            sub_type
-            and isinstance(filename, str)
-            and not filename.strip().endswith(f".{sub_type}")
-        ):
-            filename += f".{sub_type}"
-
-        if not self._folder_details.title:
-            self._folder_details.title = filename
-
         item_url = item_info.get("url")
         if not item_url:
             raise ExtractionFailedException(
                 "LinkBox API (detail) error: URL missing for item.",
             )
 
-        size = None
-        if "size" in item_info:
-            size_val = item_info["size"]
-            if (isinstance(size_val, str) and size_val.isdigit()) or isinstance(
-                size_val,
-                int | float,
-            ):
-                size = int(size_val)
+        filename, size, mime_type = await self._fetch_file_details(item_url)
+        
+        if not self._folder_details.title:
+            self._folder_details.title = filename
 
         self._folder_details.contents.append(
-            FileItem(url=item_url, filename=filename, size=size, path=""),
+            FileItem(
+                url=item_url,
+                filename=filename,
+                mime_type=mime_type,
+                size=size,
+                path="",
+            ),
         )
         if size:
             self._folder_details.total_size += size
@@ -126,52 +115,33 @@ class LinkBoxResolver(BaseResolver):
             self._folder_details.title = data["dirName"] or "LinkBox Folder"
 
         contents_list = data.get("list", [])
-        if (
-            not contents_list
-            and parent_id == 0
-            and not self._folder_details.contents
-        ):
-            pass
 
         for content_item in contents_list:
             item_name = content_item.get("name", "unknown_item")
+            
             if content_item.get("type") == "dir" and "url" not in content_item:
                 subfolder_id = content_item.get("id")
                 if subfolder_id is not None:
-                    new_path_segment = item_name
-                    full_new_path = (
-                        os.path.join(current_path, new_path_segment)
+                    new_path = (
+                        os.path.join(current_path, item_name)
                         if current_path
-                        else new_path_segment
+                        else item_name
                     )
                     await self._fetch_list_recursive(
                         share_token,
                         subfolder_id,
-                        full_new_path,
+                        new_path,
                     )
             elif "url" in content_item:
-                filename = item_name
-                sub_type = content_item.get("sub_type")
-                if (
-                    sub_type
-                    and isinstance(filename, str)
-                    and not filename.strip().endswith(f".{sub_type}")
-                ):
-                    filename += f".{sub_type}"
-
+                # Handle file
                 item_url = content_item["url"]
-                size = None
-                if "size" in content_item:
-                    size_val = content_item["size"]
-                    if (
-                        isinstance(size_val, str) and size_val.isdigit()
-                    ) or isinstance(size_val, int | float):
-                        size = int(size_val)
-
+                filename, size, mime_type = await self._fetch_file_details(item_url)
+                
                 self._folder_details.contents.append(
                     FileItem(
                         url=item_url,
                         filename=filename,
+                        mime_type=mime_type,
                         size=size,
                         path=current_path,
                     ),
@@ -189,15 +159,14 @@ class LinkBoxResolver(BaseResolver):
 
         parsed_url = urlparse(url)
         path_segments = parsed_url.path.split("/")
-        share_token = None
-        if path_segments:
-            share_token = path_segments[-1]
+        share_token = path_segments[-1] if path_segments else None
 
         if not share_token:
             raise InvalidURLException(
                 "LinkBox error: Could not extract shareToken from URL.",
             )
 
+        # Initial API call to determine content type
         params = {"shareToken": share_token, "pageSize": 1, "pid": 0}
         try:
             async with await self._get(
@@ -224,6 +193,7 @@ class LinkBoxResolver(BaseResolver):
                 f"LinkBox API (initial check) error: {msg}",
             )
 
+        # Process based on share type
         if (
             initial_data.get("shareType") == "singleItem"
             and "itemId" in initial_data
@@ -237,10 +207,9 @@ class LinkBoxResolver(BaseResolver):
             await self._fetch_list_recursive(share_token, 0, "")
 
         if not self._folder_details.contents:
-            if not self._folder_details.title:
-                raise ExtractionFailedException(
-                    "LinkBox: No content found and no title obtained.",
-                )
+            raise ExtractionFailedException(
+                "LinkBox: No content found.",
+            )
 
         if len(self._folder_details.contents) == 1:
             single_item = self._folder_details.contents[0]
@@ -251,6 +220,7 @@ class LinkBoxResolver(BaseResolver):
                 return LinkResult(
                     url=single_item.url,
                     filename=single_item.filename,
+                    mime_type=single_item.mime_type,
                     size=single_item.size,
                 )
 
