@@ -5,6 +5,7 @@ from urllib.parse import urlparse
 
 from truelink.exceptions import ExtractionFailedException, InvalidURLException
 from truelink.types import FileItem, FolderResult, LinkResult
+
 from .base import BaseResolver
 
 
@@ -34,7 +35,9 @@ class LinkBoxResolver(BaseResolver):
         except Exception as e:
             if isinstance(e, ExtractionFailedException):
                 raise
-            raise ExtractionFailedException(f"LinkBox API (detail) request failed: {e!s}") from e
+            raise ExtractionFailedException(
+                f"LinkBox API (detail) request failed: {e!s}"
+            ) from e
 
         data = json_data.get("data")
         if not data or "itemInfo" not in data:
@@ -44,17 +47,27 @@ class LinkBoxResolver(BaseResolver):
         item_info = data["itemInfo"]
         item_url = item_info.get("url")
         if not item_url:
-            raise ExtractionFailedException("LinkBox API (detail) error: URL missing for item.")
+            raise ExtractionFailedException(
+                "LinkBox API (detail) error: URL missing for item."
+            )
 
         filename, size, mime_type = await self._fetch_file_details(item_url)
         self._folder_details.title = filename
         self._folder_details.contents.append(
-            FileItem(url=item_url, filename=filename, mime_type=mime_type, size=size, path="")
+            FileItem(
+                url=item_url,
+                filename=filename,
+                mime_type=mime_type,
+                size=size,
+                path="",
+            )
         )
         if size:
             self._folder_details.total_size += size
 
-    async def _fetch_list_recursive(self, share_token: str, parent_id: int = 0, current_path: str = ""):
+    async def _fetch_list_recursive(
+        self, share_token: str, parent_id: int = 0, current_path: str = ""
+    ):
         """Recursively fetch folder listings."""
         if self._folder_details is None:
             self._folder_details = FolderResult(title="", contents=[], total_size=0)
@@ -74,7 +87,9 @@ class LinkBoxResolver(BaseResolver):
         except Exception as e:
             if isinstance(e, ExtractionFailedException):
                 raise
-            raise ExtractionFailedException(f"LinkBox API (list) request failed: {e!s}") from e
+            raise ExtractionFailedException(
+                f"LinkBox API (list) request failed: {e!s}"
+            ) from e
 
         data = json_data.get("data")
         if not data:
@@ -92,8 +107,12 @@ class LinkBoxResolver(BaseResolver):
             if content_item.get("type") == "dir" and "url" not in content_item:
                 subfolder_id = content_item.get("id")
                 if subfolder_id is not None:
-                    full_new_path = os.path.join(current_path, content_item.get("name", ""))
-                    await self._fetch_list_recursive(share_token, subfolder_id, full_new_path)
+                    full_new_path = os.path.join(
+                        current_path, content_item.get("name", "")
+                    )
+                    await self._fetch_list_recursive(
+                        share_token, subfolder_id, full_new_path
+                    )
             elif "url" in content_item:
                 item_url = content_item["url"]
                 filename, size, mime_type = await self._fetch_file_details(item_url)
@@ -117,7 +136,9 @@ class LinkBoxResolver(BaseResolver):
         share_token = parsed_url.path.strip("/").split("/")[-1]
 
         if not share_token:
-            raise InvalidURLException("LinkBox error: Could not extract shareToken from URL.")
+            raise InvalidURLException(
+                "LinkBox error: Could not extract shareToken from URL."
+            )
 
         params = {"shareToken": share_token, "pageSize": 1, "pid": 0}
         try:
@@ -134,18 +155,27 @@ class LinkBoxResolver(BaseResolver):
         except Exception as e:
             if isinstance(e, ExtractionFailedException):
                 raise
-            raise ExtractionFailedException(f"LinkBox API (initial check) request failed: {e!s}") from e
+            raise ExtractionFailedException(
+                f"LinkBox API (initial check) request failed: {e!s}"
+            ) from e
 
         initial_data = json_data.get("data")
         if not initial_data:
             msg = json_data.get("msg", "data not found in initial API response")
-            raise ExtractionFailedException(f"LinkBox API (initial check) error: {msg}")
+            raise ExtractionFailedException(
+                f"LinkBox API (initial check) error: {msg}"
+            )
 
-        if initial_data.get("shareType") == "singleItem" and "itemId" in initial_data:
+        if (
+            initial_data.get("shareType") == "singleItem"
+            and "itemId" in initial_data
+        ):
             await self._fetch_item_detail(initial_data["itemId"])
         else:
             if not self._folder_details.title:
-                self._folder_details.title = initial_data.get("dirName") or "LinkBox Content"
+                self._folder_details.title = (
+                    initial_data.get("dirName") or "LinkBox Content"
+                )
             await self._fetch_list_recursive(share_token, 0, "")
 
         if not self._folder_details.contents:
@@ -153,7 +183,10 @@ class LinkBoxResolver(BaseResolver):
 
         if len(self._folder_details.contents) == 1:
             single_item = self._folder_details.contents[0]
-            if self._folder_details.title == single_item.filename and not single_item.path:
+            if (
+                self._folder_details.title == single_item.filename
+                and not single_item.path
+            ):
                 return LinkResult(
                     url=single_item.url,
                     filename=single_item.filename,
