@@ -19,7 +19,6 @@ import urllib.parse
 __all__ = [
     "MimeTypes",
     "add_type",
-    "common_types",
     "encodings_map",
     "guess_all_extensions",
     "guess_extension",
@@ -72,8 +71,6 @@ class MimeTypes:
         self.types_map_inv = ({}, {})
         for ext, type in _types_map_default.items():
             self.add_type(type, ext, True)
-        for ext, type in _common_types_default.items():
-            self.add_type(type, ext, False)
         for name in filenames:
             self.read(name, strict)
 
@@ -262,7 +259,7 @@ def add_type(type, ext, strict=True):
 
 def init(files=None):
     """Initialize the module."""
-    global suffix_map, types_map, encodings_map, common_types
+    global suffix_map, types_map, encodings_map
     global inited, _db
     inited = True
 
@@ -281,7 +278,6 @@ def init(files=None):
     encodings_map = db.encodings_map
     suffix_map = db.suffix_map
     types_map = db.types_map[True]
-    common_types = db.types_map[False]
     _db = db
 
 
@@ -302,7 +298,6 @@ def _default_mime_types():
     global suffix_map, _suffix_map_default
     global encodings_map, _encodings_map_default
     global types_map, _types_map_default
-    global common_types, _common_types_default
 
     suffix_map = _suffix_map_default = {
         ".svgz": ".svg.gz",
@@ -521,10 +516,6 @@ def _default_mime_types():
         ".m4v": "video/x-m4v",
         ".wmv": "video/x-ms-wmv",
         ".movie": "video/x-sgi-movie",
-    }
-
-    # Common non-standard types
-    common_types = _common_types_default = {
         ".rtf": "application/rtf",
         ".apk": "application/vnd.android.package-archive",
         ".midi": "audio/midi",
