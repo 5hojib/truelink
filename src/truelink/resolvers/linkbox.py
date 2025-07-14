@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import logging 
+import logging
 import mimetypes
 import os
 from urllib.parse import urlparse
@@ -151,7 +151,12 @@ class LinkBoxResolver(BaseResolver):
         return name
 
     def _add_file(
-        self, filename: str, url: str, mime_type: str| None, size: int | None, path: str = ""
+        self,
+        filename: str,
+        url: str,
+        mime_type: str | None,
+        size: int | None,
+        path: str = "",
     ) -> None:
         self._folder.contents.append(
             FileItem(
