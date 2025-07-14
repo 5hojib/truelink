@@ -47,8 +47,6 @@ class TrueLinkResolver:
             "mediafile.cc": MediaFileResolver,
             # MediaFire
             "mediafire.com": MediaFireResolver,
-            # hxfile
-            "hxfile.co": HxFileResolver,
             # OneDrive
             "1drv.ms": OneDriveResolver,
             "onedrive.live.com": OneDriveResolver,

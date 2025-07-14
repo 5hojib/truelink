@@ -134,7 +134,6 @@ The `resolve()` method returns one of two result types:
 - [x] tmpsend
 - [x] uploadee
 - [x] yandexlink
-- [ ] wetransfer
 - [ ] swisstransfer
 - [ ] qiwi
 - [ ] onedrive
@@ -144,9 +143,9 @@ The `resolve()` method returns one of two result types:
 - [ ] devuploads (todo)
 - [ ] doodstream
 - [ ] filepress (todo)
-- [ ] hxfile (server maintenance)
 - [ ] krakenfiles
 - [ ] uploadhaven (different)
+- [ ] wetransfer
 
 ## Error Handling
 

@@ -8,7 +8,6 @@ from .fichier import FichierResolver
 from .filepress import FilePressResolver
 from .fuckingfast import FuckingFastResolver
 from .gofile import GoFileResolver
-from .hxfile import HxFileResolver
 from .krakenfiles import KrakenFilesResolver
 from .linkbox import LinkBoxResolver
 from .lulacloud import LulaCloudResolver
@@ -36,7 +35,6 @@ __all__ = [
     "FilePressResolver",
     "FuckingFastResolver",
     "GoFileResolver",
-    "HxFileResolver",
     "KrakenFilesResolver",
     "LinkBoxResolver",
     "LulaCloudResolver",

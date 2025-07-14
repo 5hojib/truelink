@@ -126,6 +126,7 @@ select = [
     "SIM",      # flake8-simplify
     "TCH",      # flake8-type-checking
     "TID",      # flake8-tidy-imports
+    "ANN",      # flake8-annotations
     "ARG",      # flake8-unused-arguments
     "C90",      # mccabe
     "COM",      # flake8-commas
