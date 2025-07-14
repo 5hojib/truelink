@@ -99,7 +99,7 @@ class LinkBoxResolver(BaseResolver):
                 filename = self._finalize_filename(item)
                 url = item["url"]
                 size = self._extract_size(item.get("size"))
-                mime_type, _ = mimetypes.guess_type("example.txt")
+                mime_type, _ = mimetypes.guess_type(filename)
                 self._add_file(filename, url, mime_type, size, current_path)
 
     async def _api_call(self, endpoint: str, params: dict) -> dict:
