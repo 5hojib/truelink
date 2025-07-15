@@ -178,7 +178,7 @@ class TrueLinkResolver:
                 if attempt == self.max_retries - 1:
                     raise ExtractionFailedException(
                         f"Failed to resolve URL after {self.max_retries} attempts: {e!s}"
-                    )
+                    ) from e
                 await asyncio.sleep(1 * (attempt + 1))
         return None
 
