@@ -100,6 +100,8 @@ class LinkBoxResolver(BaseResolver):
                 url = item["url"]
                 size = self._extract_size(item.get("size"))
                 mime_type, _ = mimetypes.guess_type(filename)
+                if mime_type is None:
+                    mime_type = "application/octet-stream"
                 self._add_file(filename, url, mime_type, size, current_path)
 
     async def _api_call(self, endpoint: str, params: dict) -> dict:
