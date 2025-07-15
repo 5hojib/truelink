@@ -16,7 +16,7 @@ from .mediafire import MediaFireResolver
 from .onedrive import OneDriveResolver
 from .pcloud import PCloudResolver
 from .pixeldrain import PixelDrainResolver
-from .qiwi import QiwiResolver
+from .ranoz import RanozResolver
 from .streamtape import StreamtapeResolver
 from .swisstransfer import SwissTransferResolver
 from .terabox import TeraboxResolver
@@ -43,7 +43,7 @@ __all__ = [
     "OneDriveResolver",
     "PCloudResolver",
     "PixelDrainResolver",
-    "QiwiResolver",
+    "RanozResolver",
     "StreamtapeResolver",
     "SwissTransferResolver",
     "TeraboxResolver",

@@ -134,8 +134,8 @@ The `resolve()` method returns one of two result types:
 - [x] tmpsend
 - [x] uploadee
 - [x] yandexlink
+- [x] ranoz
 - [ ] swisstransfer
-- [ ] qiwi
 - [ ] onedrive
 - [ ] pcloud
 

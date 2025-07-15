@@ -74,8 +74,8 @@ class TrueLinkResolver:
             # pcloud
             "u.pcloud.link": PCloudResolver,
             "pcloud.com": PCloudResolver,
-            # qiwi
-            "qiwi.gg": QiwiResolver,
+            # ranoz
+            "ranoz.gg": RanozResolver,
             # Swisstrensfer
             "swisstransfer.com": SwissTransferResolver,
             # DoodStream
