@@ -89,7 +89,7 @@ class BaseResolver(ABC):
         parsed_url = urlparse(url)
         if parsed_url.path:
             path_filename = unquote(parsed_url.path.split("/")[-1])
-            return path_filename if path_filename else None
+            return path_filename or None
         return None
 
     async def _fetch_file_details(
