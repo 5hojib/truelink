@@ -174,7 +174,7 @@ class MimeTypes:
                 continue
             type, suffixes = words[0], words[1:]
             for suff in suffixes:
-                self.add_type(type, "." + suff, strict)
+                self.add_type(type, f".{suff}", strict)
 
     def read_windows_registry(self, strict=True) -> None:
         """Load the MIME types database from Windows registry."""
