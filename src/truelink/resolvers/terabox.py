@@ -12,7 +12,9 @@ class TeraboxResolver(BaseResolver):
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         if "/file/" in url and ("terabox.com" in url or "teraboxapp.com" in url):
             filename, size, mime_type = await self._fetch_file_details(url)
-            return LinkResult(url=url, filename=filename, mime_type=mime_type, size=size)
+            return LinkResult(
+                url=url, filename=filename, mime_type=mime_type, size=size
+            )
 
         api_url = f"https://wdzone-terabox-api.vercel.app/api?url={quote(url)}"
 

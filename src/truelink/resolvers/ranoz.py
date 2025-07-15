@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from truelink import mimetypes
 from urllib.parse import urlparse
 
+from truelink import mimetypes
 from truelink.exceptions import ExtractionFailedException
 from truelink.types import FolderResult, LinkResult
 
