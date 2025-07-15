@@ -20,7 +20,7 @@ class RanozResolver(BaseResolver):
 
             async with await self._get(api_url) as response:
                 response.raise_for_status()
-                data = (await response.json())["data"]
+                data = (await response.json(content_type=None))["data"]
 
                 file_name = data["filename"]
                 file_size = data["size"]
