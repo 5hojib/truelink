@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import mimetypes
+from truelink import mimetypes
 from urllib.parse import urlparse
 
 from truelink.exceptions import ExtractionFailedException
@@ -27,7 +27,6 @@ class RanozResolver(BaseResolver):
                 download_url = f"https://st1.ranoz.gg/{file_id}-{file_name}"
 
                 mime_type, _ = mimetypes.guess_type(file_name)
-                mime_type = mime_type or "application/octet-stream"
 
                 return LinkResult(
                     url=download_url,
