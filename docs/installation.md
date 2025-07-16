@@ -2,30 +2,20 @@
 
 ## Requirements
 
-- Python 3.7 or higher
-- pip package manager
-- Internet connection for URL resolution
+- Python 3.9 or higher
+- An internet connection for URL resolution
 
-## Install from PyPI
+## Installation
+
+The recommended way to install TrueLink is from [PyPI](https://pypi.org/project/truelink/) with `pip`:
 
 ```bash
 pip install truelink
 ```
 
-## Install from Source
-
-```bash
-# Clone the repository
-git clone https://github.com/5hojib/truelink.git
-cd truelink
-
-# Install in development mode
-pip install -e .
-```
-
 ## Development Installation
 
-For development work, install with development dependencies:
+To install TrueLink for development, clone the repository and install it in editable mode with the `dev` extras:
 
 ```bash
 git clone https://github.com/5hojib/truelink.git
@@ -33,35 +23,22 @@ cd truelink
 pip install -e ".[dev]"
 ```
 
-## Verify Installation
+## Verifying the Installation
 
-After installation, verify that TrueLink is working correctly:
+To verify that TrueLink is installed correctly, you can run the following command:
 
-```python
-import truelink
-print(truelink.__version__)
-
-# Test basic functionality
-from truelink import TrueLink
-tl = TrueLink()
-print("TrueLink is ready to use!")
+```bash
+python -c "import truelink; print(truelink.__version__)"
 ```
+
+You should see the installed version number printed to the console.
 
 ## Dependencies
 
-TrueLink relies on the following packages:
+TrueLink has the following dependencies:
 
-- `requests` - For HTTP requests
-- `urllib3` - For URL handling
-- Additional dependencies will be automatically installed
+- `aiohttp`: For making asynchronous HTTP requests.
+- `cloudscraper`: To bypass Cloudflare's anti-bot protection.
+- `lxml`: For parsing HTML and XML.
 
-## Troubleshooting
-
-If you encounter installation issues:
-
-1. **Python Version**: Ensure you're using Python 3.7+
-2. **pip Update**: Update pip with `pip install --upgrade pip`
-3. **Virtual Environment**: Consider using a virtual environment
-4. **Permissions**: On some systems, you might need `sudo` or `--user` flag
-
-For additional help, please [open an issue](https://github.com/5hojib/truelink/issues) on GitHub.
+These dependencies will be automatically installed when you install TrueLink with `pip`.

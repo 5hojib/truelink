@@ -146,12 +146,12 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Installation: installation.md
-  - Quick Start: quickstart.md
   - User Guide:
-    - user-guide/index.md
-    - Basic Usage: user-guide/basic-usage.md
-    - Advanced Usage: user-guide/advanced-usage.md
-    - Configuration: user-guide/configuration.md
-  - API Reference: api-reference.md
+    - 'Getting Started': 'user-guide/getting-started.md'
+    - 'Advanced Usage': 'user-guide/advanced-usage.md'
+    - 'Configuration': 'user-guide/configuration.md'
+  - API Reference:
+    - 'Core': 'api-reference/core.md'
+    - 'Exceptions': 'api-reference/exceptions.md'
   - Contributing: contributing.md
   - Changelog: changelog.md
