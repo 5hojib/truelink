@@ -6,6 +6,8 @@ Main function:
 - guess_type(url) -- guess the MIME type and encoding of a URL
 """
 
+from __future__ import annotations
+
 import os
 import posixpath
 import urllib.parse
@@ -16,7 +18,7 @@ __all__ = ["guess_type"]
 def guess_type(url):
     """Guess the type of a file based on its URL or path."""
     p = urllib.parse.urlparse(url)
-    
+
     if p.scheme and len(p.scheme) > 1:
         if p.scheme == "data":
             comma = url.find(",")
@@ -27,24 +29,24 @@ def guess_type(url):
             if "=" in mime_type or "/" not in mime_type:
                 mime_type = "text/plain"
             return mime_type, None
-        
+
         base, ext = posixpath.splitext(p.path)
     else:
         base, ext = os.path.splitext(url)
-    
+
     ext = ext.lower()
-    
+
     while ext in _suffix_map:
         base, ext = os.path.splitext(base + _suffix_map[ext])
         ext = ext.lower()
-    
+
     if ext in _encodings_map:
         encoding = _encodings_map[ext]
         base, ext = os.path.splitext(base)
         ext = ext.lower()
     else:
         encoding = None
-    
+
     return _types_map.get(ext), encoding
 
 
