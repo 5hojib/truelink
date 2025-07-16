@@ -35,6 +35,4 @@ The library is designed to be both simple for basic use cases and flexible for a
 If you need assistance:
 
 1. Check this documentation for answers to common questions
-2. Review the [Examples](../examples/index.md) section
-3. Consult the [API Reference](../api-reference/index.md)
-4. Open an issue on [GitHub](https://github.com/5hojib/truelink/issues)
+2. Open an issue on [GitHub](https://github.com/5hojib/truelink/issues)
