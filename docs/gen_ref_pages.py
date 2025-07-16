@@ -1,6 +1,9 @@
 """Generate the code reference pages and navigation for TrueLink."""
 
+from __future__ import annotations
+
 from pathlib import Path
+
 import mkdocs_gen_files
 
 nav = mkdocs_gen_files.Nav()
