@@ -154,9 +154,6 @@ nav:
     - Basic Usage: user-guide/basic-usage.md
     - Advanced Usage: user-guide/advanced-usage.md
     - Configuration: user-guide/configuration.md
-  - Examples:
-    - examples/index.md
-    - Basic Examples: examples/basic-examples.md
-  - API Reference: api-reference/
+  - API Reference: api-reference.md
   - Contributing: contributing.md
   - Changelog: changelog.md
