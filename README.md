@@ -178,10 +178,10 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## Requirements
 
-- Python 3.7+
+- Python 3.9+
 - aiohttp
-- beautifulsoup4
-- requests
+- cloudscraper
+- lxml
 
 ## License
 

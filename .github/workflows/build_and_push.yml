@@ -49,33 +49,13 @@ jobs:
             echo "RELEASE_EXISTS=false" >> $GITHUB_ENV
           fi
 
-      - name: Get Commit Messages Since Last Release
+      - name: Get Last Commit Body Only
         id: get_commits
         if: env.RELEASE_EXISTS == 'false'
         run: |
-          # Get the last release tag
-          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-          
-          echo "## Release Notes v${{ env.VERSION }}" > release_notes.txt
-          echo "" >> release_notes.txt
-          
-          if [ -n "$LAST_TAG" ]; then
-            echo "### Changes since $LAST_TAG:" >> release_notes.txt
-            echo "" >> release_notes.txt
-            git log $LAST_TAG..HEAD --pretty=format:"- %s" --no-merges >> release_notes.txt
-          else
-            echo "### Initial Release" >> release_notes.txt
-            echo "" >> release_notes.txt
-            echo "- Initial release of TrueLink library" >> release_notes.txt
-          fi
-          
-          echo "" >> release_notes.txt
-          echo "### Latest Commit:" >> release_notes.txt
-          echo "**$(git log -1 --pretty=format:"%s")**" >> release_notes.txt
-          echo "" >> release_notes.txt
-          git log -1 --pretty=format:"%b" >> release_notes.txt
-          
-          echo "Generated release notes:"
+          COMMIT_BODY="$(git log -1 --pretty=format:%b)"
+          echo "$COMMIT_BODY" > release_notes.txt
+          echo "Generated release body:"
           cat release_notes.txt
 
       - name: Install Dependencies
