@@ -29,39 +29,3 @@ async def main():
 
 asyncio.run(main())
 ```
-
-## Customizing HTTP Headers
-
-You can pass custom HTTP headers to the `TrueLinkResolver` to be used for all requests. This is useful if you need to set a custom User-Agent or other headers.
-
-```python
-import asyncio
-from truelink import TrueLinkResolver
-
-async def main():
-    headers = {"User-Agent": "MyCustomUserAgent/1.0"}
-    resolver = TrueLinkResolver(headers=headers)
-    url = "https://buzzheavier.com/rnk4ut0lci9y"
-    result = await resolver.resolve(url)
-    print(result)
-
-asyncio.run(main())
-```
-
-## Using a Proxy
-
-You can configure a proxy for the `TrueLinkResolver` to use for all HTTP requests.
-
-```python
-import asyncio
-from truelink import TrueLinkResolver
-
-async def main():
-    proxy = "http://user:pass@host:port"
-    resolver = TrueLinkResolver(proxy=proxy)
-    url = "https://buzzheavier.com/rnk4ut0lci9y"
-    result = await resolver.resolve(url)
-    print(result)
-
-asyncio.run(main())
-```

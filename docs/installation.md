@@ -13,16 +13,6 @@ The recommended way to install TrueLink is from [PyPI](https://pypi.org/project/
 pip install truelink
 ```
 
-## Development Installation
-
-To install TrueLink for development, clone the repository and install it in editable mode with the `dev` extras:
-
-```bash
-git clone https://github.com/5hojib/truelink.git
-cd truelink
-pip install -e ".[dev]"
-```
-
 ## Verifying the Installation
 
 To verify that TrueLink is installed correctly, you can run the following command:

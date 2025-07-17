@@ -15,43 +15,10 @@ We welcome contributions to TrueLink! This guide will help you get started with 
    python -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
-4. **Install development dependencies**:
+4. **Install dependencies**:
    ```bash
-   pip install -e ".[dev]"
+   pip install -e .
    ```
-
-## Development Workflow
-
-### Running Tests
-
-```bash
-# Run all tests
-pytest
-
-# Run with coverage
-pytest --cov=truelink
-
-# Run specific test file
-pytest tests/test_core.py
-```
-
-### Code Style
-
-We use several tools to maintain code quality:
-
-```bash
-# Format code
-black truelink/ tests/
-
-# Sort imports
-isort truelink/ tests/
-
-# Lint code
-flake8 truelink/ tests/
-
-# Type checking
-mypy truelink/
-```
 
 ### Documentation
 

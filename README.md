@@ -1,10 +1,7 @@
 # TrueLink
 
 [![PyPI version](https://img.shields.io/pypi/v/truelink.svg)](https://pypi.org/project/truelink/)
-[![Python versions](https://img.shields.io/pypi/pyversions/truelink.svg)](https://pypi.org/project/truelink/)
 [![Downloads](https://static.pepy.tech/badge/truelink/month)](https://pepy.tech/project/truelink)
-[![License](https://img.shields.io/github/license/5hojib/truelink)](https://github.com/5hojib/truelink/blob/main/LICENSE)
-[![Code style](https://img.shields.io/badge/code%20style-black-black)](https://github.com/psf/black)
 
 A Python library for resolving media URLs to direct download links from various file hosting services.
 
@@ -46,16 +43,4 @@ async def main():
 asyncio.run(main())
 ```
 
-For more information, see the [documentation](https://5hojib.github.io/truelink/).
-
-## Supported Sites
-
-For a full list of supported sites, see the [documentation](https://5hojib.github.io/truelink/supported-sites/).
-
-## Contributing
-
-Contributions are welcome! Please see the [contributing guide](https://5hojib.github.io/truelink/contributing/) for more information.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/5hojib/truelink/blob/main/LICENSE) file for details.
+### For more information, see the [documentation](https://5hojib.github.io/truelink/).

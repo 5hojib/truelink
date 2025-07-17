@@ -14,7 +14,7 @@ TrueLink is a Python library for resolving media URLs to direct download links f
 
 TrueLink supports a growing list of file hosting services. The table below provides an overview of the currently supported sites and their status.
 
-### ✅ Working
+### Working
 - [x] buzzheavier
 - [x] 1fichier
 - [x] fuckingfast
@@ -34,7 +34,7 @@ TrueLink supports a growing list of file hosting services. The table below provi
 - [ ] onedrive
 - [ ] pcloud
 
-### ⏳ Not Working
+### Not Working
 - [ ] devuploads (todo)
 - [ ] doodstream
 - [ ] filepress (todo)
