@@ -22,10 +22,17 @@ body {
     background-color: #000000 !important;
 }
 
-/* Clipboard button styling */
-.highlight .md-clipboard,
-.md-typeset .highlight .md-clipboard,
-.md-typeset pre .md-clipboard {
+/* Clipboard button inside .highlight - fixed positioning */
+.highlight {
+    background-color: #000000 !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0.5rem 0 !important;
+    position: relative !important;
+    overflow-x: auto !important;
+}
+
+.highlight .md-clipboard {
     position: absolute !important;
     top: 0.5rem !important;
     right: 0.5rem !important;
@@ -36,16 +43,6 @@ body {
     z-index: 10 !important;
     margin: 0 !important;
     float: none !important;
-}
-
-/* Ensure the highlight container can contain the absolute positioned button */
-.highlight {
-    background-color: #000000 !important;
-    border: none !important;
-    padding: 0 !important;
-    margin: 0.5rem 0 !important;
-    position: relative !important;
-    overflow: visible !important;
 }
 
 .md-clipboard:hover {
@@ -73,20 +70,7 @@ body {
     position: relative !important;
 }
 
-/* Fixed clipboard button inside pre */
-.md-typeset pre .md-clipboard {
-    position: absolute !important;
-    top: 0.5rem !important;
-    right: 0.5rem !important;
-    background-color: #000000 !important;
-    border: 1px solid #333333 !important;
-    border-radius: 3px !important;
-    padding: 0.25rem !important;
-    z-index: 10 !important;
-    margin: 0 !important;
-}
-
-/* Code inside pre tag */
+/* Code inside pre */
 .md-typeset pre code {
     background-color: transparent !important;
     color: inherit !important;
