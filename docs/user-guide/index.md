@@ -4,7 +4,6 @@ Welcome to the comprehensive user guide for TrueLink. This guide covers all aspe
 
 ## Table of Contents
 
-- [Basic Usage](basic-usage.md) - Core functionality and common patterns
 - [Advanced Usage](advanced-usage.md) - Advanced features and customization
 - [Configuration](configuration.md) - Detailed configuration options
 
