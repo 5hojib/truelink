@@ -38,9 +38,6 @@ body {
     padding: 0.8rem !important;
     margin: 0 !important;
     border-radius: 3px !important;
-    overflow-x: auto !important;
-    white-space: pre !important;
-    display: block !important;
 }
 
 /* Code inside pre tag */
@@ -49,6 +46,10 @@ body {
     color: inherit !important;
     border: none !important;
     padding: 0 !important;
+    white-space: pre !important;
+    display: block !important;
+    overflow-x: visible !important;
+    width: max-content !important;
 }
 
 /* Inline code styling */
