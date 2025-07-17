@@ -193,6 +193,11 @@ body {
     color: #58A6FF !important;
 }
 
-.highlight > pre {
-  overflow: hidden; /* Hides both horizontal and vertical scrollbars */
+.highlight pre {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE 10+ */
+}
+
+.highlight pre::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
 }
