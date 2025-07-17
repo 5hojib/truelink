@@ -22,17 +22,10 @@ body {
     background-color: #000000 !important;
 }
 
-/* Code block styling - remove borders from outer container */
-.highlight {
-    background-color: #000000 !important;
-    border: none !important;
-    padding: 0 !important;
-    margin: 0.5rem 0 !important;
-    position: relative !important;
-}
-
-/* Clipboard button styling */
-.md-clipboard {
+/* Clipboard button styling - more specific targeting */
+.highlight .md-clipboard,
+.md-typeset .highlight .md-clipboard,
+.md-typeset pre .md-clipboard {
     position: absolute !important;
     top: 0.5rem !important;
     right: 0.5rem !important;
@@ -41,6 +34,19 @@ body {
     border-radius: 3px !important;
     padding: 0.25rem !important;
     z-index: 10 !important;
+    transform: none !important;
+    margin: 0 !important;
+    float: none !important;
+}
+
+/* Ensure the highlight container can contain the absolute positioned button */
+.highlight {
+    background-color: #000000 !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0.5rem 0 !important;
+    position: relative !important;
+    overflow: visible !important;
 }
 
 .md-clipboard:hover {
@@ -65,6 +71,21 @@ body {
     overflow-x: auto !important;
     white-space: pre !important;
     display: block !important;
+    position: relative !important;
+}
+
+/* Clipboard button styling - position relative to pre element */
+.md-typeset pre .md-clipboard {
+    position: sticky !important;
+    top: 0.5rem !important;
+    right: 0.5rem !important;
+    float: right !important;
+    background-color: #000000 !important;
+    border: 1px solid #333333 !important;
+    border-radius: 3px !important;
+    padding: 0.25rem !important;
+    z-index: 10 !important;
+    margin-left: 0.5rem !important;
 }
 
 /* Code inside pre tag */
