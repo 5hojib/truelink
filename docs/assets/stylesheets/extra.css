@@ -35,55 +35,9 @@ body {
     background-color: #000000 !important;
     color: #e0e0e0 !important;
     border-left: 2px solid #ffffff !important;
-    padding: 0.8rem !important;
+    padding: 1.2rem 0.8rem !important;
     margin: 0 !important;
     border-radius: 3px !important;
-    overflow-x: auto !important;
-    scrollbar-width: none !important; /* Firefox */
-    -ms-overflow-style: none !important; /* IE/Edge */
-}
-
-/* Hide scrollbar for WebKit browsers (Chrome, Safari) - Multiple selectors */
-.md-typeset pre::-webkit-scrollbar,
-.md-typeset .highlight pre::-webkit-scrollbar,
-.highlight pre::-webkit-scrollbar,
-pre::-webkit-scrollbar {
-    display: none !important;
-    width: 0 !important;
-    height: 0 !important;
-}
-
-/* Additional scrollbar hiding for different containers */
-.md-typeset .highlight,
-.highlight {
-    overflow-x: auto !important;
-    scrollbar-width: none !important;
-    -ms-overflow-style: none !important;
-}
-
-.md-typeset .highlight::-webkit-scrollbar,
-.highlight::-webkit-scrollbar {
-    display: none !important;
-    width: 0 !important;
-    height: 0 !important;
-}
-
-/* Target Material MkDocs specific code block containers */
-.md-typeset .codehilite pre,
-.md-typeset .codehilite,
-.codehilite pre,
-.codehilite {
-    scrollbar-width: none !important;
-    -ms-overflow-style: none !important;
-}
-
-.md-typeset .codehilite pre::-webkit-scrollbar,
-.md-typeset .codehilite::-webkit-scrollbar,
-.codehilite pre::-webkit-scrollbar,
-.codehilite::-webkit-scrollbar {
-    display: none !important;
-    width: 0 !important;
-    height: 0 !important;
 }
 
 /* Code inside pre tag */
