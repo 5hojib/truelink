@@ -1,0 +1,14 @@
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #000000;
+        color: #e0e0e0;
+    }
+    
+    .md-header {
+        background-color: #212121;
+    }
+    
+    .md-nav__link--active {
+        background-color: #333333;
+    }
+}

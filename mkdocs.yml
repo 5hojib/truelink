@@ -51,9 +51,6 @@ theme:
       toggle:
         icon: material/toggle-switch-off-outline
         name: Switch to light mode
-  markdown_extensions:
-    - toc:
-      permalink: False
 
   font:
     text: Roboto
@@ -107,7 +104,7 @@ markdown_extensions:
   - footnotes
   - md_in_html
   - toc:
-      permalink: true
+      permalink: false
   - pymdownx.arithmatex:
       generic: true
   - pymdownx.betterem:
