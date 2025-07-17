@@ -28,7 +28,6 @@ body {
     border: none !important;
     padding: 0 !important;
     margin: 0.5rem 0 !important;
-    position: relative !important;
 }
 
 /* Pre tag styling - this is the actual code block */
@@ -40,6 +39,8 @@ body {
     margin: 0 !important;
     border-radius: 3px !important;
     overflow-x: auto !important;
+    white-space: pre !important;
+    display: block !important;
 }
 
 /* Code inside pre tag */
@@ -49,6 +50,9 @@ body {
     border: none !important;
     padding: 0 !important;
     white-space: pre !important;
+    display: block !important;
+    overflow-x: visible !important;
+    width: max-content !important;
 }
 
 /* Inline code styling */
@@ -58,36 +62,6 @@ body {
     border: 1px solid #333333 !important;
     padding: 0.1em 0.3em !important;
     border-radius: 2px !important;
-}
-
-/* Fix scroll buttons positioning */
-.highlight .md-clipboard {
-    position: absolute !important;
-    top: 0.5rem !important;
-    right: 0.5rem !important;
-    z-index: 10 !important;
-}
-
-/* Custom scrollbar for code blocks */
-.md-typeset pre::-webkit-scrollbar {
-    height: 8px !important;
-    background-color: #1a1a1a !important;
-}
-
-.md-typeset pre::-webkit-scrollbar-thumb {
-    background-color: #404040 !important;
-    border-radius: 4px !important;
-}
-
-.md-typeset pre::-webkit-scrollbar-thumb:hover {
-    background-color: #606060 !important;
-}
-
-/* Ensure code blocks don't wrap text */
-.md-typeset .highlight pre {
-    white-space: pre !important;
-    word-wrap: normal !important;
-    overflow-x: auto !important;
 }
 
 /* Code block content */
