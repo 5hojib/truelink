@@ -22,69 +22,22 @@ body {
     background-color: #000000 !important;
 }
 
-/* Clipboard button styling */
-.highlight .md-clipboard,
-.md-typeset .highlight .md-clipboard,
-.md-typeset pre .md-clipboard {
-    position: absolute !important;
-    top: 0.5rem !important;
-    right: 0.5rem !important;
-    background-color: #000000 !important;
-    border: 1px solid #333333 !important;
-    border-radius: 3px !important;
-    padding: 0.25rem !important;
-    z-index: 10 !important;
-    margin: 0 !important;
-    pointer-events: auto !important;
-}
-
-/* Ensure the highlight container can contain the absolute positioned button */
+/* Code block styling - remove borders from outer container */
 .highlight {
     background-color: #000000 !important;
     border: none !important;
     padding: 0 !important;
     margin: 0.5rem 0 !important;
-    position: relative !important;
-    overflow: visible !important;
 }
 
-.md-clipboard:hover {
-    background-color: #111111 !important;
-    border-color: #555555 !important;
-}
-
-/* Clipboard button icon */
-.md-clipboard svg {
-    color: #e0e0e0 !important;
-    fill: #e0e0e0 !important;
-}
-
-/* Pre tag styling */
+/* Pre tag styling - this is the actual code block */
 .md-typeset pre {
     background-color: #000000 !important;
     color: #e0e0e0 !important;
     border-left: 2px solid #ffffff !important;
     padding: 0.8rem !important;
-    padding-right: 3rem !important; /* Space for clipboard button */
     margin: 0 !important;
     border-radius: 3px !important;
-    overflow-x: auto !important;
-    white-space: pre !important;
-    display: block !important;
-    position: relative !important;
-}
-
-/* Fixed clipboard button inside pre */
-.md-typeset pre .md-clipboard {
-    position: absolute !important;
-    top: 0.5rem !important;
-    right: 0.5rem !important;
-    background-color: #000000 !important;
-    border: 1px solid #333333 !important;
-    border-radius: 3px !important;
-    padding: 0.25rem !important;
-    z-index: 10 !important;
-    margin: 0 !important;
 }
 
 /* Code inside pre tag */
@@ -93,10 +46,6 @@ body {
     color: inherit !important;
     border: none !important;
     padding: 0 !important;
-    white-space: pre !important;
-    display: block !important;
-    overflow-x: auto !important;
-    width: 100% !important;
 }
 
 /* Inline code styling */
@@ -115,13 +64,13 @@ body {
     color: #e0e0e0 !important;
 }
 
-/* Syntax highlighting */
+/* Syntax highlighting adjustments for better visibility on black background */
 .highlight .c,
 .highlight .ch,
 .highlight .cm,
 .highlight .c1,
 .highlight .cs {
-    color: #6A9955 !important;
+    color: #6A9955 !important; /* Comments in green */
 }
 
 .highlight .k,
@@ -131,7 +80,7 @@ body {
 .highlight .kp,
 .highlight .kr,
 .highlight .kt {
-    color: #569CD6 !important;
+    color: #569CD6 !important; /* Keywords in blue */
 }
 
 .highlight .s,
@@ -147,7 +96,7 @@ body {
 .highlight .sr,
 .highlight .s1,
 .highlight .ss {
-    color: #CE9178 !important;
+    color: #CE9178 !important; /* Strings in orange */
 }
 
 .highlight .n,
@@ -166,7 +115,7 @@ body {
 .highlight .nx,
 .highlight .py,
 .highlight .w {
-    color: #e0e0e0 !important;
+    color: #e0e0e0 !important; /* Default text color */
 }
 
 .highlight .m,
@@ -174,10 +123,10 @@ body {
 .highlight .mh,
 .highlight .mi,
 .highlight .mo {
-    color: #B5CEA8 !important;
+    color: #B5CEA8 !important; /* Numbers in light green */
 }
 
-/* Blockquote styling */
+/* Blockquote styling to match code block style */
 .md-typeset blockquote {
     background-color: #000000 !important;
     border-left: 4px solid #ffffff !important;
