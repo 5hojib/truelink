@@ -28,25 +28,7 @@ body {
     border: none !important;
     padding: 0 !important;
     margin: 0.5rem 0 !important;
-    position: relative !important;
-}
-
-/* Clipboard button positioning */
-.highlight .md-clipboard {
-    position: absolute !important;
-    top: 0.5rem !important;
-    right: 0.5rem !important;
-    z-index: 10 !important;
-    background-color: #333333 !important;
-    border: 1px solid #555555 !important;
-    color: #e0e0e0 !important;
-    padding: 0.25rem !important;
-    border-radius: 3px !important;
-}
-
-.highlight .md-clipboard:hover {
-    background-color: #444444 !important;
-    border-color: #666666 !important;
+    overflow: visible !important;
 }
 
 /* Pre tag styling - this is the actual code block */
@@ -58,7 +40,9 @@ body {
     margin: 0 !important;
     border-radius: 3px !important;
     overflow-x: auto !important;
+    overflow-y: visible !important;
     white-space: pre !important;
+    position: relative !important;
     display: block !important;
 }
 
@@ -68,10 +52,24 @@ body {
     color: inherit !important;
     border: none !important;
     padding: 0 !important;
+    overflow: visible !important;
     white-space: pre !important;
     display: block !important;
-    overflow-x: visible !important;
-    width: max-content !important;
+}
+
+/* Scrollbar styling for code blocks */
+.md-typeset pre::-webkit-scrollbar {
+    height: 8px !important;
+    background-color: #000000 !important;
+}
+
+.md-typeset pre::-webkit-scrollbar-thumb {
+    background-color: #ffffff !important;
+    border-radius: 4px !important;
+}
+
+.md-typeset pre::-webkit-scrollbar-track {
+    background-color: #000000 !important;
 }
 
 /* Inline code styling */
