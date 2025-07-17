@@ -28,6 +28,30 @@ body {
     border: none !important;
     padding: 0 !important;
     margin: 0.5rem 0 !important;
+    position: relative !important;
+}
+
+/* Clipboard button styling */
+.md-clipboard {
+    position: absolute !important;
+    top: 0.5rem !important;
+    right: 0.5rem !important;
+    background-color: #000000 !important;
+    border: 1px solid #333333 !important;
+    border-radius: 3px !important;
+    padding: 0.25rem !important;
+    z-index: 10 !important;
+}
+
+.md-clipboard:hover {
+    background-color: #111111 !important;
+    border-color: #555555 !important;
+}
+
+/* Clipboard button icon */
+.md-clipboard svg {
+    color: #e0e0e0 !important;
+    fill: #e0e0e0 !important;
 }
 
 /* Pre tag styling - this is the actual code block */
