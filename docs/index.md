@@ -14,32 +14,33 @@ TrueLink is a Python library for resolving media URLs to direct download links f
 
 TrueLink supports a growing list of file hosting services. The table below provides an overview of the currently supported sites and their status.
 
-| Site | Status | Notes |
-| :--- | :--- | :--- |
-| 1Fichier | ✅ | |
-| Buzzheavier | ✅ | |
-| Devuploads | ⏳ | To do |
-| Doodstream | ❌ | Not working |
-| Filepress | ⏳ | To do |
-| Fuckingfast | ✅ | |
-| Gofile | ✅ | |
-| Krakenfiles | ❌ | Not working |
-| Linkbox | ✅ | |
-| Lulacloud | ✅ | |
-| Mediafile | ✅ | Size parsing left |
-| Mediafire | ✅ | |
-| OneDrive | ⏳ | To do |
-| PCloud | ⏳ | To do |
-| Pixeldrain | ✅ | |
-| Ranoz | ✅ | |
-| Streamtape | ✅ | |
-| Swisstransfer | ⏳ | To do |
-| Terabox | ✅ | |
-| Tmpsend | ✅ | |
-| Uploadee | ✅ | |
-| Uploadhaven | ❌ | Different implementation |
-| WeTransfer | ❌ | Not working |
-| YandexDisk | ✅ | |
+### ✅ Working
+- [x] buzzheavier
+- [x] 1fichier
+- [x] fuckingfast
+- [x] gofile
+- [x] linkbox
+- [x] lulacloud
+- [x] mediafile (size parsing left)
+- [x] mediafire
+- [x] pixeldrain
+- [x] streamtape
+- [x] terabox
+- [x] tmpsend
+- [x] uploadee
+- [x] yandexlink
+- [x] ranoz
+- [ ] swisstransfer
+- [ ] onedrive
+- [ ] pcloud
+
+### ⏳ Not Working
+- [ ] devuploads (todo)
+- [ ] doodstream
+- [ ] filepress (todo)
+- [ ] krakenfiles
+- [ ] uploadhaven (different)
+- [ ] wetransfer
 
 ## Disclaimer
 
