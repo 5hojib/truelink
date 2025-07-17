@@ -35,7 +35,7 @@ body {
     background-color: #000000 !important;
     color: #e0e0e0 !important;
     border-left: 2px solid #ffffff !important;
-    padding: 1.2rem 0.8rem !important;
+    padding: 0.4rem !important;
     margin: 0 !important;
     border-radius: 3px !important;
 }
@@ -45,7 +45,7 @@ body {
     background-color: transparent !important;
     color: inherit !important;
     border: none !important;
-    padding: 0.3rem 0 !important;
+    padding: 0 0 0.5rem 0 !important;
     display: block !important;
     line-height: 1.6 !important;
 }
@@ -72,7 +72,8 @@ body {
 .highlight .cm,
 .highlight .c1,
 .highlight .cs {
-    color: #6A9955 !important; /* Comments in green */
+    color: #6A9955 !important;
+    /* Comments in green */
 }
 
 .highlight .k,
@@ -82,7 +83,8 @@ body {
 .highlight .kp,
 .highlight .kr,
 .highlight .kt {
-    color: #569CD6 !important; /* Keywords in blue */
+    color: #569CD6 !important;
+    /* Keywords in blue */
 }
 
 .highlight .s,
@@ -98,7 +100,8 @@ body {
 .highlight .sr,
 .highlight .s1,
 .highlight .ss {
-    color: #CE9178 !important; /* Strings in orange */
+    color: #CE9178 !important;
+    /* Strings in orange */
 }
 
 .highlight .n,
@@ -117,7 +120,8 @@ body {
 .highlight .nx,
 .highlight .py,
 .highlight .w {
-    color: #e0e0e0 !important; /* Default text color */
+    color: #e0e0e0 !important;
+    /* Default text color */
 }
 
 .highlight .m,
@@ -125,7 +129,8 @@ body {
 .highlight .mh,
 .highlight .mi,
 .highlight .mo {
-    color: #B5CEA8 !important; /* Numbers in light green */
+    color: #B5CEA8 !important;
+    /* Numbers in light green */
 }
 
 /* Blockquote styling to match code block style */
