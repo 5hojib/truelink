@@ -200,18 +200,20 @@ body {
     color: #58A6FF !important;
 }
 
-.highlight {
+.md-typeset .highlight {
     position: relative;
-    padding-right: 3rem;
+    padding-right: 3rem; /* Make room for the button */
+    overflow: auto;
 }
 
-.highlight .md-clipboard {
+.md-typeset .highlight > pre {
+    margin: 0 !important;
+    padding-right: 0 !important;
+}
+
+.md-typeset .highlight > .md-clipboard {
     position: absolute;
     top: 0.5rem;
     right: 0.5rem;
     z-index: 10;
-}
-
-.highlight pre {
-    padding-right: 0;
 }
