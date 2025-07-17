@@ -192,3 +192,7 @@ body {
 .md-typeset a:hover {
     color: #58A6FF !important;
 }
+
+.highlight > pre {
+  overflow: hidden; /* Hides both horizontal and vertical scrollbars */
+}
