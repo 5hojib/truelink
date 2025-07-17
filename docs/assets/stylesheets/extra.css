@@ -46,10 +46,6 @@ body {
     color: inherit !important;
     border: none !important;
     padding: 0 !important;
-    white-space: pre !important;
-    display: block !important;
-    overflow-x: visible !important;
-    width: max-content !important;
 }
 
 /* Inline code styling */
@@ -195,4 +191,14 @@ body {
 
 .md-typeset a:hover {
     color: #58A6FF !important;
+}
+
+.md-typeset pre {
+    background-color: #000000 !important;
+    color: #e0e0e0 !important;
+    border-left: 2px solid #ffffff !important;
+    padding: 0.8rem !important;
+    margin: 0 !important;
+    border-radius: 3px !important;
+    overflow-x: hidden !important; /* Hides the horizontal scrollbar */
 }
