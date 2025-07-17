@@ -1,14 +1,183 @@
-@media (prefers-color-scheme: dark) {
-    body {
-        background-color: #000000;
-        color: #e0e0e0;
-    }
-    
-    .md-header {
-        background-color: #000000;
-    }
-    
-    .md-nav__link--active {
-        background-color: #000000;
-    }
+/* Force dark theme styles */
+:root {
+    --md-default-bg-color: #000000;
+    --md-default-fg-color: #e0e0e0;
+    --md-primary-fg-color: #000000;
+    --md-accent-fg-color: #000000;
+}
+
+/* Main body styling */
+body {
+    background-color: #000000 !important;
+    color: #e0e0e0 !important;
+}
+
+/* Header styling */
+.md-header {
+    background-color: #000000 !important;
+}
+
+/* Navigation styling */
+.md-nav__link--active {
+    background-color: #000000 !important;
+}
+
+/* Code block styling */
+.highlight {
+    background-color: #000000 !important;
+    border-left: 4px solid #ffffff !important;
+    padding: 1rem !important;
+    margin: 1rem 0 !important;
+}
+
+/* Inline code styling */
+.md-typeset code {
+    background-color: #000000 !important;
+    color: #e0e0e0 !important;
+    border: 1px solid #333333 !important;
+    padding: 0.2em 0.4em !important;
+}
+
+/* Pre tag styling */
+.md-typeset pre {
+    background-color: #000000 !important;
+    color: #e0e0e0 !important;
+    border-left: 4px solid #ffffff !important;
+    padding: 1rem !important;
+}
+
+/* Code block content */
+.md-typeset .highlight pre,
+.md-typeset .highlight code {
+    background-color: #000000 !important;
+    color: #e0e0e0 !important;
+}
+
+/* Syntax highlighting adjustments for better visibility on black background */
+.highlight .c,
+.highlight .ch,
+.highlight .cm,
+.highlight .c1,
+.highlight .cs {
+    color: #6A9955 !important; /* Comments in green */
+}
+
+.highlight .k,
+.highlight .kc,
+.highlight .kd,
+.highlight .kn,
+.highlight .kp,
+.highlight .kr,
+.highlight .kt {
+    color: #569CD6 !important; /* Keywords in blue */
+}
+
+.highlight .s,
+.highlight .sa,
+.highlight .sb,
+.highlight .sc,
+.highlight .sd,
+.highlight .s2,
+.highlight .se,
+.highlight .sh,
+.highlight .si,
+.highlight .sx,
+.highlight .sr,
+.highlight .s1,
+.highlight .ss {
+    color: #CE9178 !important; /* Strings in orange */
+}
+
+.highlight .n,
+.highlight .na,
+.highlight .nb,
+.highlight .nc,
+.highlight .no,
+.highlight .nd,
+.highlight .ni,
+.highlight .ne,
+.highlight .nf,
+.highlight .nl,
+.highlight .nn,
+.highlight .nt,
+.highlight .nv,
+.highlight .nx,
+.highlight .py,
+.highlight .w {
+    color: #e0e0e0 !important; /* Default text color */
+}
+
+.highlight .m,
+.highlight .mf,
+.highlight .mh,
+.highlight .mi,
+.highlight .mo {
+    color: #B5CEA8 !important; /* Numbers in light green */
+}
+
+/* Blockquote styling to match code block style */
+.md-typeset blockquote {
+    background-color: #000000 !important;
+    border-left: 4px solid #ffffff !important;
+    color: #e0e0e0 !important;
+    padding: 1rem !important;
+    margin: 1rem 0 !important;
+}
+
+/* Content area background */
+.md-content {
+    background-color: #000000 !important;
+}
+
+/* Navigation background */
+.md-nav {
+    background-color: #000000 !important;
+}
+
+/* Sidebar background */
+.md-sidebar {
+    background-color: #000000 !important;
+}
+
+/* Search background */
+.md-search__form {
+    background-color: #000000 !important;
+}
+
+/* Table styling */
+.md-typeset table:not([class]) {
+    background-color: #000000 !important;
+    color: #e0e0e0 !important;
+    border: 1px solid #333333 !important;
+}
+
+.md-typeset table:not([class]) th {
+    background-color: #111111 !important;
+    color: #e0e0e0 !important;
+    border: 1px solid #333333 !important;
+}
+
+.md-typeset table:not([class]) td {
+    border: 1px solid #333333 !important;
+}
+
+/* Admonition styling */
+.md-typeset .admonition {
+    background-color: #000000 !important;
+    border-left: 4px solid #ffffff !important;
+    color: #e0e0e0 !important;
+}
+
+/* Footer styling */
+.md-footer {
+    background-color: #000000 !important;
+}
+
+/* Links styling */
+.md-typeset a {
+    color: #79C0FF !important;
+}
+
+.md-typeset a:hover {
+    color: #58A6FF !important;
 }
