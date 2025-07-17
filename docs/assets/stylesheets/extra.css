@@ -22,17 +22,10 @@ body {
     background-color: #000000 !important;
 }
 
-/* Clipboard button inside .highlight - fixed positioning */
-.highlight {
-    background-color: #000000 !important;
-    border: none !important;
-    padding: 0 !important;
-    margin: 0.5rem 0 !important;
-    position: relative !important;
-    overflow-x: auto !important;
-}
-
-.highlight .md-clipboard {
+/* Clipboard button styling */
+.highlight .md-clipboard,
+.md-typeset .highlight .md-clipboard,
+.md-typeset pre .md-clipboard {
     position: absolute !important;
     top: 0.5rem !important;
     right: 0.5rem !important;
@@ -42,7 +35,17 @@ body {
     padding: 0.25rem !important;
     z-index: 10 !important;
     margin: 0 !important;
-    float: none !important;
+    pointer-events: auto !important;
+}
+
+/* Ensure the highlight container can contain the absolute positioned button */
+.highlight {
+    background-color: #000000 !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0.5rem 0 !important;
+    position: relative !important;
+    overflow: visible !important;
 }
 
 .md-clipboard:hover {
@@ -62,6 +65,7 @@ body {
     color: #e0e0e0 !important;
     border-left: 2px solid #ffffff !important;
     padding: 0.8rem !important;
+    padding-right: 3rem !important; /* Space for clipboard button */
     margin: 0 !important;
     border-radius: 3px !important;
     overflow-x: auto !important;
@@ -70,7 +74,20 @@ body {
     position: relative !important;
 }
 
-/* Code inside pre */
+/* Fixed clipboard button inside pre */
+.md-typeset pre .md-clipboard {
+    position: absolute !important;
+    top: 0.5rem !important;
+    right: 0.5rem !important;
+    background-color: #000000 !important;
+    border: 1px solid #333333 !important;
+    border-radius: 3px !important;
+    padding: 0.25rem !important;
+    z-index: 10 !important;
+    margin: 0 !important;
+}
+
+/* Code inside pre tag */
 .md-typeset pre code {
     background-color: transparent !important;
     color: inherit !important;
@@ -78,8 +95,8 @@ body {
     padding: 0 !important;
     white-space: pre !important;
     display: block !important;
-    overflow-x: visible !important;
-    width: max-content !important;
+    overflow-x: auto !important;
+    width: 100% !important;
 }
 
 /* Inline code styling */
