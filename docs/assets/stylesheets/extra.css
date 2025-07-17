@@ -202,11 +202,16 @@ body {
 
 .highlight {
     position: relative;
+    padding-right: 3rem;
 }
 
-.md-clipboard {
+.highlight .md-clipboard {
     position: absolute;
     top: 0.5rem;
     right: 0.5rem;
-    z-index: 2;
+    z-index: 10;
+}
+
+.highlight pre {
+    padding-right: 0;
 }
