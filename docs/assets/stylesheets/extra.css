@@ -193,12 +193,17 @@ body {
     color: #58A6FF !important;
 }
 
-.md-typeset pre {
-    background-color: #000000 !important;
-    color: #e0e0e0 !important;
-    border-left: 2px solid #ffffff !important;
-    padding: 0.8rem !important;
-    margin: 0 !important;
-    border-radius: 3px !important;
-    overflow-x: hidden !important; /* Hides the horizontal scrollbar */
+.md-typeset .highlight {
+    overflow-x: hidden !important;
+}
+
+.md-typeset .highlight pre {
+    overflow-x: hidden !important;
+    white-space: pre-wrap !important;
+    word-break: break-word !important;
+}
+
+.md-typeset pre code {
+    white-space: pre-wrap !important;
+    word-break: break-word !important;
 }
