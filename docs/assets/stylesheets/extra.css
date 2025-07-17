@@ -22,13 +22,30 @@ body {
     background-color: #000000 !important;
 }
 
-/* Code block styling */
+/* Code block styling - remove borders from outer container */
 .highlight {
     background-color: #000000 !important;
-    border-left: 2px solid #ffffff !important;
-    padding: 0.5rem !important;
+    border: none !important;
+    padding: 0 !important;
     margin: 0.5rem 0 !important;
+}
+
+/* Pre tag styling - this is the actual code block */
+.md-typeset pre {
+    background-color: #000000 !important;
+    color: #e0e0e0 !important;
+    border-left: 2px solid #ffffff !important;
+    padding: 0.8rem !important;
+    margin: 0 !important;
     border-radius: 3px !important;
+}
+
+/* Code inside pre tag */
+.md-typeset pre code {
+    background-color: transparent !important;
+    color: inherit !important;
+    border: none !important;
+    padding: 0 !important;
 }
 
 /* Inline code styling */
@@ -38,15 +55,6 @@ body {
     border: 1px solid #333333 !important;
     padding: 0.1em 0.3em !important;
     border-radius: 2px !important;
-}
-
-/* Pre tag styling */
-.md-typeset pre {
-    background-color: #000000 !important;
-    color: #e0e0e0 !important;
-    border-left: 2px solid #ffffff !important;
-    padding: 0.5rem !important;
-    border-radius: 3px !important;
 }
 
 /* Code block content */
