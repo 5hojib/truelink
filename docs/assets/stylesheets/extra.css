@@ -22,7 +22,7 @@ body {
     background-color: #000000 !important;
 }
 
-/* Clipboard button styling - more specific targeting */
+/* Clipboard button styling */
 .highlight .md-clipboard,
 .md-typeset .highlight .md-clipboard,
 .md-typeset pre .md-clipboard {
@@ -34,7 +34,6 @@ body {
     border-radius: 3px !important;
     padding: 0.25rem !important;
     z-index: 10 !important;
-    transform: none !important;
     margin: 0 !important;
     float: none !important;
 }
@@ -60,7 +59,7 @@ body {
     fill: #e0e0e0 !important;
 }
 
-/* Pre tag styling - this is the actual code block */
+/* Pre tag styling */
 .md-typeset pre {
     background-color: #000000 !important;
     color: #e0e0e0 !important;
@@ -74,18 +73,17 @@ body {
     position: relative !important;
 }
 
-/* Clipboard button styling - position relative to pre element */
+/* Fixed clipboard button inside pre */
 .md-typeset pre .md-clipboard {
-    position: sticky !important;
+    position: absolute !important;
     top: 0.5rem !important;
     right: 0.5rem !important;
-    float: right !important;
     background-color: #000000 !important;
     border: 1px solid #333333 !important;
     border-radius: 3px !important;
     padding: 0.25rem !important;
     z-index: 10 !important;
-    margin-left: 0.5rem !important;
+    margin: 0 !important;
 }
 
 /* Code inside pre tag */
@@ -116,13 +114,13 @@ body {
     color: #e0e0e0 !important;
 }
 
-/* Syntax highlighting adjustments for better visibility on black background */
+/* Syntax highlighting */
 .highlight .c,
 .highlight .ch,
 .highlight .cm,
 .highlight .c1,
 .highlight .cs {
-    color: #6A9955 !important; /* Comments in green */
+    color: #6A9955 !important;
 }
 
 .highlight .k,
@@ -132,7 +130,7 @@ body {
 .highlight .kp,
 .highlight .kr,
 .highlight .kt {
-    color: #569CD6 !important; /* Keywords in blue */
+    color: #569CD6 !important;
 }
 
 .highlight .s,
@@ -148,7 +146,7 @@ body {
 .highlight .sr,
 .highlight .s1,
 .highlight .ss {
-    color: #CE9178 !important; /* Strings in orange */
+    color: #CE9178 !important;
 }
 
 .highlight .n,
@@ -167,7 +165,7 @@ body {
 .highlight .nx,
 .highlight .py,
 .highlight .w {
-    color: #e0e0e0 !important; /* Default text color */
+    color: #e0e0e0 !important;
 }
 
 .highlight .m,
@@ -175,10 +173,10 @@ body {
 .highlight .mh,
 .highlight .mi,
 .highlight .mo {
-    color: #B5CEA8 !important; /* Numbers in light green */
+    color: #B5CEA8 !important;
 }
 
-/* Blockquote styling to match code block style */
+/* Blockquote styling */
 .md-typeset blockquote {
     background-color: #000000 !important;
     border-left: 4px solid #ffffff !important;
