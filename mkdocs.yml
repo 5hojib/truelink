@@ -42,14 +42,14 @@ theme:
       primary: indigo
       accent: indigo
       toggle:
-        icon: material/weather-night
+        icon: material/toggle-switch
         name: Switch to dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
       primary: black
       accent: black
       toggle:
-        icon: material/weather-sunny
+        icon: material/toggle-switch-off-outline
         name: Switch to light mode
   markdown_extensions:
     - toc:
@@ -65,8 +65,6 @@ theme:
 
 # Plugins
 plugins:
-  - search:
-      separator: '[\s\-,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
   - autorefs
   - gen-files:
       scripts:
