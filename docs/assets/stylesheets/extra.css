@@ -5,10 +5,10 @@
     }
     
     .md-header {
-        background-color: #212121;
+        background-color: #000000;
     }
     
     .md-nav__link--active {
-        background-color: #333333;
+        background-color: #000000;
     }
 }
