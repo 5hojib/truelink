@@ -35,7 +35,7 @@ body {
     background-color: #000000 !important;
     color: #e0e0e0 !important;
     border-left: 2px solid #ffffff !important;
-    padding: 0.4rem !important;
+    padding: 0.1rem !important;
     margin: 0 !important;
     border-radius: 3px !important;
 }
@@ -45,7 +45,7 @@ body {
     background-color: transparent !important;
     color: inherit !important;
     border: none !important;
-    padding: 0 0 0.5rem 0 !important;
+    padding: 0 0 0.6rem 0 !important;
     display: block !important;
     line-height: 1.6 !important;
 }
@@ -138,8 +138,8 @@ body {
     background-color: #000000 !important;
     border-left: 4px solid #ffffff !important;
     color: #e0e0e0 !important;
-    padding: 1rem !important;
-    margin: 1rem 0 !important;
+    padding: 0.2rem !important;
+    margin: 0.2rem 0 !important;
 }
 
 /* Content area background */
