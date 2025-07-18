@@ -45,7 +45,7 @@ body {
     background-color: transparent !important;
     color: inherit !important;
     border: none !important;
-    padding: 0 0 0.6rem 0 !important;
+    padding: 0 0 0.4rem 0.3rem !important;
     display: block !important;
     line-height: 1.6 !important;
 }
