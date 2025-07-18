@@ -1,201 +1,273 @@
-/* Force dark theme styles */
+/* Force dark theme with solid black backgrounds */
 :root {
     --md-default-bg-color: #000000;
     --md-default-fg-color: #e0e0e0;
     --md-primary-fg-color: #000000;
-    --md-accent-fg-color: #000000;
+    --md-primary-bg-color: #000000;
+    --md-accent-fg-color: #ffffff;
+    --md-code-bg-color: #000000;
+    --md-code-fg-color: #e0e0e0;
 }
 
-/* Main body styling */
+/* Body and main background */
 body {
     background-color: #000000 !important;
     color: #e0e0e0 !important;
 }
 
-/* Header styling */
+/* Header */
 .md-header {
     background-color: #000000 !important;
-}
-
-/* Navigation styling */
-.md-nav__link--active {
-    background-color: #000000 !important;
-}
-
-/* Code block styling - remove borders from outer container */
-.highlight {
-    background-color: #000000 !important;
-    border: none !important;
-    padding: 0 !important;
-    margin: 0.5rem 0 !important;
-}
-
-/* Pre tag styling - this is the actual code block */
-.md-typeset pre {
-    background-color: #000000 !important;
     color: #e0e0e0 !important;
-    border-left: 2px solid #ffffff !important;
-    padding: 0.4rem !important;
-    margin: 0 !important;
-    border-radius: 3px !important;
+    box-shadow: 0 0 0.2rem rgba(255, 255, 255, 0.1) !important;
 }
 
-/* Code inside pre tag */
-.md-typeset pre code {
-    background-color: transparent !important;
-    color: inherit !important;
-    border: none !important;
-    padding: 0 0 0.5rem 0 !important;
-    display: block !important;
-    line-height: 1.6 !important;
-}
-
-/* Inline code styling */
-.md-typeset code {
+.md-header__inner {
     background-color: #000000 !important;
-    color: #e0e0e0 !important;
-    border: 1px solid #333333 !important;
-    padding: 0.1em 0.3em !important;
-    border-radius: 2px !important;
 }
 
-/* Code block content */
-.md-typeset .highlight pre,
-.md-typeset .highlight code {
-    background-color: #000000 !important;
+.md-header__title {
     color: #e0e0e0 !important;
 }
 
-/* Syntax highlighting adjustments for better visibility on black background */
-.highlight .c,
-.highlight .ch,
-.highlight .cm,
-.highlight .c1,
-.highlight .cs {
-    color: #6A9955 !important;
-    /* Comments in green */
-}
-
-.highlight .k,
-.highlight .kc,
-.highlight .kd,
-.highlight .kn,
-.highlight .kp,
-.highlight .kr,
-.highlight .kt {
-    color: #569CD6 !important;
-    /* Keywords in blue */
-}
-
-.highlight .s,
-.highlight .sa,
-.highlight .sb,
-.highlight .sc,
-.highlight .sd,
-.highlight .s2,
-.highlight .se,
-.highlight .sh,
-.highlight .si,
-.highlight .sx,
-.highlight .sr,
-.highlight .s1,
-.highlight .ss {
-    color: #CE9178 !important;
-    /* Strings in orange */
-}
-
-.highlight .n,
-.highlight .na,
-.highlight .nb,
-.highlight .nc,
-.highlight .no,
-.highlight .nd,
-.highlight .ni,
-.highlight .ne,
-.highlight .nf,
-.highlight .nl,
-.highlight .nn,
-.highlight .nt,
-.highlight .nv,
-.highlight .nx,
-.highlight .py,
-.highlight .w {
-    color: #e0e0e0 !important;
-    /* Default text color */
-}
-
-.highlight .m,
-.highlight .mf,
-.highlight .mh,
-.highlight .mi,
-.highlight .mo {
-    color: #B5CEA8 !important;
-    /* Numbers in light green */
-}
-
-/* Blockquote styling to match code block style */
-.md-typeset blockquote {
-    background-color: #000000 !important;
-    border-left: 4px solid #ffffff !important;
-    color: #e0e0e0 !important;
-    padding: 1rem !important;
-    margin: 1rem 0 !important;
-}
-
-/* Content area background */
-.md-content {
-    background-color: #000000 !important;
-}
-
-/* Navigation background */
+/* Navigation */
 .md-nav {
     background-color: #000000 !important;
+    color: #e0e0e0 !important;
 }
 
-/* Sidebar background */
+.md-nav__title {
+    background-color: #000000 !important;
+    color: #e0e0e0 !important;
+}
+
+.md-nav__item {
+    background-color: #000000 !important;
+}
+
+.md-nav__link {
+    color: #e0e0e0 !important;
+}
+
+.md-nav__link--active {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+}
+
+.md-nav__link:hover {
+    background-color: #111111 !important;
+}
+
+/* Sidebar */
 .md-sidebar {
     background-color: #000000 !important;
 }
 
-/* Search background */
-.md-search__form {
+.md-sidebar__scrollwrap {
     background-color: #000000 !important;
 }
 
-/* Table styling */
-.md-typeset table:not([class]) {
+/* Main content */
+.md-main {
     background-color: #000000 !important;
-    color: #e0e0e0 !important;
-    border: 1px solid #333333 !important;
 }
 
-.md-typeset table:not([class]) th {
-    background-color: #111111 !important;
-    color: #e0e0e0 !important;
-    border: 1px solid #333333 !important;
-}
-
-.md-typeset table:not([class]) td {
-    border: 1px solid #333333 !important;
-}
-
-/* Admonition styling */
-.md-typeset .admonition {
+.md-main__inner {
     background-color: #000000 !important;
-    border-left: 4px solid #ffffff !important;
-    color: #e0e0e0 !important;
 }
 
-/* Footer styling */
+.md-content {
+    background-color: #000000 !important;
+}
+
+.md-content__inner {
+    background-color: #000000 !important;
+}
+
+/* Footer */
 .md-footer {
     background-color: #000000 !important;
+    color: #e0e0e0 !important;
 }
 
-/* Links styling */
+.md-footer__inner {
+    background-color: #000000 !important;
+}
+
+.md-footer__title {
+    color: #e0e0e0 !important;
+}
+
+.md-footer__link {
+    color: #e0e0e0 !important;
+}
+
+/* Code blocks - solid black background */
+.md-typeset pre {
+    background-color: #000000 !important;
+    color: #e0e0e0 !important;
+    border: 1px solid #333333 !important;
+}
+
+.md-typeset pre code {
+    background-color: #000000 !important;
+    color: #e0e0e0 !important;
+}
+
+.md-typeset code {
+    background-color: #000000 !important;
+    color: #e0e0e0 !important;
+    padding: 0.2em 0.4em !important;
+    border-radius: 0.2em !important;
+    border: 1px solid #333333 !important;
+}
+
+/* Inline code */
+.md-typeset p code,
+.md-typeset li code,
+.md-typeset td code {
+    background-color: #000000 !important;
+    color: #e0e0e0 !important;
+    border: 1px solid #333333 !important;
+}
+
+/* Code syntax highlighting */
+.highlight {
+    background-color: #000000 !important;
+}
+
+.highlight pre {
+    background-color: #000000 !important;
+    color: #e0e0e0 !important;
+}
+
+/* Tables */
+.md-typeset table {
+    background-color: #000000 !important;
+    color: #e0e0e0 !important;
+}
+
+.md-typeset table th {
+    background-color: #111111 !important;
+    color: #e0e0e0 !important;
+}
+
+.md-typeset table td {
+    background-color: #000000 !important;
+    color: #e0e0e0 !important;
+}
+
+/* Admonitions */
+.md-typeset .admonition {
+    background-color: #111111 !important;
+    color: #e0e0e0 !important;
+    border-left: 4px solid #333333 !important;
+}
+
+.md-typeset .admonition-title {
+    background-color: #111111 !important;
+    color: #e0e0e0 !important;
+}
+
+/* Search */
+.md-search {
+    background-color: #000000 !important;
+}
+
+.md-search__input {
+    background-color: #000000 !important;
+    color: #e0e0e0 !important;
+    border: 1px solid #333333 !important;
+}
+
+.md-search__output {
+    background-color: #000000 !important;
+}
+
+.md-search-result {
+    background-color: #000000 !important;
+    color: #e0e0e0 !important;
+}
+
+/* Tabs */
+.md-tabs {
+    background-color: #000000 !important;
+}
+
+.md-tabs__item {
+    background-color: #000000 !important;
+}
+
+.md-tabs__link {
+    color: #e0e0e0 !important;
+}
+
+.md-tabs__link--active {
+    color: #ffffff !important;
+}
+
+/* TOC */
+.md-nav--secondary {
+    background-color: #000000 !important;
+}
+
+.md-nav--secondary .md-nav__title {
+    background-color: #000000 !important;
+    color: #e0e0e0 !important;
+}
+
+/* Buttons */
+.md-typeset .md-button {
+    background-color: #000000 !important;
+    color: #e0e0e0 !important;
+    border: 1px solid #333333 !important;
+}
+
+.md-typeset .md-button:hover {
+    background-color: #111111 !important;
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #000000;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #333333;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555555;
+}
+
+/* Links */
 .md-typeset a {
-    color: #79C0FF !important;
+    color: #ffffff !important;
 }
 
 .md-typeset a:hover {
-    color: #58A6FF !important;
+    color: #cccccc !important;
+}
+
+/* Ensure everything has black background */
+* {
+    scrollbar-color: #333333 #000000;
+}
+
+/* Override any remaining backgrounds */
+.md-container,
+.md-main,
+.md-content,
+.md-typeset,
+.md-header,
+.md-footer,
+.md-nav,
+.md-sidebar {
+    background-color: #000000 !important;
 }
