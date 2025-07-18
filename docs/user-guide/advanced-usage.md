@@ -6,7 +6,7 @@ This section covers some of the more advanced features of TrueLink.
 
 You can process multiple URLs concurrently using `asyncio.gather`. This is the most efficient way to resolve a large number of URLs.
 
-```python
+```python linenums="1"
 import asyncio
 from truelink import TrueLinkResolver
 

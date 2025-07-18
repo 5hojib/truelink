@@ -6,17 +6,17 @@ We welcome contributions to TrueLink! This guide will help you get started with 
 
 1. **Fork the repository** on GitHub
 2. **Clone your fork**:
-   ```bash
+   ``` { .text .no-copy }
    git clone https://github.com/yourusername/truelink.git
    cd truelink
    ```
 3. **Create a virtual environment**:
-   ```bash
+   ``` { .text .no-copy }
    python -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
 4. **Install dependencies**:
-   ```bash
+   ``` { .text .no-copy }
    pip install -e .
    ```
 
@@ -24,7 +24,7 @@ We welcome contributions to TrueLink! This guide will help you get started with 
 
 To work on documentation:
 
-```bash
+``` { .text .no-copy }
 # Install docs dependencies
 pip install mkdocs mkdocs-material mkdocstrings[python]
 
