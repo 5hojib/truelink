@@ -36,16 +36,16 @@ class PrettyPrintDataClass:
 @dataclass
 class LinkResult(PrettyPrintDataClass):
     """Result for single file link.
-    
+
     This class represents the result type returned by the resolve() method when processing a single file link.
-    
+
     Attributes:
         url (str): The direct download URL for the file.
         filename (str, optional): The original filename of the file.
         mime_type (str, optional): The MIME type of the file (e.g., "video/mp4").
         size (int, optional): Size of the file in bytes.
         headers (dict, optional): Custom headers needed for the download (e.g., {"Authorization": "Bearer token"}).
-    
+
     Example:
         ```python
         {
@@ -68,9 +68,9 @@ class LinkResult(PrettyPrintDataClass):
 @dataclass
 class FileItem(PrettyPrintDataClass):
     """Individual file in a folder.
-    
+
     This class represents a single file within a folder result.
-    
+
     Attributes:
         url (str): The direct download URL for the file.
         filename (str): The name of the file.
@@ -100,15 +100,15 @@ class FileItem(PrettyPrintDataClass):
 @dataclass
 class FolderResult(PrettyPrintDataClass):
     """Result for folder/multi-file link.
-    
+
     This class represents the result type returned by the resolve() method when processing a folder or multi-file link.
-    
+
     Attributes:
         title (str): The name of the folder.
         contents (list[FileItem]): List of files contained in the folder.
         total_size (int): Total size of all files in bytes.
         headers (dict, optional): Custom headers needed for downloads.
-    
+
     Example:
         ```python
         {
