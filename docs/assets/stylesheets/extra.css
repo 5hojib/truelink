@@ -199,3 +199,149 @@ body {
 .md-typeset a:hover {
     color: #58A6FF !important;
 }
+
+/* Additional comprehensive black background selectors */
+
+/* Main container */
+.md-main {
+    background-color: #000000 !important;
+}
+
+/* Grid and layout containers */
+.md-grid {
+    background-color: #000000 !important;
+}
+
+.md-container {
+    background-color: #000000 !important;
+}
+
+/* All navigation elements */
+.md-nav,
+.md-nav__list,
+.md-nav__item,
+.md-nav__link,
+.md-nav__title,
+.md-nav__source {
+    background-color: #000000 !important;
+}
+
+/* Navigation hover and active states */
+.md-nav__link:hover,
+.md-nav__link:focus,
+.md-nav__link--active {
+    background-color: #000000 !important;
+}
+
+/* Sidebar and drawer */
+.md-sidebar,
+.md-sidebar__scrollwrap,
+.md-sidebar--primary,
+.md-sidebar--secondary {
+    background-color: #000000 !important;
+}
+
+/* Header elements */
+.md-header,
+.md-header__inner,
+.md-header__button,
+.md-header__topic,
+.md-header__title,
+.md-header__source {
+    background-color: #000000 !important;
+}
+
+/* Search elements */
+.md-search,
+.md-search__form,
+.md-search__input,
+.md-search__output,
+.md-search__scrollwrap,
+.md-search-result,
+.md-search-result__list,
+.md-search-result__item,
+.md-search-result__link,
+.md-search-result__meta {
+    background-color: #000000 !important;
+}
+
+/* Footer elements */
+.md-footer,
+.md-footer__inner,
+.md-footer__link,
+.md-footer-meta,
+.md-footer-meta__inner {
+    background-color: #000000 !important;
+}
+
+/* Content and main areas */
+.md-content,
+.md-content__inner,
+.md-main__inner {
+    background-color: #000000 !important;
+}
+
+/* Menu and dropdown elements */
+.md-menu,
+.md-menu__list,
+.md-menu__item,
+.md-menu__link {
+    background-color: #000000 !important;
+}
+
+/* Version selector and other dropdowns */
+.md-version,
+.md-version__list,
+.md-version__item,
+.md-version__link {
+    background-color: #000000 !important;
+}
+
+/* Tabs */
+.md-tabs,
+.md-tabs__list,
+.md-tabs__item,
+.md-tabs__link {
+    background-color: #000000 !important;
+}
+
+/* Announcement bar */
+.md-announce,
+.md-banner,
+.md-banner__inner {
+    background-color: #000000 !important;
+}
+
+/* Progress bar */
+.md-progress {
+    background-color: #000000 !important;
+}
+
+/* Dialog and overlay elements */
+.md-dialog,
+.md-overlay {
+    background-color: #000000 !important;
+}
+
+/* Source code repository link */
+.md-source,
+.md-source__inner,
+.md-source__repository,
+.md-source__facts {
+    background-color: #000000 !important;
+}
+
+/* Catch-all for any remaining Material Design elements */
+[class*="md-"] {
+    background-color: #000000 !important;
+}
+
+/* HTML and body fallback */
+html {
+    background-color: #000000 !important;
+}
+
+/* Ensure all divs, sections, and containers are black */
+div, section, article, aside, main, header, footer, nav {
+    background-color: #000000 !important;
+}
