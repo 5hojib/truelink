@@ -43,4 +43,6 @@ async def main():
 asyncio.run(main())
 ```
 
-### For more information, see the [documentation](https://5hojib.github.io/truelink/).
+### Documentation
+
+For more information, see the [documentation](https://5hojib.github.io/truelink/).
