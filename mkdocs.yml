@@ -79,7 +79,7 @@ extra:
     - icon: fontawesome/brands/python
       link: https://pypi.org/project/truelink
     - icon: fontawesome/brands/telegram
-      link: https://t.me/username
+      link: https://t.me/AeonOrg
 
 extra_css:
   - assets/stylesheets/extra.css
@@ -137,5 +137,6 @@ nav:
   - API Reference:
     - 'Core': 'api-reference/core.md'
     - 'Exceptions': 'api-reference/exceptions.md'
+  - Types: types.md
   - Contributing: contributing.md
   - Changelog: changelog.md
