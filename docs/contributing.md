@@ -24,7 +24,7 @@ We welcome contributions to TrueLink! This guide will help you get started with 
 
 To work on documentation:
 
-``` { .text .no-copy }
+```bash
 # Install docs dependencies
 pip install mkdocs mkdocs-material mkdocstrings[python]
 
@@ -38,7 +38,7 @@ mkdocs build
 ## Submitting Changes
 
 1. **Create a new branch**:
-   ```bash
+   ``` { .text .no-copy }
    git checkout -b feature/your-feature-name
    ```
 
@@ -51,12 +51,12 @@ mkdocs build
 5. **Run the test suite** to ensure everything passes
 
 6. **Commit your changes**:
-   ```bash
+   ``` { .text .no-copy }
    git commit -m "Add: description of your changes"
    ```
 
 7. **Push to your fork**:
-   ```bash
+   ``` { .text .no-copy }
    git push origin feature/your-feature-name
    ```
 

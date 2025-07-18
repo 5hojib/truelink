@@ -13,7 +13,7 @@ The following parameters can be passed to the `TrueLinkResolver` constructor:
 
 Here's an example of how to configure the `TrueLinkResolver` with a custom timeout and headers:
 
-```python linenums="1"
+```python
 import asyncio
 from truelink import TrueLinkResolver
 

@@ -17,7 +17,7 @@ pip install truelink
 
 To verify that TrueLink is installed correctly, you can run the following command:
 
-```bash
+``` { .text .no-copy }
 python -c "import truelink; print(truelink.__version__)"
 ```
 

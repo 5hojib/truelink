@@ -6,7 +6,7 @@ This guide will walk you through the basics of using TrueLink to resolve URLs.
 
 The main entry point for using TrueLink is the `TrueLinkResolver` class. You can use it to resolve a single URL like this:
 
-```python linenums="1"
+```python
 import asyncio
 from truelink import TrueLinkResolver
 
@@ -32,7 +32,7 @@ The `resolve()` method returns a `LinkResult` or `FolderResult` object, dependin
 
 Before attempting to resolve a URL, you can check if it's supported by TrueLink using the `is_supported()` method:
 
-```python linenums="1"
+```python
 from truelink import TrueLinkResolver
 
 resolver = TrueLinkResolver()
@@ -47,7 +47,7 @@ else:
 
 You can get a list of all supported domains using the `get_supported_domains()` method:
 
-```python linenums="1"
+```python
 from truelink import TrueLinkResolver
 
 resolver = TrueLinkResolver()
