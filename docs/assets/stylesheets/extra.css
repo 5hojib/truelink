@@ -58,6 +58,40 @@ body {
     background-color: #111111 !important;
 }
 
+/* Mobile navigation overlay */
+.md-overlay {
+    background-color: rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Mobile navigation drawer */
+.md-nav--primary {
+    background-color: #000000 !important;
+}
+
+.md-nav--primary .md-nav__title {
+    background-color: #000000 !important;
+    color: #e0e0e0 !important;
+}
+
+.md-nav--primary .md-nav__item {
+    background-color: #000000 !important;
+}
+
+.md-nav--primary .md-nav__link {
+    background-color: #000000 !important;
+    color: #e0e0e0 !important;
+}
+
+/* Mobile menu toggle button */
+.md-nav__toggle {
+    background-color: #000000 !important;
+}
+
+/* Mobile navigation source */
+.md-nav__source {
+    background-color: #000000 !important;
+}
+
 /* Sidebar */
 .md-sidebar {
     background-color: #000000 !important;
@@ -107,17 +141,19 @@ body {
     background-color: #000000 !important;
     color: #e0e0e0 !important;
     border: 1px solid #333333 !important;
+    padding: 1.2em 1.5em !important;
 }
 
 .md-typeset pre code {
     background-color: #000000 !important;
     color: #e0e0e0 !important;
+    padding: 0 !important;
 }
 
 .md-typeset code {
     background-color: #000000 !important;
     color: #e0e0e0 !important;
-    padding: 0.2em 0.4em !important;
+    padding: 0.4em 0.7em !important;
     border-radius: 0.2em !important;
     border: 1px solid #333333 !important;
 }
