@@ -17,6 +17,8 @@ PASSWORD_ERROR_MESSAGE_FICHIER = (
 class FichierResolver(BaseResolver):
     """Resolver for 1Fichier.com URLs"""
 
+    DOMAINS = ["1fichier.com"]
+
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve 1Fichier.com URL"""
 

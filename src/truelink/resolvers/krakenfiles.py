@@ -14,6 +14,8 @@ from .base import BaseResolver
 class KrakenFilesResolver(BaseResolver):
     """Resolver for KrakenFiles.com URLs"""
 
+    DOMAINS = ["krakenfiles.com"]
+
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve KrakenFiles.com URL"""
         try:

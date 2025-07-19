@@ -14,6 +14,8 @@ from .base import BaseResolver
 class PCloudResolver(BaseResolver):
     """Resolver for pCloud.link URLs"""
 
+    DOMAINS = ["u.pcloud.link", "pcloud.com"]
+
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve pCloud.link URL"""
         try:

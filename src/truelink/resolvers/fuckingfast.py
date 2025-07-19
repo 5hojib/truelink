@@ -11,6 +11,8 @@ from .base import BaseResolver
 class FuckingFastResolver(BaseResolver):
     """Resolver for FuckingFast URLs"""
 
+    DOMAINS = ["fuckingfast.co"]
+
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve FuckingFast URL"""
         try:

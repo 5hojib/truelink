@@ -13,6 +13,8 @@ from .base import BaseResolver
 class BuzzHeavierResolver(BaseResolver):
     """Resolver for BuzzHeavier URLs"""
 
+    DOMAINS = ["buzzheavier.com"]
+
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve BuzzHeavier URL"""
         pattern = r"^https?://buzzheavier.com/[a-zA-Z0-9]+$"

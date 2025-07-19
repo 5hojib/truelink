@@ -12,6 +12,8 @@ from .base import BaseResolver
 class WeTransferResolver(BaseResolver):
     """Resolver for WeTransfer.com URLs"""
 
+    DOMAINS = ["wetransfer.com", "we.tl"]
+
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve WeTransfer.com URL"""
         try:

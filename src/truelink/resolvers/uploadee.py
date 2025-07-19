@@ -11,6 +11,8 @@ from .base import BaseResolver
 class UploadEeResolver(BaseResolver):
     """Resolver for Upload.ee URLs"""
 
+    DOMAINS = ["upload.ee"]
+
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve Upload.ee URL"""
         try:

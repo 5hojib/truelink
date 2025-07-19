@@ -15,6 +15,8 @@ YANDEX_DISK_URL_PATTERN = re.compile(
 class YandexDiskResolver(BaseResolver):
     """Resolver for Yandex.Disk URLs"""
 
+    DOMAINS = ["yadi.sk", "disk.yandex." ]
+
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve Yandex.Disk URL"""
         if not YANDEX_DISK_URL_PATTERN.match(url):

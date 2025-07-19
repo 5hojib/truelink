@@ -13,6 +13,13 @@ from .base import BaseResolver
 class LinkBoxResolver(BaseResolver):
     """Resolver for LinkBox.to URLs"""
 
+    DOMAINS = [
+        "linkbox.to",
+        "lbx.to",
+        "linkbox.cloud",
+        "teltobx.net",
+        "telbx.net",
+    ]
     BASE_API = "https://www.linkbox.to/api/file"
 
     def __init__(self) -> None:

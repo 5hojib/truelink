@@ -28,16 +28,37 @@ asyncio.run(main())
 
 The `resolve()` method returns a `LinkResult` or `FolderResult` object, depending on the type of link. You can find more information about these objects in the [API Reference](core.md).
 
+## Caching
+
+TrueLink has a built-in caching mechanism to speed up repeated requests for the same URL. To use it, simply pass the `use_cache=True` argument to the `resolve()` method:
+
+```python
+import asyncio
+from truelink import TrueLinkResolver
+
+async def main():
+    resolver = TrueLinkResolver()
+    url = "https://buzzheavier.com/rnk4ut0lci9y"
+
+    # The first time, the URL will be resolved and the result will be cached
+    result1 = await resolver.resolve(url, use_cache=True)
+    print(f"First result: {result1}")
+
+    # The second time, the result will be loaded from the cache
+    result2 = await resolver.resolve(url, use_cache=True)
+    print(f"Second result: {result2}")
+
+asyncio.run(main())
+```
+
 ## Checking for Supported URLs
 
-Before attempting to resolve a URL, you can check if it's supported by TrueLink using the `is_supported()` method:
+You can check if a URL is supported by TrueLink using the static method `is_supported()` without creating an instance of `TrueLinkResolver`:
 
 ```python
 from truelink import TrueLinkResolver
 
-resolver = TrueLinkResolver()
-
-if resolver.is_supported("https://www.mediafire.com/file/somefile"):
+if TrueLinkResolver.is_supported("https://www.mediafire.com/file/somefile"):
     print("This URL is supported!")
 else:
     print("This URL is not supported.")
@@ -45,12 +66,11 @@ else:
 
 ## Listing Supported Domains
 
-You can get a list of all supported domains using the `get_supported_domains()` method:
+You can get a list of all supported domains using the static method `get_supported_domains()`:
 
 ```python
 from truelink import TrueLinkResolver
 
-resolver = TrueLinkResolver()
-supported_domains = resolver.get_supported_domains()
+supported_domains = TrueLinkResolver.get_supported_domains()
 print(supported_domains)
 ```

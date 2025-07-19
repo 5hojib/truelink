@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import asyncio
+import importlib
+import pkgutil
 from typing import TYPE_CHECKING
 from urllib.parse import urlparse
 
@@ -10,7 +12,7 @@ from .exceptions import (
     InvalidURLException,
     UnsupportedProviderException,
 )
-from .resolvers import *
+from . import resolvers
 
 if TYPE_CHECKING:
     from .types import FolderResult, LinkResult
@@ -18,6 +20,9 @@ if TYPE_CHECKING:
 
 class TrueLinkResolver:
     """Main resolver class for extracting direct download links"""
+
+    _resolvers: dict[str, type] = {}
+    _resolver_instances: dict[str, object] = {}
 
     def __init__(self, timeout: int = 30, max_retries: int = 3) -> None:
         """Initialize TrueLinkResolver
@@ -28,111 +33,33 @@ class TrueLinkResolver:
         """
         self.timeout = timeout
         self.max_retries = max_retries
-        self._resolvers: dict[str, type] = {
-            # Buzzheavier
-            "buzzheavier.com": BuzzHeavierResolver,
-            # Lulacloud
-            "lulacloud.com": LulaCloudResolver,
-            # FuckingFast
-            "fuckingfast.co": FuckingFastResolver,
-            # Yandex
-            "yadi.sk": YandexDiskResolver,
-            "disk.yandex.": YandexDiskResolver,
-            # Devupload
-            "devuploads.com": DevUploadsResolver,
-            "devuploads.net": DevUploadsResolver,
-            # UploadHaven
-            "uploadhaven.com": UploadHavenResolver,
-            # Meduafile
-            "mediafile.cc": MediaFileResolver,
-            # MediaFire
-            "mediafire.com": MediaFireResolver,
-            # OneDrive
-            "1drv.ms": OneDriveResolver,
-            "onedrive.live.com": OneDriveResolver,
-            # pixel drains
-            "pixeldrain.com": PixelDrainResolver,
-            "pixeldra.in": PixelDrainResolver,
-            # streamtape
-            "streamtape.com": StreamtapeResolver,
-            "streamtape.co": StreamtapeResolver,
-            "streamtape.cc": StreamtapeResolver,
-            "streamtape.to": StreamtapeResolver,
-            "streamtape.net": StreamtapeResolver,
-            "streamta.pe": StreamtapeResolver,
-            "streamtape.xyz": StreamtapeResolver,
-            # 1fichier
-            "1fichier.com": FichierResolver,
-            # Krakenfiles
-            "krakenfiles.com": KrakenFilesResolver,
-            # upload ee
-            "upload.ee": UploadEeResolver,
-            # Gofile
-            "gofile.io": GoFileResolver,
-            # tmpsend
-            "tmpsend.com": TmpSendResolver,
-            # pcloud
-            "u.pcloud.link": PCloudResolver,
-            "pcloud.com": PCloudResolver,
-            # ranoz
-            "ranoz.gg": RanozResolver,
-            # Swisstrensfer
-            "swisstransfer.com": SwissTransferResolver,
-            # DoodStream
-            "dood.watch": DoodStreamResolver,
-            "doodstream.com": DoodStreamResolver,
-            "dood.to": DoodStreamResolver,
-            "dood.so": DoodStreamResolver,
-            "dood.cx": DoodStreamResolver,
-            "dood.la": DoodStreamResolver,
-            "dood.ws": DoodStreamResolver,
-            "dood.sh": DoodStreamResolver,
-            "doodstream.co": DoodStreamResolver,
-            "dood.pm": DoodStreamResolver,
-            "dood.wf": DoodStreamResolver,
-            "dood.re": DoodStreamResolver,
-            "dood.video": DoodStreamResolver,
-            "dooood.com": DoodStreamResolver,
-            "dood.yt": DoodStreamResolver,
-            "doods.yt": DoodStreamResolver,
-            "dood.stream": DoodStreamResolver,
-            "doods.pro": DoodStreamResolver,
-            "ds2play.com": DoodStreamResolver,
-            "d0o0d.com": DoodStreamResolver,
-            "ds2video.com": DoodStreamResolver,
-            "do0od.com": DoodStreamResolver,
-            "d000d.com": DoodStreamResolver,
-            "vide0.net": DoodStreamResolver,
-            # linkbox
-            "linkbox.to": LinkBoxResolver,
-            "lbx.to": LinkBoxResolver,
-            "linkbox.cloud": LinkBoxResolver,
-            "teltobx.net": LinkBoxResolver,
-            "telbx.net": LinkBoxResolver,
-            # file press
-            "filepress": FilePressResolver,
-            # wWeTransfer
-            "wetransfer.com": WeTransferResolver,
-            "we.tl": WeTransferResolver,
-            # terabox
-            "terabox.com": TeraboxResolver,
-            "nephobox.com": TeraboxResolver,
-            "4funbox.com": TeraboxResolver,
-            "mirrobox.com": TeraboxResolver,
-            "momerybox.com": TeraboxResolver,
-            "teraboxapp.com": TeraboxResolver,
-            "1024tera.com": TeraboxResolver,
-            "terabox.app": TeraboxResolver,
-            "gibibox.com": TeraboxResolver,
-            "goaibox.com": TeraboxResolver,
-            "terasharelink.com": TeraboxResolver,
-            "teraboxlink.com": TeraboxResolver,
-            "freeterabox.com": TeraboxResolver,
-            "1024terabox.com": TeraboxResolver,
-            "teraboxshare.com": TeraboxResolver,
-            "terafileshare.com": TeraboxResolver,
-            "terabox.club": TeraboxResolver,
-        }
+        self._register_resolvers()
+
+    @classmethod
+    def _register_resolvers(cls):
+        """Dynamically register resolvers"""
+        if cls._resolvers:
+            return
+
+        package_path = resolvers.__path__
+        package_name = resolvers.__name__
+
+        for _, module_name, _ in pkgutil.walk_packages(package_path, f"{package_name}."):
+            module = importlib.import_module(module_name)
+            for attribute_name in dir(module):
+                attribute = getattr(module, attribute_name)
+                if (
+                    isinstance(attribute, type)
+                    and hasattr(attribute, "DOMAINS")
+                    and attribute.__name__.endswith("Resolver")
+                ):
+                    for domain in attribute.DOMAINS:
+                        cls.register_resolver(domain, attribute)
+
+    @classmethod
+    def register_resolver(cls, domain: str, resolver_class: type):
+        """Register a new resolver"""
+        cls._resolvers[domain] = resolver_class
 
     def _get_resolver(self, url: str):
         """Get appropriate resolver for URL"""
@@ -140,21 +67,33 @@ class TrueLinkResolver:
         if not domain:
             raise InvalidURLException("Invalid URL: No domain found")
 
-        for pattern, resolver_class in self._resolvers.items():
-            if pattern in domain:
-                resolver = resolver_class()
+        resolver_class = self._resolvers.get(domain)
+        if resolver_class:
+            if domain not in self._resolver_instances:
+                self._resolver_instances[domain] = resolver_class()
+            resolver = self._resolver_instances[domain]
+            resolver.timeout = self.timeout
+            return resolver
 
+        for pattern, resolver_class in self._resolvers.items():
+            if domain.endswith(pattern):
+                if pattern not in self._resolver_instances:
+                    self._resolver_instances[pattern] = resolver_class()
+                resolver = self._resolver_instances[pattern]
                 resolver.timeout = self.timeout
                 return resolver
 
         raise UnsupportedProviderException(f"No resolver found for domain: {domain}")
 
-    async def resolve(self, url: str) -> LinkResult | FolderResult:
+    _cache: dict[str, LinkResult | FolderResult] = {}
+
+    async def resolve(self, url: str, use_cache: bool = False) -> LinkResult | FolderResult:
         """
         Resolve a URL to direct download link(s) and return as a LinkResult or FolderResult object.
 
         Args:
             url: The URL to resolve
+            use_cache: Whether to use the cache
 
         Returns:
             A LinkResult or FolderResult object.
@@ -164,12 +103,18 @@ class TrueLinkResolver:
             UnsupportedProviderException: If provider is not supported
             ExtractionFailedException: If extraction fails after all retries
         """
+        if use_cache and url in self._cache:
+            return self._cache[url]
+
         resolver_instance = self._get_resolver(url)
 
         for attempt in range(self.max_retries):
             try:
                 async with resolver_instance:
-                    return await resolver_instance.resolve(url)
+                    result = await resolver_instance.resolve(url)
+                    if use_cache:
+                        self._cache[url] = result
+                    return result
             except ExtractionFailedException:
                 if attempt == self.max_retries - 1:
                     raise
@@ -182,7 +127,8 @@ class TrueLinkResolver:
                 await asyncio.sleep(1 * (attempt + 1))
         return None
 
-    def is_supported(self, url: str) -> bool:
+    @staticmethod
+    def is_supported(url: str) -> bool:
         """
         Check if URL is supported
 
@@ -192,17 +138,25 @@ class TrueLinkResolver:
         Returns:
             True if supported, False otherwise
         """
-        try:
-            self._get_resolver(url)
-            return True
-        except UnsupportedProviderException:
+        domain = urlparse(url).hostname
+        if not domain:
             return False
 
-    def get_supported_domains(self) -> list:
+        if domain in TrueLinkResolver._resolvers:
+            return True
+
+        for pattern in TrueLinkResolver._resolvers:
+            if domain.endswith(pattern):
+                return True
+
+        return False
+
+    @staticmethod
+    def get_supported_domains() -> list:
         """
         Get list of supported domains
 
         Returns:
             List of supported domain patterns
         """
-        return list(self._resolvers.keys())
+        return list(TrueLinkResolver._resolvers.keys())
