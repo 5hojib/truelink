@@ -4,6 +4,10 @@ import pytest
 
 from truelink.core import TrueLinkResolver
 
+from unittest.mock import AsyncMock, patch
+
+import pytest
+
 
 @pytest.mark.asyncio
 async def test_mediafire_folder() -> None:
@@ -21,11 +25,6 @@ async def test_mediafire_file() -> None:
     url = "https://www.mediafire.com/file/cw7xsnxna2xfg4k/K4.part7.rar/file"
     result = await resolver.resolve(url)
     assert result is not None
-
-
-from unittest.mock import AsyncMock, patch
-
-import pytest
 
 
 @pytest.mark.asyncio
