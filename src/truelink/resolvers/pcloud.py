@@ -8,13 +8,13 @@ from truelink.exceptions import ExtractionFailedException
 from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
-
+from typing import ClassVar
 
 # todo
 class PCloudResolver(BaseResolver):
     """Resolver for pCloud.link URLs"""
 
-    DOMAINS = ["u.pcloud.link", "pcloud.com"]
+    DOMAINS: ClassVar[list[str]] = ["u.pcloud.link", "pcloud.com"]
 
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve pCloud.link URL"""

@@ -7,12 +7,12 @@ from truelink.exceptions import ExtractionFailedException
 from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
-
+from typing import ClassVar
 
 class RanozResolver(BaseResolver):
     """Resolver for Ranoz.gg URLs"""
 
-    DOMAINS = ["ranoz.gg"]
+    DOMAINS: ClassVar[list[str]] = ["ranoz.gg"]
 
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve Ranoz.gg URL"""

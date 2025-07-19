@@ -6,12 +6,12 @@ from truelink.exceptions import ExtractionFailedException
 from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
-
+from typing import ClassVar
 
 class UploadEeResolver(BaseResolver):
     """Resolver for Upload.ee URLs"""
 
-    DOMAINS = ["upload.ee"]
+    DOMAINS: ClassVar[list[str]] = ["upload.ee"]
 
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve Upload.ee URL"""

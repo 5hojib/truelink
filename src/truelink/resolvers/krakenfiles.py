@@ -8,13 +8,13 @@ from truelink.exceptions import ExtractionFailedException
 from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
-
+from typing import ClassVar
 
 # todo
 class KrakenFilesResolver(BaseResolver):
     """Resolver for KrakenFiles.com URLs"""
 
-    DOMAINS = ["krakenfiles.com"]
+    DOMAINS: ClassVar[list[str]] = ["krakenfiles.com"]
 
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve KrakenFiles.com URL"""

@@ -8,6 +8,7 @@ from truelink.exceptions import ExtractionFailedException, InvalidURLException
 from truelink.types import FileItem, FolderResult, LinkResult
 
 from .base import BaseResolver
+from typing import ClassVar
 
 PASSWORD_ERROR_MESSAGE = (
     "GoFile link {} requires a password (append ::password to the URL)."
@@ -17,7 +18,7 @@ PASSWORD_ERROR_MESSAGE = (
 class GoFileResolver(BaseResolver):
     """Resolver for GoFile.io URLs."""
 
-    DOMAINS = ["gofile.io"]
+    DOMAINS: ClassVar[list[str]] = ["gofile.io"]
 
     def __init__(self) -> None:
         super().__init__()

@@ -8,6 +8,7 @@ from truelink.exceptions import ExtractionFailedException, InvalidURLException
 from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
+from typing import ClassVar
 
 PASSWORD_ERROR_MESSAGE_FICHIER = (
     "1Fichier link {} requires a password (append ::password to the URL)."
@@ -17,7 +18,7 @@ PASSWORD_ERROR_MESSAGE_FICHIER = (
 class FichierResolver(BaseResolver):
     """Resolver for 1Fichier.com URLs"""
 
-    DOMAINS = ["1fichier.com"]
+    DOMAINS: ClassVar[list[str]] = ["1fichier.com"]
 
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve 1Fichier.com URL"""

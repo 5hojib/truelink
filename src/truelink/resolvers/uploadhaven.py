@@ -8,13 +8,13 @@ from truelink.exceptions import ExtractionFailedException
 from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
-
+from typing import ClassVar
 
 # ToDo
 class UploadHavenResolver(BaseResolver):
     """Resolver for UploadHaven URLs"""
 
-    DOMAINS = ["uploadhaven.com"]
+    DOMAINS: ClassVar[list[str]] = ["uploadhaven.com"]
 
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve UploadHaven URL"""

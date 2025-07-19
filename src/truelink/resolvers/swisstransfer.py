@@ -5,14 +5,14 @@ import re
 
 from truelink.exceptions import ExtractionFailedException, InvalidURLException
 from truelink.types import FileItem, FolderResult, LinkResult
-
+from typing import ClassVar
 from .base import BaseResolver
 
 
 class SwissTransferResolver(BaseResolver):
     """Resolver for SwissTransfer.com URLs"""
 
-    DOMAINS = ["swisstransfer.com"]
+    DOMAINS: ClassVar[list[str]] = ["swisstransfer.com"]
 
     async def _get_file_metadata(
         self,

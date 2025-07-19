@@ -8,12 +8,12 @@ from truelink.exceptions import ExtractionFailedException, InvalidURLException
 from truelink.types import FileItem, FolderResult, LinkResult
 
 from .base import BaseResolver
-
+from typing import ClassVar
 
 class LinkBoxResolver(BaseResolver):
     """Resolver for LinkBox.to URLs"""
 
-    DOMAINS = [
+    DOMAINS: ClassVar[list[str]] = [
         "linkbox.to",
         "lbx.to",
         "linkbox.cloud",

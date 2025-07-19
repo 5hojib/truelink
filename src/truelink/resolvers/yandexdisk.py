@@ -6,6 +6,7 @@ from truelink.exceptions import ExtractionFailedException, InvalidURLException
 from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
+from typing import ClassVar
 
 YANDEX_DISK_URL_PATTERN = re.compile(
     r"https?://(yadi\.sk|disk\.yandex\.(?:com|ru))/\S+"
@@ -15,7 +16,7 @@ YANDEX_DISK_URL_PATTERN = re.compile(
 class YandexDiskResolver(BaseResolver):
     """Resolver for Yandex.Disk URLs"""
 
-    DOMAINS = ["yadi.sk", "disk.yandex."]
+    DOMAINS: ClassVar[list[str]] = ["yadi.sk", "disk.yandex."]
 
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve Yandex.Disk URL"""

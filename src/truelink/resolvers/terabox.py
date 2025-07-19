@@ -6,10 +6,10 @@ from truelink.exceptions import ExtractionFailedException
 from truelink.types import FileItem, FolderResult, LinkResult
 
 from .base import BaseResolver
-
+from typing import ClassVar
 
 class TeraboxResolver(BaseResolver):
-    DOMAINS = [
+    DOMAINS: ClassVar[list[str]] = [
         "terabox.com",
         "nephobox.com",
         "4funbox.com",

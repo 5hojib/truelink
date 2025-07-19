@@ -7,13 +7,13 @@ from truelink.exceptions import ExtractionFailedException, InvalidURLException
 from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
-
+from typing import ClassVar
 
 # todo
 class OneDriveResolver(BaseResolver):
     """Resolver for OneDrive (1drv.ms) URLs"""
 
-    DOMAINS = ["1drv.ms", "onedrive.live.com"]
+    DOMAINS: ClassVar[list[str]] = ["1drv.ms", "onedrive.live.com"]
 
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve OneDrive URL"""

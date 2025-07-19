@@ -6,13 +6,13 @@ from truelink.exceptions import ExtractionFailedException, InvalidURLException
 from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
-
+from typing import ClassVar
 
 # ToDo
 class WeTransferResolver(BaseResolver):
     """Resolver for WeTransfer.com URLs"""
 
-    DOMAINS = ["wetransfer.com", "we.tl"]
+    DOMAINS: ClassVar[list[str]] = ["wetransfer.com", "we.tl"]
 
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve WeTransfer.com URL"""

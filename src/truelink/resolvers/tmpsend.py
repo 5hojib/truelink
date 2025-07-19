@@ -6,12 +6,12 @@ from truelink.exceptions import ExtractionFailedException, InvalidURLException
 from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
-
+from typing import ClassVar
 
 class TmpSendResolver(BaseResolver):
     """Resolver for TmpSend.com URLs"""
 
-    DOMAINS = ["tmpsend.com"]
+    DOMAINS: ClassVar[list[str]] = ["tmpsend.com"]
 
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve TmpSend.com URL"""

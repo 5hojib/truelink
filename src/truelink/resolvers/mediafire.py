@@ -5,7 +5,7 @@ import base64
 import os.path as ospath
 import re
 from urllib.parse import unquote, urlparse
-
+from typing import ClassVar
 import cloudscraper
 from lxml.etree import HTML
 
@@ -22,7 +22,7 @@ PASSWORD_ERROR_MESSAGE = (
 class MediaFireResolver(BaseResolver):
     """Resolver for MediaFire URLs (files and folders)"""
 
-    DOMAINS = ["mediafire.com"]
+    DOMAINS: ClassVar[list[str]] = ["mediafire.com"]
 
     async def _run_sync(self, func, *args, **kwargs):
         loop = asyncio.get_running_loop()

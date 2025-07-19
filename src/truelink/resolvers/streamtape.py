@@ -9,12 +9,12 @@ from truelink.exceptions import ExtractionFailedException, InvalidURLException
 from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
-
+from typing import ClassVar
 
 class StreamtapeResolver(BaseResolver):
     """Resolver for Streamtape URLs"""
 
-    DOMAINS = [
+    DOMAINS: ClassVar[list[str]] = [
         "streamtape.com",
         "streamtape.co",
         "streamtape.cc",

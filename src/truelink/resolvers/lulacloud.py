@@ -4,12 +4,12 @@ from truelink.exceptions import ExtractionFailedException
 from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
-
+from typing import ClassVar
 
 class LulaCloudResolver(BaseResolver):
     """Resolver for LulaCloud URLs"""
 
-    DOMAINS = ["lulacloud.com"]
+    DOMAINS: ClassVar[list[str]] = ["lulacloud.com"]
 
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve LulaCloud URL"""

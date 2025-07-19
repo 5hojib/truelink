@@ -13,6 +13,7 @@ from .exceptions import (
     UnsupportedProviderException,
 )
 
+from typing import ClassVar
 if TYPE_CHECKING:
     from .types import FolderResult, LinkResult
 
@@ -20,8 +21,8 @@ if TYPE_CHECKING:
 class TrueLinkResolver:
     """Main resolver class for extracting direct download links"""
 
-    _resolvers: dict[str, type] = {}
-    _resolver_instances: dict[str, object] = {}
+    _resolvers: ClassVar[dict[str, type]] = {}
+    _resolver_instances: ClassVar[dict[str, object]] = {}
 
     def __init__(self, timeout: int = 30, max_retries: int = 3) -> None:
         """Initialize TrueLinkResolver

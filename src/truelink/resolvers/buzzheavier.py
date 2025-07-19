@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import re
-
+from typing import ClassVar
 from lxml.html import fromstring
 
 from truelink.exceptions import ExtractionFailedException
@@ -13,7 +13,7 @@ from .base import BaseResolver
 class BuzzHeavierResolver(BaseResolver):
     """Resolver for BuzzHeavier URLs"""
 
-    DOMAINS = ["buzzheavier.com"]
+    DOMAINS: ClassVar[list[str]] = ["buzzheavier.com"]
 
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve BuzzHeavier URL"""

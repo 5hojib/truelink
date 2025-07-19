@@ -7,12 +7,12 @@ from truelink.exceptions import ExtractionFailedException
 from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
-
+from typing import ClassVar
 
 class MediaFileResolver(BaseResolver):
     """Resolver for MediaFile.cc URLs"""
 
-    DOMAINS = ["mediafile.cc"]
+    DOMAINS: ClassVar[list[str]] = ["mediafile.cc"]
 
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve MediaFile.cc URL"""

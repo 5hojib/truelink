@@ -6,12 +6,12 @@ from truelink.exceptions import ExtractionFailedException, InvalidURLException
 from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
-
+from typing import ClassVar
 
 class PixelDrainResolver(BaseResolver):
     """Resolver for PixelDrain URLs"""
 
-    DOMAINS = ["pixeldrain.com", "pixeldra.in"]
+    DOMAINS: ClassVar[list[str]] = ["pixeldrain.com", "pixeldra.in"]
 
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve PixelDrain URL"""

@@ -8,7 +8,7 @@ from lxml.html import fromstring
 
 from truelink.exceptions import ExtractionFailedException, InvalidURLException
 from truelink.types import FolderResult, LinkResult
-
+from typing import ClassVar
 from .base import BaseResolver
 
 
@@ -16,7 +16,7 @@ from .base import BaseResolver
 class DoodStreamResolver(BaseResolver):
     """Resolver for DoodStream URLs (dood.watch, dood.to, etc.)"""
 
-    DOMAINS = [
+    DOMAINS: ClassVar[list[str]] = [
         "dood.watch",
         "doodstream.com",
         "dood.to",

@@ -6,13 +6,13 @@ from truelink.exceptions import ExtractionFailedException, InvalidURLException
 from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
-
+from typing import ClassVar
 
 # Todo
 class FilePressResolver(BaseResolver):
     """Resolver for FilePress URLs (via filebee.xyz)"""
 
-    DOMAINS = ["filepress"]
+    DOMAINS: ClassVar[list[str]] = ["filepress"]
 
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve FilePress URL"""
