@@ -1,12 +1,10 @@
 from __future__ import annotations
 
-import pytest
-
-from truelink.core import TrueLinkResolver
-
 from unittest.mock import AsyncMock, patch
 
 import pytest
+
+from truelink.core import TrueLinkResolver
 
 
 @pytest.mark.asyncio
