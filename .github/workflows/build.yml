@@ -55,10 +55,10 @@ jobs:
         run: |
           COMMIT_BODY="$(git log -1 --pretty=format:%b)"
       
-          # Remove everything after dashed line
-          CLEANED_BODY="$(echo "$COMMIT_BODY" | sed '/^[-]\{5,\}/q')"
+          # Remove everything from the dashed line and after, including the dashed line itself
+          CLEANED_BODY="$(echo "$COMMIT_BODY" | awk '/^[-]{5,}/ {exit} {print}')"
       
-          # Prefix any line ending with ':' (likely headings) with '### '
+          # Prefix any heading ending with ':' with '### '
           FORMATTED_BODY="$(echo "$CLEANED_BODY" | sed -E 's/^([^[:space:]].*[^[:space:]]):$/### \1:/')"
       
           echo "$FORMATTED_BODY" > release_notes.txt
