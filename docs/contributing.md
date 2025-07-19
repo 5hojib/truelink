@@ -71,6 +71,15 @@ mkdocs build
 - Follow the existing code style
 - Keep changes focused and atomic
 
+### PR Completion Guide
+
+1.  **Title**: Use a clear and descriptive title that summarizes the changes.
+2.  **Description**: Provide a detailed description of the changes, including the problem you are solving and the approach you have taken.
+3.  **Link to Issue**: If the PR addresses an existing issue, link to it in the description.
+4.  **Screenshots/GIFs**: If the changes are visual, include screenshots or GIFs to demonstrate the changes.
+5.  **Testing**: Describe the testing you have done to ensure the changes are working as expected.
+6.  **Checklist**: Use the PR template checklist to ensure you have covered all the necessary steps.
+
 ## Reporting Issues
 
 When reporting issues:
