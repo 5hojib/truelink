@@ -36,6 +36,7 @@ dependencies = [
 docs = [
     "mkdocs>=1.4.0",
     "mkdocs-material>=9.0.0",
+    "mkdocs-macros-plugin",
     "mkdocstrings[python]>=0.20.0",
     "mkdocs-gen-files>=0.4.0",
     "mkdocs-literate-nav>=0.6.0",
