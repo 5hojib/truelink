@@ -15,7 +15,7 @@ import urllib.parse
 __all__ = ["guess_type"]
 
 
-def guess_type(url):
+def guess_type(url: str) -> tuple[str | None, str | None]:
     """Guess the type of a file based on its URL or path."""
     p = urllib.parse.urlparse(url)
 
