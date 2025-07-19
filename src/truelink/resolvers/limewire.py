@@ -1,14 +1,11 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, ClassVar
+from typing import ClassVar
 
 from truelink.exceptions import ExtractionFailedException
 from truelink.types import LinkResult
 
 from .base import BaseResolver
-
-if TYPE_CHECKING:
-    import aiohttp
 
 
 class LimeWireResolver(BaseResolver):

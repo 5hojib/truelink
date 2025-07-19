@@ -9,6 +9,7 @@ from .filepress import FilePressResolver
 from .fuckingfast import FuckingFastResolver
 from .gofile import GoFileResolver
 from .krakenfiles import KrakenFilesResolver
+from .limewire import LimeWireResolver
 from .linkbox import LinkBoxResolver
 from .lulacloud import LulaCloudResolver
 from .mediafile import MediaFileResolver
@@ -24,12 +25,10 @@ from .tmpsend import TmpSendResolver
 from .uploadee import UploadEeResolver
 from .uploadhaven import UploadHavenResolver
 from .wetransfer import WeTransferResolver
-from .limewire import LimeWireResolver
 from .yandexdisk import YandexDiskResolver
 
 __all__ = [
     "BaseResolver",
-    "LimeWireResolver",
     "BuzzHeavierResolver",
     "DevUploadsResolver",
     "DoodStreamResolver",
@@ -38,6 +37,7 @@ __all__ = [
     "FuckingFastResolver",
     "GoFileResolver",
     "KrakenFilesResolver",
+    "LimeWireResolver",
     "LinkBoxResolver",
     "LulaCloudResolver",
     "MediaFileResolver",
