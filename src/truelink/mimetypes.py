@@ -240,7 +240,6 @@ _types_map = {
     ".pl": "text/plain",
     ".srt": "text/plain",
     ".rtx": "text/richtext",
-    ".rtf": "text/rtf",
     ".tsv": "text/tab-separated-values",
     ".vtt": "text/vtt",
     ".py": "text/x-python",
