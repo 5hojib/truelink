@@ -24,10 +24,12 @@ from .tmpsend import TmpSendResolver
 from .uploadee import UploadEeResolver
 from .uploadhaven import UploadHavenResolver
 from .wetransfer import WeTransferResolver
+from .limewire import LimeWireResolver
 from .yandexdisk import YandexDiskResolver
 
 __all__ = [
     "BaseResolver",
+    "LimeWireResolver",
     "BuzzHeavierResolver",
     "DevUploadsResolver",
     "DoodStreamResolver",
