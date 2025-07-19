@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import base64
 import os.path as ospath
 import re
 from urllib.parse import unquote, urlparse
@@ -54,6 +55,28 @@ class MediaFireResolver(BaseResolver):
         response.raise_for_status()
         return response.json() if method == "post" or "api" in url else response.text
 
+    async def _decode_url(self, html, scraper):
+        """Decode MediaFire download URL from HTML using new method"""
+        enc_url = html.xpath('//a[@id="downloadButton"]')
+        if not enc_url:
+            raise ExtractionFailedException("Download button not found in the HTML content. It may have been blocked by Cloudflare's anti-bot protection.")
+        
+        final_link = enc_url[0].attrib.get('href')
+        scrambled = enc_url[0].attrib.get('data-scrambled-url')
+        
+        if final_link and scrambled:
+            try:
+                final_link = base64.b64decode(scrambled).decode("utf-8")
+                return final_link
+            except Exception as e:
+                raise ExtractionFailedException(f"Failed to decode final link. {e.__class__.__name__}") from e
+        elif final_link and final_link.startswith("http"):
+            return final_link
+        elif final_link and final_link.startswith("//"):
+            return await self._resolve_file(f"https:{final_link}", "", scraper)
+        else:
+            raise ExtractionFailedException("No download link found")
+
     async def _repair_download(self, scraper, url: str, password: str):
         if url.startswith("//"):
             url = f"https:{url}"
@@ -74,6 +97,9 @@ class MediaFireResolver(BaseResolver):
         scraper.headers.update({"User-Agent": BaseResolver.USER_AGENT})
 
         try:
+            parsed_url = urlparse(url)
+            url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}"
+            
             html = HTML(await self._get_content(scraper, url))
             if error := html.xpath('//p[@class="notranslate"]/text()'):
                 raise ExtractionFailedException(f"MediaFire error: {error[0]}")
@@ -93,26 +119,20 @@ class MediaFireResolver(BaseResolver):
                         "MediaFire error: Wrong password."
                     )
 
-            link = html.xpath(
-                '//a[@aria-label="Download file"]/@href'
-            ) or html.xpath("//a[@class='retry']/@href")
-            if not link:
-                raise ExtractionFailedException("No links found, please try again.")
-            link = link[0]
-
-            if "retry" in link:
-                return await self._repair_download(scraper, link, password)
-
-            if link.startswith("//"):
-                return await self._resolve_file(f"https:{link}", password, scraper)
-            if "mediafire.com" in urlparse(link).hostname and not re.match(
-                r"https?://download\d+\.mediafire\.com", link
+            # Use the new decoding method
+            final_link = await self._decode_url(html, scraper)
+            
+            # Handle recursive cases
+            if final_link.startswith("//"):
+                return await self._resolve_file(f"https:{final_link}", password, scraper)
+            if "mediafire.com" in urlparse(final_link).hostname and not re.match(
+                r"https?://download\d+\.mediafire\.com", final_link
             ):
-                return await self._resolve_file(link, password, scraper)
+                return await self._resolve_file(final_link, password, scraper)
 
-            filename, size, mime_type = await self._fetch_file_details(link)
+            filename, size, mime_type = await self._fetch_file_details(final_link)
             return LinkResult(
-                url=link, filename=filename, size=size, mime_type=mime_type
+                url=final_link, filename=filename, size=size, mime_type=mime_type
             )
 
         except cloudscraper.exceptions.CloudflareException as e:
@@ -142,6 +162,62 @@ class MediaFireResolver(BaseResolver):
                 message += f" (Code: {response_data['error']})"
             raise ExtractionFailedException(f"MediaFire API error: {message}")
         return response_data
+
+    async def _decode_folder_file_url(self, html, scraper):
+        """Decode URL for files within folders"""
+        enc_url = html.xpath('//a[@id="downloadButton"]')
+        if not enc_url:
+            return None
+        
+        final_link = enc_url[0].attrib.get('href')
+        scrambled = enc_url[0].attrib.get('data-scrambled-url')
+        
+        if final_link and scrambled:
+            try:
+                final_link = base64.b64decode(scrambled).decode("utf-8")
+                return final_link
+            except Exception:
+                return None
+        elif final_link and final_link.startswith("http"):
+            return final_link
+        elif final_link and final_link.startswith("//"):
+            try:
+                return await self._resolve_file(f"https:{final_link}", "", scraper)
+            except Exception:
+                return None
+        return None
+
+    async def _scrape_folder_file(self, url: str, password: str, scraper) -> LinkResult | None:
+        """Scrape individual file from folder"""
+        try:
+            parsed_url = urlparse(url)
+            url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}"
+            
+            html = HTML(await self._get_content(scraper, url))
+            
+            if html.xpath("//div[@class='passwordPrompt']"):
+                if not password:
+                    raise ExtractionFailedException(
+                        PASSWORD_ERROR_MESSAGE.format(url)
+                    )
+                html = HTML(
+                    await self._get_content(
+                        scraper, url, method="post", data={"downloadp": password}
+                    )
+                )
+                if html.xpath("//div[@class='passwordPrompt']"):
+                    return None
+            
+            final_link = await self._decode_folder_file_url(html, scraper)
+            if not final_link:
+                return None
+                
+            filename, size, mime_type = await self._fetch_file_details(final_link)
+            return LinkResult(
+                url=final_link, filename=filename, size=size, mime_type=mime_type
+            )
+        except Exception:
+            return None
 
     async def _resolve_folder(self, url: str, password: str) -> FolderResult:
         scraper = cloudscraper.create_scraper()
@@ -191,16 +267,18 @@ class MediaFireResolver(BaseResolver):
                     if not url:
                         continue
                     try:
-                        result = await self._resolve_file(url, password)
-                        file_item = FileItem(
-                            url=result.url,
-                            filename=result.filename,
-                            size=result.size,
-                            mime_type=result.mime_type,
-                            path=ospath.join(path_prefix, result.filename),
-                        )
-                        all_files.append(file_item)
-                        total_size += result.size or 0
+                        # Use the new scraping method for folder files
+                        result = await self._scrape_folder_file(url, password, scraper)
+                        if result:
+                            file_item = FileItem(
+                                url=result.url,
+                                filename=result.filename,
+                                size=result.size,
+                                mime_type=result.mime_type,
+                                path=ospath.join(path_prefix, result.filename),
+                            )
+                            all_files.append(file_item)
+                            total_size += result.size or 0
                     except ExtractionFailedException:
                         continue
 
