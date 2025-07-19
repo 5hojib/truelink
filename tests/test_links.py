@@ -40,16 +40,3 @@ async def test_terabox_link() -> None:
         result = await resolver.resolve(url)
         assert result == "mocked_result"
         mock_resolve.assert_awaited_once_with(url)
-
-
-@pytest.mark.asyncio
-async def test_limewire_link() -> None:
-    """Test that the limewire.com link resolves correctly."""
-    resolver = TrueLinkResolver()
-    url = "https://limewire.com/d/h1ULB#l3Zv8hhKD1"
-    with patch.object(
-        TrueLinkResolver, "resolve", new=AsyncMock(return_value="mocked_result")
-    ) as mock_resolve:
-        result = await resolver.resolve(url)
-        assert result == "mocked_result"
-        mock_resolve.assert_awaited_once_with(url)

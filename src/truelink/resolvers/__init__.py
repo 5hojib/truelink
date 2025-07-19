@@ -9,7 +9,6 @@ from .filepress import FilePressResolver
 from .fuckingfast import FuckingFastResolver
 from .gofile import GoFileResolver
 from .krakenfiles import KrakenFilesResolver
-from .limewire import LimeWireResolver
 from .linkbox import LinkBoxResolver
 from .lulacloud import LulaCloudResolver
 from .mediafile import MediaFileResolver
@@ -37,7 +36,6 @@ __all__ = [
     "FuckingFastResolver",
     "GoFileResolver",
     "KrakenFilesResolver",
-    "LimeWireResolver",
     "LinkBoxResolver",
     "LulaCloudResolver",
     "MediaFileResolver",
