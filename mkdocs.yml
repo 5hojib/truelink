@@ -51,9 +51,8 @@ theme:
 
 # Plugins
 plugins:
-  - macros
-      module_name:
-        - docs/macros.py
+  - macros:
+      module_name: docs/macros
   - autorefs
   - gen-files:
       scripts:
