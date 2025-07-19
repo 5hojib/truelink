@@ -70,7 +70,7 @@ def define_env(env) -> None:
                     try:
                         date_obj = datetime.fromisoformat(published_date)
                         formatted_date = date_obj.strftime("%B %d, %Y")
-                    except:
+                    except Exception:
                         formatted_date = published_date
                 else:
                     formatted_date = "Unknown date"
