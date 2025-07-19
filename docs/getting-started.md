@@ -26,7 +26,7 @@ async def main():
 asyncio.run(main())
 ```
 
-The `resolve()` method returns a `LinkResult` or `FolderResult` object, depending on the type of link. You can find more information about these objects in the [API Reference](../api-reference/core.md).
+The `resolve()` method returns a `LinkResult` or `FolderResult` object, depending on the type of link. You can find more information about these objects in the [API Reference](core.md).
 
 ## Checking for Supported URLs
 

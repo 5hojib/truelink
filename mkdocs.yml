@@ -133,8 +133,8 @@ nav:
   - Getting Started: getting-started.md
   - Advanced Usage: advanced-usage.md
   - Configuration: configuration.md
-  - Core API: api-reference/core.md
-  - Exceptions: api-reference/exceptions.md
+  - Core API: core.md
+  - Exceptions: exceptions.md
   - Types: types.md
   - Contributing: contributing.md
   - Changelog: changelog.md
