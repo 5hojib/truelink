@@ -1,4 +1,3 @@
-# ruff: noqa: F405, F403
 from __future__ import annotations
 
 import asyncio
@@ -7,12 +6,12 @@ import pkgutil
 from typing import TYPE_CHECKING
 from urllib.parse import urlparse
 
+from . import resolvers
 from .exceptions import (
     ExtractionFailedException,
     InvalidURLException,
     UnsupportedProviderException,
 )
-from . import resolvers
 
 if TYPE_CHECKING:
     from .types import FolderResult, LinkResult
@@ -36,7 +35,7 @@ class TrueLinkResolver:
         self._register_resolvers()
 
     @classmethod
-    def _register_resolvers(cls):
+    def _register_resolvers(cls) -> None:
         """Dynamically register resolvers"""
         if cls._resolvers:
             return
@@ -44,7 +43,9 @@ class TrueLinkResolver:
         package_path = resolvers.__path__
         package_name = resolvers.__name__
 
-        for _, module_name, _ in pkgutil.walk_packages(package_path, f"{package_name}."):
+        for _, module_name, _ in pkgutil.walk_packages(
+            package_path, f"{package_name}."
+        ):
             module = importlib.import_module(module_name)
             for attribute_name in dir(module):
                 attribute = getattr(module, attribute_name)
@@ -57,7 +58,7 @@ class TrueLinkResolver:
                         cls.register_resolver(domain, attribute)
 
     @classmethod
-    def register_resolver(cls, domain: str, resolver_class: type):
+    def register_resolver(cls, domain: str, resolver_class: type) -> None:
         """Register a new resolver"""
         cls._resolvers[domain] = resolver_class
 
@@ -87,7 +88,9 @@ class TrueLinkResolver:
 
     _cache: dict[str, LinkResult | FolderResult] = {}
 
-    async def resolve(self, url: str, use_cache: bool = False) -> LinkResult | FolderResult:
+    async def resolve(
+        self, url: str, use_cache: bool = False
+    ) -> LinkResult | FolderResult:
         """
         Resolve a URL to direct download link(s) and return as a LinkResult or FolderResult object.
 
