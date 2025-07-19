@@ -124,9 +124,5 @@ def process_release_body(body):
     Process and clean up release body content
     """
     lines = body.split("\n")
-    processed_lines = []
-
-    for line in lines:
-        processed_lines.append(line)
-
+    processed_lines = list(lines)
     return "\n".join(processed_lines)
