@@ -59,17 +59,20 @@ class MediaFireResolver(BaseResolver):
         """Decode MediaFire download URL from HTML using new method"""
         enc_url = html.xpath('//a[@id="downloadButton"]')
         if not enc_url:
-            raise ExtractionFailedException("Download button not found in the HTML content. It may have been blocked by Cloudflare's anti-bot protection.")
-        
-        final_link = enc_url[0].attrib.get('href')
-        scrambled = enc_url[0].attrib.get('data-scrambled-url')
-        
+            raise ExtractionFailedException(
+                "Download button not found in the HTML content. It may have been blocked by Cloudflare's anti-bot protection."
+            )
+
+        final_link = enc_url[0].attrib.get("href")
+        scrambled = enc_url[0].attrib.get("data-scrambled-url")
+
         if final_link and scrambled:
             try:
-                final_link = base64.b64decode(scrambled).decode("utf-8")
-                return final_link
+                return base64.b64decode(scrambled).decode("utf-8")
             except Exception as e:
-                raise ExtractionFailedException(f"Failed to decode final link. {e.__class__.__name__}") from e
+                raise ExtractionFailedException(
+                    f"Failed to decode final link. {e.__class__.__name__}"
+                ) from e
         elif final_link and final_link.startswith("http"):
             return final_link
         elif final_link and final_link.startswith("//"):
@@ -99,7 +102,7 @@ class MediaFireResolver(BaseResolver):
         try:
             parsed_url = urlparse(url)
             url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}"
-            
+
             html = HTML(await self._get_content(scraper, url))
             if error := html.xpath('//p[@class="notranslate"]/text()'):
                 raise ExtractionFailedException(f"MediaFire error: {error[0]}")
@@ -121,10 +124,12 @@ class MediaFireResolver(BaseResolver):
 
             # Use the new decoding method
             final_link = await self._decode_url(html, scraper)
-            
+
             # Handle recursive cases
             if final_link.startswith("//"):
-                return await self._resolve_file(f"https:{final_link}", password, scraper)
+                return await self._resolve_file(
+                    f"https:{final_link}", password, scraper
+                )
             if "mediafire.com" in urlparse(final_link).hostname and not re.match(
                 r"https?://download\d+\.mediafire\.com", final_link
             ):
@@ -168,14 +173,13 @@ class MediaFireResolver(BaseResolver):
         enc_url = html.xpath('//a[@id="downloadButton"]')
         if not enc_url:
             return None
-        
-        final_link = enc_url[0].attrib.get('href')
-        scrambled = enc_url[0].attrib.get('data-scrambled-url')
-        
+
+        final_link = enc_url[0].attrib.get("href")
+        scrambled = enc_url[0].attrib.get("data-scrambled-url")
+
         if final_link and scrambled:
             try:
-                final_link = base64.b64decode(scrambled).decode("utf-8")
-                return final_link
+                return base64.b64decode(scrambled).decode("utf-8")
             except Exception:
                 return None
         elif final_link and final_link.startswith("http"):
@@ -187,14 +191,16 @@ class MediaFireResolver(BaseResolver):
                 return None
         return None
 
-    async def _scrape_folder_file(self, url: str, password: str, scraper) -> LinkResult | None:
+    async def _scrape_folder_file(
+        self, url: str, password: str, scraper
+    ) -> LinkResult | None:
         """Scrape individual file from folder"""
         try:
             parsed_url = urlparse(url)
             url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}"
-            
+
             html = HTML(await self._get_content(scraper, url))
-            
+
             if html.xpath("//div[@class='passwordPrompt']"):
                 if not password:
                     raise ExtractionFailedException(
@@ -207,11 +213,11 @@ class MediaFireResolver(BaseResolver):
                 )
                 if html.xpath("//div[@class='passwordPrompt']"):
                     return None
-            
+
             final_link = await self._decode_folder_file_url(html, scraper)
             if not final_link:
                 return None
-                
+
             filename, size, mime_type = await self._fetch_file_details(final_link)
             return LinkResult(
                 url=final_link, filename=filename, size=size, mime_type=mime_type
@@ -268,7 +274,9 @@ class MediaFireResolver(BaseResolver):
                         continue
                     try:
                         # Use the new scraping method for folder files
-                        result = await self._scrape_folder_file(url, password, scraper)
+                        result = await self._scrape_folder_file(
+                            url, password, scraper
+                        )
                         if result:
                             file_item = FileItem(
                                 url=result.url,
