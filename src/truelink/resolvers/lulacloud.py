@@ -9,6 +9,8 @@ from .base import BaseResolver
 class LulaCloudResolver(BaseResolver):
     """Resolver for LulaCloud URLs"""
 
+    DOMAINS = ["lulacloud.com"]
+
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve LulaCloud URL"""
         try:

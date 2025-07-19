@@ -12,6 +12,8 @@ from .base import BaseResolver
 class FilePressResolver(BaseResolver):
     """Resolver for FilePress URLs (via filebee.xyz)"""
 
+    DOMAINS = ["filepress"]
+
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve FilePress URL"""
         try:

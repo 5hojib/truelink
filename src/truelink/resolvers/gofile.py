@@ -17,6 +17,8 @@ PASSWORD_ERROR_MESSAGE = (
 class GoFileResolver(BaseResolver):
     """Resolver for GoFile.io URLs."""
 
+    DOMAINS = ["gofile.io"]
+
     def __init__(self) -> None:
         super().__init__()
         self._folder_details: FolderResult | None = None

@@ -14,6 +14,8 @@ from .base import BaseResolver
 class UploadHavenResolver(BaseResolver):
     """Resolver for UploadHaven URLs"""
 
+    DOMAINS = ["uploadhaven.com"]
+
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve UploadHaven URL"""
         try:

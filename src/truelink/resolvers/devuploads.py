@@ -12,6 +12,8 @@ from .base import BaseResolver
 class DevUploadsResolver(BaseResolver):
     """Resolver for DevUploads URLs"""
 
+    DOMAINS = ["devuploads.com", "devuploads.net"]
+
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve DevUploads URL"""
         try:

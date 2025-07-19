@@ -16,6 +16,33 @@ from .base import BaseResolver
 class DoodStreamResolver(BaseResolver):
     """Resolver for DoodStream URLs (dood.watch, dood.to, etc.)"""
 
+    DOMAINS = [
+        "dood.watch",
+        "doodstream.com",
+        "dood.to",
+        "dood.so",
+        "dood.cx",
+        "dood.la",
+        "dood.ws",
+        "dood.sh",
+        "doodstream.co",
+        "dood.pm",
+        "dood.wf",
+        "dood.re",
+        "dood.video",
+        "dooood.com",
+        "dood.yt",
+        "doods.yt",
+        "dood.stream",
+        "doods.pro",
+        "ds2play.com",
+        "d0o0d.com",
+        "ds2video.com",
+        "do0od.com",
+        "d000d.com",
+        "vide0.net",
+    ]
+
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve DoodStream URL"""
         try:

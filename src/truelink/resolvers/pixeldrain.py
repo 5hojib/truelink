@@ -11,6 +11,8 @@ from .base import BaseResolver
 class PixelDrainResolver(BaseResolver):
     """Resolver for PixelDrain URLs"""
 
+    DOMAINS = ["pixeldrain.com", "pixeldra.in"]
+
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve PixelDrain URL"""
         try:

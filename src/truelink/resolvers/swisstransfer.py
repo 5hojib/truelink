@@ -12,6 +12,8 @@ from .base import BaseResolver
 class SwissTransferResolver(BaseResolver):
     """Resolver for SwissTransfer.com URLs"""
 
+    DOMAINS = ["swisstransfer.com"]
+
     async def _get_file_metadata(
         self,
         transfer_id: str,

@@ -14,6 +14,16 @@ from .base import BaseResolver
 class StreamtapeResolver(BaseResolver):
     """Resolver for Streamtape URLs"""
 
+    DOMAINS = [
+        "streamtape.com",
+        "streamtape.co",
+        "streamtape.cc",
+        "streamtape.to",
+        "streamtape.net",
+        "streamta.pe",
+        "streamtape.xyz",
+    ]
+
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve Streamtape URL"""
         try:

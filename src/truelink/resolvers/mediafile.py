@@ -12,6 +12,8 @@ from .base import BaseResolver
 class MediaFileResolver(BaseResolver):
     """Resolver for MediaFile.cc URLs"""
 
+    DOMAINS = ["mediafile.cc"]
+
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve MediaFile.cc URL"""
         try:

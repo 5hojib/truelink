@@ -12,6 +12,8 @@ from .base import BaseResolver
 class RanozResolver(BaseResolver):
     """Resolver for Ranoz.gg URLs"""
 
+    DOMAINS = ["ranoz.gg"]
+
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve Ranoz.gg URL"""
         try:

@@ -22,6 +22,8 @@ PASSWORD_ERROR_MESSAGE = (
 class MediaFireResolver(BaseResolver):
     """Resolver for MediaFire URLs (files and folders)"""
 
+    DOMAINS = ["mediafire.com"]
+
     async def _run_sync(self, func, *args, **kwargs):
         loop = asyncio.get_running_loop()
         return await loop.run_in_executor(None, lambda: func(*args, **kwargs))

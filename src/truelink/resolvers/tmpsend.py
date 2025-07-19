@@ -11,6 +11,8 @@ from .base import BaseResolver
 class TmpSendResolver(BaseResolver):
     """Resolver for TmpSend.com URLs"""
 
+    DOMAINS = ["tmpsend.com"]
+
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve TmpSend.com URL"""
         try:

@@ -13,6 +13,8 @@ from .base import BaseResolver
 class OneDriveResolver(BaseResolver):
     """Resolver for OneDrive (1drv.ms) URLs"""
 
+    DOMAINS = ["1drv.ms", "onedrive.live.com"]
+
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve OneDrive URL"""
         try:
