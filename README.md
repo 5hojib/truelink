@@ -36,16 +36,9 @@ async def main():
     url = "https://buzzheavier.com/rnk4ut0lci9y"
 
     try:
-        # Resolve the URL with caching enabled
-        result = await resolver.resolve(url, use_cache=True)
+        result = await resolver.resolve(url)
         print(type(result))
         print(result)
-
-        # The second time, the result will be loaded from the cache
-        result = await resolver.resolve(url, use_cache=True)
-        print("Resolved from cache:")
-        print(result)
-
     except Exception as e:
         print(f"Error processing {url}: {e}")
 

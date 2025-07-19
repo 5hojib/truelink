@@ -9,6 +9,7 @@ TrueLink is a Python library for resolving media URLs to direct download links f
 - **Robust Error Handling**: Catches common exceptions and provides informative error messages.
 - **URL Validation**: Pre-validates URLs to ensure they are supported before processing.
 - **Type-Safe**: Fully type-hinted for a better development experience.
+- **Caching**: Built-in caching for faster resolution of repeated requests.
 
 ## Supported Sites
 
