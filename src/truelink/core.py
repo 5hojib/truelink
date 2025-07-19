@@ -148,11 +148,7 @@ class TrueLinkResolver:
         if domain in TrueLinkResolver._resolvers:
             return True
 
-        for pattern in TrueLinkResolver._resolvers:
-            if domain.endswith(pattern):
-                return True
-
-        return False
+        return any(domain.endswith(pattern) for pattern in TrueLinkResolver._resolvers)
 
     @staticmethod
     def get_supported_domains() -> list:
