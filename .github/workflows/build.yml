@@ -54,7 +54,14 @@ jobs:
         if: env.RELEASE_EXISTS == 'false'
         run: |
           COMMIT_BODY="$(git log -1 --pretty=format:%b)"
-          echo "$COMMIT_BODY" > release_notes.txt
+      
+          # Remove everything after dashed line
+          CLEANED_BODY="$(echo "$COMMIT_BODY" | sed '/^[-]\{5,\}/q')"
+      
+          # Prefix any line ending with ':' (likely headings) with '### '
+          FORMATTED_BODY="$(echo "$CLEANED_BODY" | sed -E 's/^([^[:space:]].*[^[:space:]]):$/### \1:/')"
+      
+          echo "$FORMATTED_BODY" > release_notes.txt
           echo "Generated release body:"
           cat release_notes.txt
 
