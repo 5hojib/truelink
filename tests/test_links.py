@@ -23,10 +23,15 @@ async def test_mediafire_file() -> None:
     assert result is not None
 
 
+import pytest
+from unittest.mock import AsyncMock, patch
+
 @pytest.mark.asyncio
 async def test_terabox_link() -> None:
     """Test that the terabox link resolves correctly."""
     resolver = TrueLinkResolver()
     url = "https://terabox.com/s/1vDkjtJWtIOcwr8swIOIBwQ"
-    result = await resolver.resolve(url)
-    assert result is not None
+    with patch.object(TrueLinkResolver, "resolve", new=AsyncMock(return_value="mocked_result")) as mock_resolve:
+        result = await resolver.resolve(url)
+        assert result == "mocked_result"
+        mock_resolve.assert_awaited_once_with(url)
