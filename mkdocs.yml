@@ -130,13 +130,11 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Installation: installation.md
-  - User Guide:
-    - 'Getting Started': 'user-guide/getting-started.md'
-    - 'Advanced Usage': 'user-guide/advanced-usage.md'
-    - 'Configuration': 'user-guide/configuration.md'
-  - API Reference:
-    - 'Core': 'api-reference/core.md'
-    - 'Exceptions': 'api-reference/exceptions.md'
+  - Getting Started: getting-started.md
+  - Advanced Usage: advanced-usage.md
+  - Configuration: configuration.md
+  - Core API: api-reference/core.md
+  - Exceptions: api-reference/exceptions.md
   - Types: types.md
   - Contributing: contributing.md
   - Changelog: changelog.md
