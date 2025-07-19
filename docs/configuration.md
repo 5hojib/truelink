@@ -11,7 +11,7 @@ The following parameters can be passed to the `TrueLinkResolver` constructor:
 
 ## Example
 
-Here's an example of how to configure the `TrueLinkResolver` with a custom timeout and headers:
+Here's an example of how to configure the `TrueLinkResolver` with a custom timeout and max_retries:
 
 ```python
 import asyncio
