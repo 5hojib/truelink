@@ -51,6 +51,9 @@ theme:
 
 # Plugins
 plugins:
+  - macros
+      module_name:
+        - docs/macros.py
   - autorefs
   - gen-files:
       scripts:
@@ -73,6 +76,7 @@ plugins:
 
 # Customization
 extra:
+  github_repo: "5hojib/truelink"  # Added for changelog generation
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/5hojib
