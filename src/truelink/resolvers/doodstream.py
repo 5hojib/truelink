@@ -2,13 +2,14 @@ from __future__ import annotations
 
 import asyncio
 import re
+from typing import ClassVar
 from urllib.parse import urlparse
 
 from lxml.html import fromstring
 
 from truelink.exceptions import ExtractionFailedException, InvalidURLException
 from truelink.types import FolderResult, LinkResult
-from typing import ClassVar
+
 from .base import BaseResolver
 
 

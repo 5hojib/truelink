@@ -1,12 +1,13 @@
 from __future__ import annotations
 
+from typing import ClassVar
 from urllib.parse import parse_qs, urlparse
 
 from truelink.exceptions import ExtractionFailedException, InvalidURLException
 from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
-from typing import ClassVar
+
 
 class TmpSendResolver(BaseResolver):
     """Resolver for TmpSend.com URLs"""

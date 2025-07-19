@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+from typing import ClassVar
 from urllib.parse import urlparse
 
 from truelink import mimetypes
@@ -8,7 +9,7 @@ from truelink.exceptions import ExtractionFailedException, InvalidURLException
 from truelink.types import FileItem, FolderResult, LinkResult
 
 from .base import BaseResolver
-from typing import ClassVar
+
 
 class LinkBoxResolver(BaseResolver):
     """Resolver for LinkBox.to URLs"""

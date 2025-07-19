@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import re
 from typing import ClassVar
+
 from lxml.html import fromstring
 
 from truelink.exceptions import ExtractionFailedException

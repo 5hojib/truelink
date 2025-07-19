@@ -1,12 +1,13 @@
 from __future__ import annotations
 
+from typing import ClassVar
 from urllib.parse import quote
 
 from truelink.exceptions import ExtractionFailedException
 from truelink.types import FileItem, FolderResult, LinkResult
 
 from .base import BaseResolver
-from typing import ClassVar
+
 
 class TeraboxResolver(BaseResolver):
     DOMAINS: ClassVar[list[str]] = [

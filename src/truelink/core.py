@@ -3,7 +3,7 @@ from __future__ import annotations
 import asyncio
 import importlib
 import pkgutil
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, ClassVar
 from urllib.parse import urlparse
 
 from . import resolvers
@@ -13,7 +13,6 @@ from .exceptions import (
     UnsupportedProviderException,
 )
 
-from typing import ClassVar
 if TYPE_CHECKING:
     from .types import FolderResult, LinkResult
 

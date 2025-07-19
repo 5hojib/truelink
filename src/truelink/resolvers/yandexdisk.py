@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 import re
+from typing import ClassVar
 
 from truelink.exceptions import ExtractionFailedException, InvalidURLException
 from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
-from typing import ClassVar
 
 YANDEX_DISK_URL_PATTERN = re.compile(
     r"https?://(yadi\.sk|disk\.yandex\.(?:com|ru))/\S+"

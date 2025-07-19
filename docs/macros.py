@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Optional
 
 import requests
 
@@ -13,9 +12,9 @@ def define_env(env) -> None:
 
     @env.macro
     def github_releases(
-        repo_name: Optional[str] = None,
-        token: Optional[str] = None,
-        limit: Optional[int] = None,
+        repo_name: str | None = None,
+        token: str | None = None,
+        limit: int | None = None,
     ) -> str:
         """
         Fetch GitHub releases and format them for changelog.
@@ -43,7 +42,9 @@ def define_env(env) -> None:
         url: str = f"https://api.github.com/repos/{repo_name}/releases"
 
         try:
-            response: requests.Response = requests.get(url, headers=headers, timeout=10)
+            response: requests.Response = requests.get(
+                url, headers=headers, timeout=10
+            )
             response.raise_for_status()
             releases: list[dict] = response.json()
 
@@ -61,7 +62,9 @@ def define_env(env) -> None:
                 if release.get("draft", False):
                     continue
 
-                title: str = release.get("name") or release.get("tag_name", "Unknown Release")
+                title: str = release.get("name") or release.get(
+                    "tag_name", "Unknown Release"
+                )
                 tag: str = release.get("tag_name", "")
                 published_date: str = release.get("published_at", "")
 
@@ -96,7 +99,9 @@ def define_env(env) -> None:
                     changelog_content += "No release notes provided.\n\n"
 
                 if release.get("html_url"):
-                    changelog_content += f"[View on GitHub]({release['html_url']})\n\n"
+                    changelog_content += (
+                        f"[View on GitHub]({release['html_url']})\n\n"
+                    )
 
                 changelog_content += "---\n\n"
 
@@ -105,16 +110,13 @@ def define_env(env) -> None:
         except requests.exceptions.RequestException as e:
             error_msg: str = f"Error fetching releases from GitHub API: {e!s}"
             return (
-                f'# Changelog\n\n'
+                f"# Changelog\n\n"
                 f'!!! error "API Error"\n    {error_msg}\n\n'
-                f'Please check your internet connection or try again later.\n'
+                f"Please check your internet connection or try again later.\n"
             )
         except Exception as e:
             error_msg: str = f"Error processing releases: {e!s}"
-            return (
-                f'# Changelog\n\n'
-                f'!!! error "Processing Error"\n    {error_msg}\n'
-            )
+            return f'# Changelog\n\n!!! error "Processing Error"\n    {error_msg}\n'
 
 
 def process_release_body(body: str) -> str:

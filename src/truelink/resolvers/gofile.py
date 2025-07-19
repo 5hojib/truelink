@@ -2,13 +2,13 @@ from __future__ import annotations
 
 import os
 from hashlib import sha256
+from typing import ClassVar
 from urllib.parse import urlparse
 
 from truelink.exceptions import ExtractionFailedException, InvalidURLException
 from truelink.types import FileItem, FolderResult, LinkResult
 
 from .base import BaseResolver
-from typing import ClassVar
 
 PASSWORD_ERROR_MESSAGE = (
     "GoFile link {} requires a password (append ::password to the URL)."

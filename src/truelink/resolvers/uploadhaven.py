@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+from typing import ClassVar
 
 from lxml.html import fromstring
 
@@ -8,7 +9,7 @@ from truelink.exceptions import ExtractionFailedException
 from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
-from typing import ClassVar
+
 
 # ToDo
 class UploadHavenResolver(BaseResolver):

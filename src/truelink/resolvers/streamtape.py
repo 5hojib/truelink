@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+from typing import ClassVar
 from urllib.parse import urlparse
 
 from lxml.etree import HTML
@@ -9,7 +10,7 @@ from truelink.exceptions import ExtractionFailedException, InvalidURLException
 from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
-from typing import ClassVar
+
 
 class StreamtapeResolver(BaseResolver):
     """Resolver for Streamtape URLs"""

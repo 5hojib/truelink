@@ -4,8 +4,9 @@ import asyncio
 import base64
 import os.path as ospath
 import re
-from urllib.parse import unquote, urlparse
 from typing import ClassVar
+from urllib.parse import unquote, urlparse
+
 import cloudscraper
 from lxml.etree import HTML
 

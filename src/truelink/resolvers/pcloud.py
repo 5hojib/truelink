@@ -2,13 +2,14 @@ from __future__ import annotations
 
 import json
 import re
+from typing import ClassVar
 from urllib.parse import unquote, urlparse
 
 from truelink.exceptions import ExtractionFailedException
 from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
-from typing import ClassVar
+
 
 # todo
 class PCloudResolver(BaseResolver):

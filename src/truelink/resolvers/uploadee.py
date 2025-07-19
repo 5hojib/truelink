@@ -1,12 +1,14 @@
 from __future__ import annotations
 
+from typing import ClassVar
+
 from lxml.html import fromstring
 
 from truelink.exceptions import ExtractionFailedException
 from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
-from typing import ClassVar
+
 
 class UploadEeResolver(BaseResolver):
     """Resolver for Upload.ee URLs"""

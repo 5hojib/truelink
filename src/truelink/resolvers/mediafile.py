@@ -2,12 +2,13 @@ from __future__ import annotations
 
 import asyncio
 import re
+from typing import ClassVar
 
 from truelink.exceptions import ExtractionFailedException
 from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
-from typing import ClassVar
+
 
 class MediaFileResolver(BaseResolver):
     """Resolver for MediaFile.cc URLs"""

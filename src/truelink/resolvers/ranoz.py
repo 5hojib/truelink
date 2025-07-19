@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from typing import ClassVar
 from urllib.parse import urlparse
 
 from truelink import mimetypes
@@ -7,7 +8,7 @@ from truelink.exceptions import ExtractionFailedException
 from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
-from typing import ClassVar
+
 
 class RanozResolver(BaseResolver):
     """Resolver for Ranoz.gg URLs"""

@@ -2,10 +2,11 @@ from __future__ import annotations
 
 import base64
 import re
+from typing import ClassVar
 
 from truelink.exceptions import ExtractionFailedException, InvalidURLException
 from truelink.types import FileItem, FolderResult, LinkResult
-from typing import ClassVar
+
 from .base import BaseResolver
 
 

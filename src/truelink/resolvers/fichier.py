@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+from typing import ClassVar
 
 from lxml.html import fromstring
 
@@ -8,7 +9,6 @@ from truelink.exceptions import ExtractionFailedException, InvalidURLException
 from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
-from typing import ClassVar
 
 PASSWORD_ERROR_MESSAGE_FICHIER = (
     "1Fichier link {} requires a password (append ::password to the URL)."
