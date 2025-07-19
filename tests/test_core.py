@@ -13,8 +13,17 @@ def test_get_supported_domains() -> None:
 
 
 def test_is_supported() -> None:
-    """Test that is_supported returns a boolean."""
+    """Test that is_supported returns a boolean and works for both supported and unsupported domains."""
+    # Test unsupported domain
     assert isinstance(TrueLinkResolver.is_supported("https://www.google.com"), bool)
+    assert not TrueLinkResolver.is_supported("https://www.google.com")
+
+    # Test at least one supported domain
+    supported_domains = TrueLinkResolver.get_supported_domains()
+    if supported_domains:
+        # Use the first supported domain to construct a URL
+        supported_url = f"https://{supported_domains[0]}"
+        assert TrueLinkResolver.is_supported(supported_url)
 
 
 @pytest.mark.asyncio
