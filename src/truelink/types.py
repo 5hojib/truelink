@@ -4,7 +4,7 @@ import json
 from dataclasses import asdict, dataclass, is_dataclass
 
 
-def custom_asdict_factory(data):
+def custom_asdict_factory(data: object) -> object:
     """
     Recursively converts dataclass instances (including nested ones and lists of them)
     into dictionaries. Other data types are returned as is.

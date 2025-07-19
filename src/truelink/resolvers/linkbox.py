@@ -141,7 +141,7 @@ class LinkBoxResolver(BaseResolver):
             raise InvalidURLException("LinkBox: Missing shareToken in URL.")
         return token
 
-    def _extract_size(self, size_val) -> int | None:
+    def _extract_size(self, size_val: str | float | None) -> int | None:
         if isinstance(size_val, str) and size_val.isdigit():
             return int(size_val)
         if isinstance(size_val, int | float):

@@ -62,7 +62,7 @@ class TrueLinkResolver:
         """Register a new resolver"""
         cls._resolvers[domain] = resolver_class
 
-    def _get_resolver(self, url: str):
+    def _get_resolver(self, url: str) -> object:
         """Get appropriate resolver for URL"""
         domain = urlparse(url).hostname
         if not domain:
@@ -86,7 +86,7 @@ class TrueLinkResolver:
 
         raise UnsupportedProviderException(f"No resolver found for domain: {domain}")
 
-    _cache: dict[str, LinkResult | FolderResult] = {}
+    _cache: ClassVar[dict[str, LinkResult | FolderResult]] = {}
 
     async def resolve(
         self, url: str, use_cache: bool = False

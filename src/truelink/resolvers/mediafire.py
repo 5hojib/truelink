@@ -2,9 +2,10 @@ from __future__ import annotations
 
 import asyncio
 import base64
+import contextlib
 import os.path as ospath
 import re
-from typing import ClassVar
+from typing import TYPE_CHECKING, Any, ClassVar
 from urllib.parse import unquote, urlparse
 
 import cloudscraper
@@ -15,9 +16,8 @@ from truelink.types import FileItem, FolderResult, LinkResult
 
 from .base import BaseResolver
 
-PASSWORD_ERROR_MESSAGE = (
-    "ERROR: This link is password protected. Please provide the password for: {}"
-)
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 
 class MediaFireResolver(BaseResolver):
@@ -25,7 +25,9 @@ class MediaFireResolver(BaseResolver):
 
     DOMAINS: ClassVar[list[str]] = ["mediafire.com"]
 
-    async def _run_sync(self, func, *args, **kwargs):
+    async def _run_sync(
+        self, func: Callable[..., Any], *args: object, **kwargs: object
+    ) -> object:
         loop = asyncio.get_running_loop()
         return await loop.run_in_executor(None, lambda: func(*args, **kwargs))
 
@@ -45,12 +47,12 @@ class MediaFireResolver(BaseResolver):
 
     async def _get_content(
         self,
-        scraper,
+        scraper: cloudscraper.CloudScraper,
         url: str,
         method: str = "get",
         data: dict | None = None,
         params: dict | None = None,
-    ):
+    ) -> dict | str:
         func = scraper.post if method == "post" else scraper.get
         response = await self._run_sync(
             func, url, data=data, params=params, timeout=20
@@ -58,7 +60,9 @@ class MediaFireResolver(BaseResolver):
         response.raise_for_status()
         return response.json() if method == "post" or "api" in url else response.text
 
-    async def _decode_url(self, html, scraper):
+    async def _decode_url(
+        self, html: HTML, scraper: cloudscraper.CloudScraper
+    ) -> str:
         """Decode MediaFire download URL from HTML using new method"""
         enc_url = html.xpath('//a[@id="downloadButton"]')
         if not enc_url:
@@ -83,7 +87,9 @@ class MediaFireResolver(BaseResolver):
         else:
             raise ExtractionFailedException("No download link found")
 
-    async def _repair_download(self, scraper, url: str, password: str):
+    async def _repair_download(
+        self, scraper: cloudscraper.CloudScraper, url: str, password: str
+    ) -> LinkResult:
         if url.startswith("//"):
             url = f"https:{url}"
         elif not url.startswith("http"):
@@ -91,7 +97,10 @@ class MediaFireResolver(BaseResolver):
         return await self._resolve_file(url, password, scraper)
 
     async def _resolve_file(
-        self, url: str, password: str, scraper=None
+        self,
+        url: str,
+        password: str,
+        scraper: cloudscraper.CloudScraper | None = None,
     ) -> LinkResult:
         if re.search(r"https?://download\d+\.mediafire\.com/.+/.+/.+", url):
             filename, size, mime_type = await self._fetch_file_details(url)
@@ -113,7 +122,7 @@ class MediaFireResolver(BaseResolver):
             if html.xpath("//div[@class='passwordPrompt']"):
                 if not password:
                     raise ExtractionFailedException(
-                        PASSWORD_ERROR_MESSAGE.format(url)
+                        f"ERROR: This link is password protected. Please provide the password for: {url}"
                     )
                 html = HTML(
                     await self._get_content(
@@ -158,8 +167,13 @@ class MediaFireResolver(BaseResolver):
                 await self._run_sync(scraper.close)
 
     async def _api_request(
-        self, scraper, method: str, url: str, data=None, params=None
-    ):
+        self,
+        scraper: cloudscraper.CloudScraper,
+        method: str,
+        url: str,
+        data: dict | None = None,
+        params: dict | None = None,
+    ) -> dict:
         json_data = await self._get_content(
             scraper, url, method=method, data=data, params=params
         )
@@ -171,7 +185,9 @@ class MediaFireResolver(BaseResolver):
             raise ExtractionFailedException(f"MediaFire API error: {message}")
         return response_data
 
-    async def _decode_folder_file_url(self, html, scraper):
+    async def _decode_folder_file_url(
+        self, html: HTML, scraper: cloudscraper.CloudScraper
+    ) -> str | None:
         """Decode URL for files within folders"""
         enc_url = html.xpath('//a[@id="downloadButton"]')
         if not enc_url:
@@ -181,21 +197,17 @@ class MediaFireResolver(BaseResolver):
         scrambled = enc_url[0].attrib.get("data-scrambled-url")
 
         if final_link and scrambled:
-            try:
+            with contextlib.suppress(Exception):
                 return base64.b64decode(scrambled).decode("utf-8")
-            except Exception:
-                return None
         elif final_link and final_link.startswith("http"):
             return final_link
         elif final_link and final_link.startswith("//"):
-            try:
+            with contextlib.suppress(Exception):
                 return await self._resolve_file(f"https:{final_link}", "", scraper)
-            except Exception:
-                return None
         return None
 
     async def _scrape_folder_file(
-        self, url: str, password: str, scraper
+        self, url: str, password: str, scraper: cloudscraper.CloudScraper
     ) -> LinkResult | None:
         """Scrape individual file from folder"""
         try:
@@ -207,7 +219,7 @@ class MediaFireResolver(BaseResolver):
             if html.xpath("//div[@class='passwordPrompt']"):
                 if not password:
                     raise ExtractionFailedException(
-                        PASSWORD_ERROR_MESSAGE.format(url)
+                        f"ERROR: This link is password protected. Please provide the password for: {url}"
                     )
                 html = HTML(
                     await self._get_content(

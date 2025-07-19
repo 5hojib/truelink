@@ -3,29 +3,36 @@ from __future__ import annotations
 import contextlib
 import re
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, ClassVar, Self
 from urllib.parse import unquote, urlparse
 
 import aiohttp
 
 if TYPE_CHECKING:
+    from types import TracebackType
+
     from truelink.types import FolderResult, LinkResult
 
 
 class BaseResolver(ABC):
     """Base class for all resolvers"""
 
-    DOMAINS: list[str] = []
+    DOMAINS: ClassVar[list[str]] = []
     USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0"
 
     def __init__(self) -> None:
         self.session: aiohttp.ClientSession | None = None
 
-    async def __aenter__(self):
+    async def __aenter__(self) -> Self:
         await self._create_session()
         return self
 
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
+    async def __aexit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -> None:
         await self._close_session()
 
     async def _create_session(self) -> None:
@@ -42,13 +49,17 @@ class BaseResolver(ABC):
             await self.session.close()
             self.session = None
 
-    async def _get(self, url: str, **kwargs) -> aiohttp.ClientResponse:
+    async def _get(
+        self, url: str, **kwargs: dict[str, Any]
+    ) -> aiohttp.ClientResponse:
         """Make GET request"""
         if not self.session:
             await self._create_session()
         return await self.session.get(url, **kwargs)
 
-    async def _post(self, url: str, **kwargs) -> aiohttp.ClientResponse:
+    async def _post(
+        self, url: str, **kwargs: dict[str, Any]
+    ) -> aiohttp.ClientResponse:
         """Make POST request"""
         if not self.session:
             await self._create_session()

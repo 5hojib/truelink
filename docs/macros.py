@@ -1,11 +1,15 @@
 from __future__ import annotations
 
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 import requests
 
+if TYPE_CHECKING:
+    from mkdocs.config.defaults import MkDocsConfig
 
-def define_env(env) -> None:
+
+def define_env(env: MkDocsConfig) -> None:
     """
     This is the hook for defining variables, macros and filters for TrueLink documentation.
     """

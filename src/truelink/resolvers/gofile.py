@@ -2,13 +2,16 @@ from __future__ import annotations
 
 import os
 from hashlib import sha256
-from typing import ClassVar
+from typing import TYPE_CHECKING, ClassVar
 from urllib.parse import urlparse
 
 from truelink.exceptions import ExtractionFailedException, InvalidURLException
 from truelink.types import FileItem, FolderResult, LinkResult
 
 from .base import BaseResolver
+
+if TYPE_CHECKING:
+    import aiohttp
 
 PASSWORD_ERROR_MESSAGE = (
     "GoFile link {} requires a password (append ::password to the URL)."
@@ -122,7 +125,9 @@ class GoFileResolver(BaseResolver):
                 )
                 self._folder_details.total_size += size
 
-    async def _handle_api_error(self, response, content_id: str) -> None:
+    async def _handle_api_error(
+        self, response: aiohttp.ClientResponse, content_id: str
+    ) -> None:
         try:
             error_data = await response.json()
             status = error_data.get("status", "")
