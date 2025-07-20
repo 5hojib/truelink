@@ -36,12 +36,7 @@ TrueLink supports a growing list of file hosting services. The table below provi
 - [ ] pcloud
 
 ### Not Working
-- [ ] devuploads (todo)
-- [ ] doodstream
 - [ ] filepress (todo)
-- [ ] krakenfiles
-- [ ] uploadhaven (different)
-- [ ] wetransfer
 
 ## Disclaimer
 
