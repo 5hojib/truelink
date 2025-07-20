@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 
 from truelink.core import TrueLinkResolver
-from truelink.types import FolderResult, LinkResult, FileItem
+from truelink.types import FileItem, FolderResult, LinkResult
 
 
 @pytest.mark.asyncio
