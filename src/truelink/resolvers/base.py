@@ -20,8 +20,9 @@ class BaseResolver(ABC):
     DOMAINS: ClassVar[list[str]] = []
     USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0"
 
-    def __init__(self) -> None:
+    def __init__(self, proxy: str | None = None) -> None:
         self.session: aiohttp.ClientSession | None = None
+        self.proxy = proxy
 
     async def __aenter__(self) -> Self:
         await self._create_session()
@@ -41,6 +42,7 @@ class BaseResolver(ABC):
             self.session = aiohttp.ClientSession(
                 headers={"User-Agent": self.USER_AGENT},
                 timeout=aiohttp.ClientTimeout(total=30),
+                proxy=self.proxy,
             )
 
     async def _close_session(self) -> None:
