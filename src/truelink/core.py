@@ -23,15 +23,19 @@ class TrueLinkResolver:
     _resolvers: ClassVar[dict[str, type]] = {}
     _resolver_instances: ClassVar[dict[str, object]] = {}
 
-    def __init__(self, timeout: int = 30, max_retries: int = 3) -> None:
+    def __init__(
+        self, timeout: int = 30, max_retries: int = 3, proxy: str | None = None
+    ) -> None:
         """Initialize TrueLinkResolver
 
         Args:
             timeout (int): Request timeout in seconds (default: 30)
             max_retries (int): Maximum number of retries for failed attempts (default: 3)
+            proxy (str): Proxy URL (optional)
         """
         self.timeout = timeout
         self.max_retries = max_retries
+        self.proxy = proxy
         self._register_resolvers()
 
     @classmethod
@@ -71,7 +75,7 @@ class TrueLinkResolver:
         resolver_class = self._resolvers.get(domain)
         if resolver_class:
             if domain not in self._resolver_instances:
-                self._resolver_instances[domain] = resolver_class()
+                self._resolver_instances[domain] = resolver_class(proxy=self.proxy)
             resolver = self._resolver_instances[domain]
             resolver.timeout = self.timeout
             return resolver
@@ -79,7 +83,9 @@ class TrueLinkResolver:
         for pattern, resolver_class in self._resolvers.items():
             if domain.endswith(pattern):
                 if pattern not in self._resolver_instances:
-                    self._resolver_instances[pattern] = resolver_class()
+                    self._resolver_instances[pattern] = resolver_class(
+                        proxy=self.proxy
+                    )
                 resolver = self._resolver_instances[pattern]
                 resolver.timeout = self.timeout
                 return resolver
