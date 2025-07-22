@@ -33,21 +33,27 @@ class StreamtapeResolver(BaseResolver):
         """Try accessing the URL with streamtape.net if the original fails"""
         parsed_url = urlparse(original_url)
         original_domain = parsed_url.netloc
-        
+
         # Try original URL first
         try:
-            async with await self._get(original_url, allow_redirects=True) as response:
+            async with await self._get(
+                original_url, allow_redirects=True
+            ) as response:
                 if response.status == 200:
                     html_content = await response.text()
                     return html_content, parsed_url
         except Exception:
             pass  # Continue to fallback
-        
+
         # If original fails and it's not already streamtape.net, try with streamtape.net
         if original_domain != self.FALLBACK_DOMAIN:
-            fallback_url = original_url.replace(original_domain, self.FALLBACK_DOMAIN)
+            fallback_url = original_url.replace(
+                original_domain, self.FALLBACK_DOMAIN
+            )
             try:
-                async with await self._get(fallback_url, allow_redirects=True) as response:
+                async with await self._get(
+                    fallback_url, allow_redirects=True
+                ) as response:
                     if response.status == 200:
                         html_content = await response.text()
                         return html_content, urlparse(fallback_url)
@@ -55,7 +61,7 @@ class StreamtapeResolver(BaseResolver):
                 raise ExtractionFailedException(
                     f"Both original domain and {self.FALLBACK_DOMAIN} failed"
                 ) from e
-        
+
         raise ExtractionFailedException(
             "Failed to access URL with both original and fallback domains"
         )
@@ -97,9 +103,10 @@ class StreamtapeResolver(BaseResolver):
             suffix = match[-1]
             # Use the working domain for the direct URL
             direct_url = f"{parsed_url.scheme}://{parsed_url.netloc}/get_video?id={_id}{suffix}"
-            
+
             filename, size, mime_type = await self._fetch_file_details(
-                direct_url, headers={"Referer": f"{parsed_url.scheme}://{parsed_url.netloc}"}
+                direct_url,
+                headers={"Referer": f"{parsed_url.scheme}://{parsed_url.netloc}"},
             )
 
             return LinkResult(
