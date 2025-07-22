@@ -23,7 +23,42 @@ class StreamtapeResolver(BaseResolver):
         "streamtape.net",
         "streamta.pe",
         "streamtape.xyz",
+        "watchadsontape.com",
     ]
+
+    # Use only streamtape.net as fallback domain
+    FALLBACK_DOMAIN: ClassVar[str] = "streamtape.net"
+
+    async def _try_with_fallback_domain(self, original_url: str, video_id: str):
+        """Try accessing the URL with streamtape.net if the original fails"""
+        parsed_url = urlparse(original_url)
+        original_domain = parsed_url.netloc
+        
+        # Try original URL first
+        try:
+            async with await self._get(original_url, allow_redirects=True) as response:
+                if response.status == 200:
+                    html_content = await response.text()
+                    return html_content, parsed_url
+        except Exception:
+            pass  # Continue to fallback
+        
+        # If original fails and it's not already streamtape.net, try with streamtape.net
+        if original_domain != self.FALLBACK_DOMAIN:
+            fallback_url = original_url.replace(original_domain, self.FALLBACK_DOMAIN)
+            try:
+                async with await self._get(fallback_url, allow_redirects=True) as response:
+                    if response.status == 200:
+                        html_content = await response.text()
+                        return html_content, urlparse(fallback_url)
+            except Exception as e:
+                raise ExtractionFailedException(
+                    f"Both original domain and {self.FALLBACK_DOMAIN} failed"
+                ) from e
+        
+        raise ExtractionFailedException(
+            "Failed to access URL with both original and fallback domains"
+        )
 
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve Streamtape URL"""
@@ -32,11 +67,9 @@ class StreamtapeResolver(BaseResolver):
                 url.split("/")[4] if len(url.split("/")) >= 6 else url.split("/")[-1]
             )
 
-            async with await self._get(url, allow_redirects=True) as response:
-                html_content = await response.text()
-
+            # Try with fallback domain if original fails
+            html_content, parsed_url = await self._try_with_fallback_domain(url, _id)
             html = HTML(html_content)
-            parsed_url = urlparse(url)
 
             script_elements = html.xpath(
                 "//script[contains(text(),'ideoooolink')]/text()"
@@ -62,9 +95,11 @@ class StreamtapeResolver(BaseResolver):
                 )
 
             suffix = match[-1]
+            # Use the working domain for the direct URL
             direct_url = f"{parsed_url.scheme}://{parsed_url.netloc}/get_video?id={_id}{suffix}"
+            
             filename, size, mime_type = await self._fetch_file_details(
-                direct_url, headers={"Referer": url}
+                direct_url, headers={"Referer": f"{parsed_url.scheme}://{parsed_url.netloc}"}
             )
 
             return LinkResult(
