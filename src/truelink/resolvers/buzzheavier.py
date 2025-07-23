@@ -12,12 +12,12 @@ from .base import BaseResolver
 
 
 class BuzzHeavierResolver(BaseResolver):
-    """Resolver for BuzzHeavier URLs"""
+    """Resolver for BuzzHeavier URLs."""
 
     DOMAINS: ClassVar[list[str]] = ["buzzheavier.com"]
 
     async def resolve(self, url: str) -> LinkResult | FolderResult:
-        """Resolve BuzzHeavier URL"""
+        """Resolve BuzzHeavier URL."""
         pattern = r"^https?://buzzheavier.com/[a-zA-Z0-9]+$"
         if not re.match(pattern, url):
             return LinkResult(url=url)
@@ -58,15 +58,17 @@ class BuzzHeavierResolver(BaseResolver):
             if folder_elements:
                 return await self._process_folder(tree, folder_elements)
 
-            raise ExtractionFailedException("No download link found")
+            msg = "No download link found"
+            raise ExtractionFailedException(msg)
 
         except Exception as e:
+            msg = f"Failed to resolve BuzzHeavier URL: {e}"
             raise ExtractionFailedException(
-                f"Failed to resolve BuzzHeavier URL: {e}",
+                msg,
             ) from e
 
     async def _get_download_url(self, url: str, is_folder: bool = False) -> str:
-        """Get download URL from BuzzHeavier"""
+        """Get download URL from BuzzHeavier."""
         if "/download" not in url:
             url += "/download"
 
@@ -81,14 +83,15 @@ class BuzzHeavierResolver(BaseResolver):
             redirect_url = response.headers.get("Hx-Redirect")
             if not redirect_url:
                 if not is_folder:
-                    raise ExtractionFailedException("Failed to get download URL")
+                    msg = "Failed to get download URL"
+                    raise ExtractionFailedException(msg)
                 return None
             return redirect_url
 
     async def _process_folder(
         self, tree: HtmlElement, folder_elements: list[HtmlElement]
     ) -> FolderResult:
-        """Process folder contents"""
+        """Process folder contents."""
         contents = []
         total_size = 0
 

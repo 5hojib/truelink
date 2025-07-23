@@ -10,12 +10,12 @@ from .base import BaseResolver
 
 
 class TmpSendResolver(BaseResolver):
-    """Resolver for TmpSend.com URLs"""
+    """Resolver for TmpSend.com URLs."""
 
     DOMAINS: ClassVar[list[str]] = ["tmpsend.com"]
 
     async def resolve(self, url: str) -> LinkResult | FolderResult:
-        """Resolve TmpSend.com URL"""
+        """Resolve TmpSend.com URL."""
         try:
             parsed_url = urlparse(url)
             file_id = None
@@ -31,9 +31,12 @@ class TmpSendResolver(BaseResolver):
                     file_id = path_segments[0]
 
             if not file_id:
-                raise InvalidURLException(
+                msg = (
                     f"TmpSend error: Could not extract file ID from URL '{url}'. "
-                    "Expected format like /fileId, /thank-you?d=fileId, or /download?d=fileId.",
+                    "Expected format like /fileId, /thank-you?d=fileId, or /download?d=fileId."
+                )
+                raise InvalidURLException(
+                    msg,
                 )
 
             referer_url = f"https://tmpsend.com/thank-you?d={file_id}"
@@ -56,6 +59,7 @@ class TmpSendResolver(BaseResolver):
         except Exception as e:
             if isinstance(e, ExtractionFailedException | InvalidURLException):
                 raise
+            msg = f"Failed to resolve TmpSend.com URL '{url}': {e!s}"
             raise ExtractionFailedException(
-                f"Failed to resolve TmpSend.com URL '{url}': {e!s}",
+                msg,
             ) from e

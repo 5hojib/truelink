@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 
 
 class TrueLinkResolver:
-    """Main resolver class for extracting direct download links"""
+    """Main resolver class for extracting direct download links."""
 
     _resolvers: ClassVar[dict[str, type]] = {}
     _resolver_instances: ClassVar[dict[str, object]] = {}
@@ -26,12 +26,13 @@ class TrueLinkResolver:
     def __init__(
         self, timeout: int = 30, max_retries: int = 3, proxy: str | None = None
     ) -> None:
-        """Initialize TrueLinkResolver
+        """Initialize TrueLinkResolver.
 
         Args:
             timeout (int): Request timeout in seconds (default: 30)
             max_retries (int): Maximum number of retries for failed attempts (default: 3)
             proxy (str): Proxy URL (optional)
+
         """
         self.timeout = timeout
         self.max_retries = max_retries
@@ -40,7 +41,7 @@ class TrueLinkResolver:
 
     @classmethod
     def _register_resolvers(cls) -> None:
-        """Dynamically register resolvers"""
+        """Dynamically register resolvers."""
         if cls._resolvers:
             return
 
@@ -63,14 +64,15 @@ class TrueLinkResolver:
 
     @classmethod
     def register_resolver(cls, domain: str, resolver_class: type) -> None:
-        """Register a new resolver"""
+        """Register a new resolver."""
         cls._resolvers[domain] = resolver_class
 
     def _get_resolver(self, url: str) -> object:
-        """Get appropriate resolver for URL"""
+        """Get appropriate resolver for URL."""
         domain = urlparse(url).hostname
         if not domain:
-            raise InvalidURLException("Invalid URL: No domain found")
+            msg = "Invalid URL: No domain found"
+            raise InvalidURLException(msg)
 
         resolver_class = self._resolvers.get(domain)
         if resolver_class:
@@ -90,15 +92,15 @@ class TrueLinkResolver:
                 resolver.timeout = self.timeout
                 return resolver
 
-        raise UnsupportedProviderException(f"No resolver found for domain: {domain}")
+        msg = f"No resolver found for domain: {domain}"
+        raise UnsupportedProviderException(msg)
 
     _cache: ClassVar[dict[str, LinkResult | FolderResult]] = {}
 
     async def resolve(
         self, url: str, use_cache: bool = False
     ) -> LinkResult | FolderResult:
-        """
-        Resolve a URL to direct download link(s) and return as a LinkResult or FolderResult object.
+        """Resolve a URL to direct download link(s) and return as a LinkResult or FolderResult object.
 
         Args:
             url: The URL to resolve
@@ -111,6 +113,7 @@ class TrueLinkResolver:
             InvalidURLException: If URL is invalid
             UnsupportedProviderException: If provider is not supported
             ExtractionFailedException: If extraction fails after all retries
+
         """
         if use_cache and url in self._cache:
             return self._cache[url]
@@ -130,22 +133,21 @@ class TrueLinkResolver:
                 await asyncio.sleep(1 * (attempt + 1))
             except Exception as e:
                 if attempt == self.max_retries - 1:
-                    raise ExtractionFailedException(
-                        f"Failed to resolve URL after {self.max_retries} attempts: {e!s}"
-                    ) from e
+                    msg = f"Failed to resolve URL after {self.max_retries} attempts: {e!s}"
+                    raise ExtractionFailedException(msg) from e
                 await asyncio.sleep(1 * (attempt + 1))
         return None
 
     @staticmethod
     def is_supported(url: str) -> bool:
-        """
-        Check if URL is supported
+        """Check if URL is supported.
 
         Args:
             url: The URL to check
 
         Returns:
             True if supported, False otherwise
+
         """
         domain = urlparse(url).hostname
         if not domain:
@@ -160,10 +162,10 @@ class TrueLinkResolver:
 
     @staticmethod
     def get_supported_domains() -> list:
-        """
-        Get list of supported domains
+        """Get list of supported domains.
 
         Returns:
             List of supported domain patterns
+
         """
         return list(TrueLinkResolver._resolvers.keys())

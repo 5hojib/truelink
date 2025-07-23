@@ -13,7 +13,7 @@ from .base import BaseResolver
 
 
 class StreamtapeResolver(BaseResolver):
-    """Resolver for Streamtape URLs"""
+    """Resolver for Streamtape URLs."""
 
     DOMAINS: ClassVar[list[str]] = [
         "streamtape.com",
@@ -30,7 +30,7 @@ class StreamtapeResolver(BaseResolver):
     FALLBACK_DOMAIN: ClassVar[str] = "streamtape.net"
 
     async def _try_with_fallback_domain(self, original_url: str):
-        """Try accessing the URL with streamtape.net if the original fails"""
+        """Try accessing the URL with streamtape.net if the original fails."""
         parsed_url = urlparse(original_url)
         original_domain = parsed_url.netloc
 
@@ -58,16 +58,14 @@ class StreamtapeResolver(BaseResolver):
                         html_content = await response.text()
                         return html_content, urlparse(fallback_url)
             except Exception as e:
-                raise ExtractionFailedException(
-                    f"Both original domain and {self.FALLBACK_DOMAIN} failed"
-                ) from e
+                msg = f"Both original domain and {self.FALLBACK_DOMAIN} failed"
+                raise ExtractionFailedException(msg) from e
 
-        raise ExtractionFailedException(
-            "Failed to access URL with both original and fallback domains"
-        )
+        msg = "Failed to access URL with both original and fallback domains"
+        raise ExtractionFailedException(msg)
 
     async def resolve(self, url: str) -> LinkResult | FolderResult:
-        """Resolve Streamtape URL"""
+        """Resolve Streamtape URL."""
         try:
             _id = (
                 url.split("/")[4] if len(url.split("/")) >= 6 else url.split("/")[-1]
@@ -90,15 +88,13 @@ class StreamtapeResolver(BaseResolver):
                     None,
                 )
                 if not script_content:
-                    raise ExtractionFailedException(
-                        "Streamtape error: Required script content not found."
-                    )
+                    msg = "Streamtape error: Required script content not found."
+                    raise ExtractionFailedException(msg)
 
             match = re.findall(r"(&expires\S+?)'", script_content)
             if not match:
-                raise ExtractionFailedException(
-                    "Streamtape error: Download link parameters not found."
-                )
+                msg = "Streamtape error: Download link parameters not found."
+                raise ExtractionFailedException(msg)
 
             suffix = match[-1]
             # Use the working domain for the direct URL
@@ -116,6 +112,5 @@ class StreamtapeResolver(BaseResolver):
         except Exception as e:
             if isinstance(e, ExtractionFailedException | InvalidURLException):
                 raise
-            raise ExtractionFailedException(
-                f"Unexpected error while resolving Streamtape URL: {e}"
-            ) from e
+            msg = f"Unexpected error while resolving Streamtape URL: {e}"
+            raise ExtractionFailedException(msg) from e

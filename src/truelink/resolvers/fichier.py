@@ -16,13 +16,12 @@ PASSWORD_ERROR_MESSAGE_FICHIER = (
 
 
 class FichierResolver(BaseResolver):
-    """Resolver for 1Fichier.com URLs"""
+    """Resolver for 1Fichier.com URLs."""
 
     DOMAINS: ClassVar[list[str]] = ["1fichier.com"]
 
     async def resolve(self, url: str) -> LinkResult | FolderResult:
-        """Resolve 1Fichier.com URL"""
-
+        """Resolve 1Fichier.com URL."""
         regex_1fichier = r"^https?://(?:www\.)?1fichier\.com/\?.+"
         if not re.match(
             regex_1fichier,
@@ -44,12 +43,16 @@ class FichierResolver(BaseResolver):
 
             async with await self._post(request_url, data=post_data) as response:
                 if response.status == 404:
+                    msg = "1Fichier error: File not found or the link you entered is wrong (404)."
                     raise ExtractionFailedException(
-                        "1Fichier error: File not found or the link you entered is wrong (404).",
+                        msg,
                     )
                 if response.status != 200:
+                    msg = (
+                        f"1Fichier error: Unexpected status code {response.status}."
+                    )
                     raise ExtractionFailedException(
-                        f"1Fichier error: Unexpected status code {response.status}.",
+                        msg,
                     )
                 response_text = await response.text()
 
@@ -77,11 +80,13 @@ class FichierResolver(BaseResolver):
                     "In order to access this file, you will have to validate a first download."
                     in response_text
                 ):
+                    msg = "1Fichier error: Requires a prior validation download (often via browser). Link may be restricted."
                     raise ExtractionFailedException(
-                        "1Fichier error: Requires a prior validation download (often via browser). Link may be restricted.",
+                        msg,
                     )
+                msg = "1Fichier error: No download link found and no warning messages. Page structure might have changed."
                 raise ExtractionFailedException(
-                    "1Fichier error: No download link found and no warning messages. Page structure might have changed.",
+                    msg,
                 )
 
             if len(ct_warn_elements) >= 1:
@@ -98,18 +103,21 @@ class FichierResolver(BaseResolver):
                         if numbers
                         else "Please wait a few minutes/hours."
                     )
+                    msg = f"1Fichier error: Download limit reached. {wait_time_msg}"
                     raise ExtractionFailedException(
-                        f"1Fichier error: Download limit reached. {wait_time_msg}",
+                        msg,
                     )
 
                 if "bad password" in last_warn_text_content:
+                    msg = "1Fichier error: The password you entered is wrong."
                     raise ExtractionFailedException(
-                        "1Fichier error: The password you entered is wrong.",
+                        msg,
                     )
 
                 if "you have to create a premium account" in last_warn_text_content:
+                    msg = "1Fichier error: This link may require a premium account."
                     raise ExtractionFailedException(
-                        "1Fichier error: This link may require a premium account.",
+                        msg,
                     )
 
                 if (
@@ -123,13 +131,15 @@ class FichierResolver(BaseResolver):
             all_warnings = " | ".join(
                 ["".join(w.xpath(".//text()")).strip() for w in ct_warn_elements],
             )
+            msg = f"1Fichier error: Could not retrieve download link. Warnings: {all_warnings}"
             raise ExtractionFailedException(
-                f"1Fichier error: Could not retrieve download link. Warnings: {all_warnings}",
+                msg,
             )
 
         except Exception as e:
             if isinstance(e, ExtractionFailedException | InvalidURLException):
                 raise
+            msg = f"Failed to resolve 1Fichier.com URL '{url}': {e!s}"
             raise ExtractionFailedException(
-                f"Failed to resolve 1Fichier.com URL '{url}': {e!s}",
+                msg,
             ) from e

@@ -11,12 +11,12 @@ from .base import BaseResolver
 
 
 class UploadEeResolver(BaseResolver):
-    """Resolver for Upload.ee URLs"""
+    """Resolver for Upload.ee URLs."""
 
     DOMAINS: ClassVar[list[str]] = ["upload.ee"]
 
     async def resolve(self, url: str) -> LinkResult | FolderResult:
-        """Resolve Upload.ee URL"""
+        """Resolve Upload.ee URL."""
         try:
             async with await self._get(url) as response:
                 response_text = await response.text()
@@ -34,18 +34,21 @@ class UploadEeResolver(BaseResolver):
                         "//div[contains(@class, 'alert-danger')]/text() | //div[contains(@class, 'error')]/text()",
                     )
                     if error_messages:
+                        msg = f"Upload.ee error: {error_messages[0].strip()}"
                         raise ExtractionFailedException(
-                            f"Upload.ee error: {error_messages[0].strip()}",
+                            msg,
                         )
                     if (
                         "File not found" in response_text
                         or "File has been deleted" in response_text
                     ):
+                        msg = "Upload.ee error: File not found or has been deleted."
                         raise ExtractionFailedException(
-                            "Upload.ee error: File not found or has been deleted.",
+                            msg,
                         )
+                    msg = "Upload.ee error: Direct download link element (id='d_l' or fallback) not found."
                     raise ExtractionFailedException(
-                        "Upload.ee error: Direct download link element (id='d_l' or fallback) not found.",
+                        msg,
                     )
 
                 direct_link = fallback_links[0]
@@ -64,6 +67,7 @@ class UploadEeResolver(BaseResolver):
         except Exception as e:
             if isinstance(e, ExtractionFailedException):
                 raise
+            msg = f"Failed to resolve Upload.ee URL '{url}': {e!s}"
             raise ExtractionFailedException(
-                f"Failed to resolve Upload.ee URL '{url}': {e!s}",
+                msg,
             ) from e

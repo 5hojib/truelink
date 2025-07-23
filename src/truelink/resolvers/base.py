@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 
 class BaseResolver(ABC):
-    """Base class for all resolvers"""
+    """Base class for all resolvers."""
 
     DOMAINS: ClassVar[list[str]] = []
     USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0"
@@ -37,7 +37,7 @@ class BaseResolver(ABC):
         await self._close_session()
 
     async def _create_session(self) -> None:
-        """Create HTTP session"""
+        """Create HTTP session."""
         if not self.session:
             self.session = aiohttp.ClientSession(
                 headers={"User-Agent": self.USER_AGENT},
@@ -46,7 +46,7 @@ class BaseResolver(ABC):
             )
 
     async def _close_session(self) -> None:
-        """Close HTTP session"""
+        """Close HTTP session."""
         if self.session:
             await self.session.close()
             self.session = None
@@ -54,7 +54,7 @@ class BaseResolver(ABC):
     async def _get(
         self, url: str, **kwargs: dict[str, Any]
     ) -> aiohttp.ClientResponse:
-        """Make GET request"""
+        """Make GET request."""
         if not self.session:
             await self._create_session()
         return await self.session.get(url, **kwargs)
@@ -62,15 +62,14 @@ class BaseResolver(ABC):
     async def _post(
         self, url: str, **kwargs: dict[str, Any]
     ) -> aiohttp.ClientResponse:
-        """Make POST request"""
+        """Make POST request."""
         if not self.session:
             await self._create_session()
         return await self.session.post(url, **kwargs)
 
     @abstractmethod
     async def resolve(self, url: str) -> LinkResult | FolderResult:
-        """
-        Resolve URL to direct download link(s)
+        """Resolve URL to direct download link(s).
 
         Args:
             url: The URL to resolve
@@ -80,10 +79,11 @@ class BaseResolver(ABC):
 
         Raises:
             ExtractionFailedException: If extraction fails
+
         """
 
     def _extract_filename(self, content_disposition: str) -> str | None:
-        """Extract filename from Content-Disposition header"""
+        """Extract filename from Content-Disposition header."""
         match = re.search(
             r"filename\*=UTF-8''([^']+)$", content_disposition, re.IGNORECASE
         )
@@ -99,7 +99,7 @@ class BaseResolver(ABC):
         return None
 
     def _get_filename_from_url(self, url: str) -> str | None:
-        """Extract filename from URL path"""
+        """Extract filename from URL path."""
         parsed_url = urlparse(url)
         if parsed_url.path:
             path_filename = unquote(parsed_url.path.split("/")[-1])
@@ -111,11 +111,11 @@ class BaseResolver(ABC):
         url: str,
         headers: dict[str, str] | None = None,
     ) -> tuple[str | None, int | None, str | None]:
-        """
-        Fetch filename, size, and mime_type from URL.
+        """Fetch filename, size, and mime_type from URL.
 
         Returns:
             tuple: (filename, size, mime_type)
+
         """
         filename: str | None = None
         size: int | None = None

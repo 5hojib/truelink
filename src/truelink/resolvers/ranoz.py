@@ -11,12 +11,12 @@ from .base import BaseResolver
 
 
 class RanozResolver(BaseResolver):
-    """Resolver for Ranoz.gg URLs"""
+    """Resolver for Ranoz.gg URLs."""
 
     DOMAINS: ClassVar[list[str]] = ["ranoz.gg"]
 
     async def resolve(self, url: str) -> LinkResult | FolderResult:
-        """Resolve Ranoz.gg URL"""
+        """Resolve Ranoz.gg URL."""
         try:
             file_id = urlparse(url).path.split("/")[-1]
             api_url = f"https://ranoz.gg/api/v1/files/{file_id}"
@@ -39,6 +39,5 @@ class RanozResolver(BaseResolver):
                 )
 
         except Exception as e:
-            raise ExtractionFailedException(
-                f"Failed to resolve Ranoz URL: {e}"
-            ) from e
+            msg = f"Failed to resolve Ranoz URL: {e}"
+            raise ExtractionFailedException(msg) from e

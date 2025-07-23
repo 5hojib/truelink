@@ -33,21 +33,20 @@ class GoFileResolver(BaseResolver):
         async with await self._post(api_url, data=None) as response:
             if response.status != 200:
                 err = await response.text()
-                raise ExtractionFailedException(
-                    f"GoFile: Failed to get token ({response.status}). {err[:200]}"
-                )
+                msg = f"GoFile: Failed to get token ({response.status}). {err[:200]}"
+                raise ExtractionFailedException(msg)
             try:
                 data = await response.json()
             except Exception as e:
                 err = await response.text()
-                raise ExtractionFailedException(
+                msg = (
                     f"GoFile: Failed to parse token JSON. {e}. Response: {err[:200]}"
                 )
+                raise ExtractionFailedException(msg)
 
         if data.get("status") != "ok" or "token" not in data.get("data", {}):
-            raise ExtractionFailedException(
-                f"GoFile: Invalid token response. Message: {data.get('message', 'Unknown error')}"
-            )
+            msg = f"GoFile: Invalid token response. Message: {data.get('message', 'Unknown error')}"
+            raise ExtractionFailedException(msg)
 
         return data["data"]["token"]
 
@@ -61,7 +60,8 @@ class GoFileResolver(BaseResolver):
             self._folder_details = FolderResult(title="", contents=[], total_size=0)
 
         if not self._account_token:
-            raise ExtractionFailedException("GoFile: Missing account token.")
+            msg = "GoFile: Missing account token."
+            raise ExtractionFailedException(msg)
 
         api_url = (
             f"https://api.gofile.io/contents/{content_id}?wt=4fd6sg89d7s6&cache=true"
@@ -79,18 +79,19 @@ class GoFileResolver(BaseResolver):
         except ExtractionFailedException:
             raise
         except Exception as e:
-            raise ExtractionFailedException(
-                f"GoFile API request failed for ID '{content_id}': {e}"
-            ) from e
+            msg = f"GoFile API request failed for ID '{content_id}': {e}"
+            raise ExtractionFailedException(msg) from e
 
         if data.get("status") != "ok":
-            raise ExtractionFailedException(
+            msg = (
                 f"GoFile API returned non-ok status: {data.get('status', 'Unknown')}"
             )
+            raise ExtractionFailedException(msg)
 
         node = data.get("data")
         if not node:
-            raise ExtractionFailedException("GoFile API error: 'data' node missing.")
+            msg = "GoFile API error: 'data' node missing."
+            raise ExtractionFailedException(msg)
 
         if not self._folder_details.title:
             self._folder_details.title = node.get(
@@ -137,23 +138,20 @@ class GoFileResolver(BaseResolver):
                     PASSWORD_ERROR_MESSAGE.format(f"ID: {content_id}")
                 )
             if "error-passwordWrong" in status:
-                raise ExtractionFailedException("GoFile error: Incorrect password.")
+                msg = "GoFile error: Incorrect password."
+                raise ExtractionFailedException(msg)
             if "error-notFound" in status:
-                raise ExtractionFailedException(
-                    f"GoFile error: ID '{content_id}' not found."
-                )
+                msg = f"GoFile error: ID '{content_id}' not found."
+                raise ExtractionFailedException(msg)
             if "error-notPublic" in status:
-                raise ExtractionFailedException(
-                    f"GoFile error: Folder ID '{content_id}' is not public."
-                )
-            raise ExtractionFailedException(
-                f"GoFile API error {response.status}: {status} - {message[:200]}"
-            )
+                msg = f"GoFile error: Folder ID '{content_id}' is not public."
+                raise ExtractionFailedException(msg)
+            msg = f"GoFile API error {response.status}: {status} - {message[:200]}"
+            raise ExtractionFailedException(msg)
         except Exception:
             text = await response.text()
-            raise ExtractionFailedException(
-                f"GoFile API error {response.status}: {text[:200]}"
-            )
+            msg = f"GoFile API error {response.status}: {text[:200]}"
+            raise ExtractionFailedException(msg)
 
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve GoFile.io URL."""
@@ -165,7 +163,8 @@ class GoFileResolver(BaseResolver):
         content_id = parsed.path.strip("/").split("/")[-1]
 
         if not content_id:
-            raise InvalidURLException("GoFile error: Content ID not found in URL.")
+            msg = "GoFile error: Content ID not found in URL."
+            raise InvalidURLException(msg)
 
         password_hash = sha256(password.encode()).hexdigest() if password else ""
 
@@ -179,14 +178,14 @@ class GoFileResolver(BaseResolver):
                 ) from e
             raise
         except Exception as e:
-            raise ExtractionFailedException(f"GoFile resolution failed: {e}") from e
+            msg = f"GoFile resolution failed: {e}"
+            raise ExtractionFailedException(msg) from e
 
         headers = {"Cookie": f"accountToken={self._account_token}"}
 
         if not self._folder_details.contents:
-            raise ExtractionFailedException(
-                f"GoFile: No content found for ID '{content_id}'. It might be empty, private, or protected."
-            )
+            msg = f"GoFile: No content found for ID '{content_id}'. It might be empty, private, or protected."
+            raise ExtractionFailedException(msg)
 
         if (
             len(self._folder_details.contents) == 1

@@ -10,12 +10,12 @@ from .base import BaseResolver
 
 
 class FuckingFastResolver(BaseResolver):
-    """Resolver for FuckingFast URLs"""
+    """Resolver for FuckingFast URLs."""
 
     DOMAINS: ClassVar[list[str]] = ["fuckingfast.co"]
 
     async def resolve(self, url: str) -> LinkResult | FolderResult:
-        """Resolve FuckingFast URL"""
+        """Resolve FuckingFast URL."""
         try:
             async with await self._get(url) as response:
                 content = await response.text()
@@ -24,8 +24,9 @@ class FuckingFastResolver(BaseResolver):
             match = re.search(pattern, content)
 
             if not match:
+                msg = "Could not find download link in page"
                 raise ExtractionFailedException(
-                    "Could not find download link in page",
+                    msg,
                 )
 
             download_url = match.group(2)
@@ -36,6 +37,7 @@ class FuckingFastResolver(BaseResolver):
             )
 
         except Exception as e:
+            msg = f"Failed to resolve FuckingFast URL: {e}"
             raise ExtractionFailedException(
-                f"Failed to resolve FuckingFast URL: {e}",
+                msg,
             ) from e

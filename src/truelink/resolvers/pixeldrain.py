@@ -10,32 +10,37 @@ from .base import BaseResolver
 
 
 class PixelDrainResolver(BaseResolver):
-    """Resolver for PixelDrain URLs"""
+    """Resolver for PixelDrain URLs."""
 
     DOMAINS: ClassVar[list[str]] = ["pixeldrain.com", "pixeldra.in"]
 
     async def resolve(self, url: str) -> LinkResult | FolderResult:
-        """Resolve PixelDrain URL"""
+        """Resolve PixelDrain URL."""
         try:
             parsed_url = urlparse(url.rstrip("/"))
             path_parts = parsed_url.path.split("/")
 
             if not path_parts:
-                raise InvalidURLException("Invalid PixelDrain URL: Empty path.")
+                msg = "Invalid PixelDrain URL: Empty path."
+                raise InvalidURLException(msg)
 
             file_or_list_code = path_parts[-1]
             if not file_or_list_code:
                 if len(path_parts) > 1:
                     file_or_list_code = path_parts[-2]
                 else:
+                    msg = "Invalid PixelDrain URL: Could not extract ID."
                     raise InvalidURLException(
-                        "Invalid PixelDrain URL: Could not extract ID.",
+                        msg,
                     )
 
             if parsed_url.path.startswith("/l/"):
-                raise ExtractionFailedException(
+                msg = (
                     "PixelDrain lists (/l/ URLs) are not directly supported by this resolver method."
-                    " A list resolver would require iterating items.",
+                    " A list resolver would require iterating items."
+                )
+                raise ExtractionFailedException(
+                    msg,
                 )
 
             temp_base_url = "https://pd.cybar.xyz/"
@@ -62,6 +67,7 @@ class PixelDrainResolver(BaseResolver):
         except Exception as e:
             if isinstance(e, ExtractionFailedException | InvalidURLException):
                 raise
+            msg = f"Failed to resolve PixelDrain URL '{url}': {e!s}"
             raise ExtractionFailedException(
-                f"Failed to resolve PixelDrain URL '{url}': {e!s}",
+                msg,
             ) from e

@@ -5,8 +5,7 @@ from dataclasses import asdict, dataclass, is_dataclass
 
 
 def custom_asdict_factory(data: object) -> object:
-    """
-    Recursively converts dataclass instances (including nested ones and lists of them)
+    """Recursively converts dataclass instances (including nested ones and lists of them)
     into dictionaries. Other data types are returned as is.
     """
     if isinstance(data, list):
@@ -17,8 +16,7 @@ def custom_asdict_factory(data: object) -> object:
 
 
 class PrettyPrintDataClass:
-    """
-    A base class for dataclasses to provide a pretty-printed str representation,
+    """A base class for dataclasses to provide a pretty-printed str representation,
     formatted as a JSON-like string, omitting None and empty list values.
     """
 
@@ -56,6 +54,7 @@ class LinkResult(PrettyPrintDataClass):
             "headers": {"Authorization": "Bearer token"}
         }
         ```
+
     """
 
     url: str
@@ -88,6 +87,7 @@ class FileItem(PrettyPrintDataClass):
             "path": "file2.jpg"
         }
         ```
+
     """
 
     url: str
@@ -133,6 +133,7 @@ class FolderResult(PrettyPrintDataClass):
             "headers": {"Authorization": "Bearer token"}
         }
         ```
+
     """
 
     title: str

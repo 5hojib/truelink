@@ -10,9 +10,7 @@ if TYPE_CHECKING:
 
 
 def define_env(env: MkDocsConfig) -> None:
-    """
-    This is the hook for defining variables, macros and filters for TrueLink documentation.
-    """
+    """This is the hook for defining variables, macros and filters for TrueLink documentation."""
 
     @env.macro
     def github_releases(
@@ -20,8 +18,7 @@ def define_env(env: MkDocsConfig) -> None:
         token: str | None = None,
         limit: int | None = None,
     ) -> str:
-        """
-        Fetch GitHub releases and format them for changelog.
+        """Fetch GitHub releases and format them for changelog.
 
         Args:
             repo_name (Optional[str]): GitHub repository in format "owner/repo" (defaults to 5hojib/truelink).
@@ -30,8 +27,8 @@ def define_env(env: MkDocsConfig) -> None:
 
         Returns:
             str: Formatted markdown with releases.
-        """
 
+        """
         if repo_name is None:
             repo_name = "5hojib/truelink"
 
@@ -124,14 +121,14 @@ def define_env(env: MkDocsConfig) -> None:
 
 
 def process_release_body(body: str) -> str:
-    """
-    Process and clean up release body content.
+    """Process and clean up release body content.
 
     Args:
         body (str): The body content of the release.
 
     Returns:
         str: The cleaned and processed release body.
+
     """
     lines: list[str] = body.split("\n")
     processed_lines: list[str] = list(lines)

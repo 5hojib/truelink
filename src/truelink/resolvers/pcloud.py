@@ -11,14 +11,14 @@ from truelink.types import FolderResult, LinkResult
 from .base import BaseResolver
 
 
-# todo
+# TODO
 class PCloudResolver(BaseResolver):
-    """Resolver for pCloud.link URLs"""
+    """Resolver for pCloud.link URLs."""
 
     DOMAINS: ClassVar[list[str]] = ["u.pcloud.link", "pcloud.com"]
 
     async def resolve(self, url: str) -> LinkResult | FolderResult:
-        """Resolve pCloud.link URL"""
+        """Resolve pCloud.link URL."""
         try:
             async with await self._get(url) as response:
                 response_text = await response.text()
@@ -100,8 +100,9 @@ class PCloudResolver(BaseResolver):
                         direct_link = cdn_links[0]
 
             if not direct_link:
+                msg = "pCloud.link error: Direct download link not found in page source."
                 raise ExtractionFailedException(
-                    "pCloud.link error: Direct download link not found in page source.",
+                    msg,
                 )
 
             if r"\/" in direct_link:
@@ -132,6 +133,7 @@ class PCloudResolver(BaseResolver):
         except Exception as e:
             if isinstance(e, ExtractionFailedException):
                 raise
+            msg = f"Failed to resolve pCloud.link URL '{url}': {e!s}"
             raise ExtractionFailedException(
-                f"Failed to resolve pCloud.link URL '{url}': {e!s}",
+                msg,
             ) from e

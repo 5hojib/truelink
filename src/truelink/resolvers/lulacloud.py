@@ -9,12 +9,12 @@ from .base import BaseResolver
 
 
 class LulaCloudResolver(BaseResolver):
-    """Resolver for LulaCloud URLs"""
+    """Resolver for LulaCloud URLs."""
 
     DOMAINS: ClassVar[list[str]] = ["lulacloud.com"]
 
     async def resolve(self, url: str) -> LinkResult | FolderResult:
-        """Resolve LulaCloud URL"""
+        """Resolve LulaCloud URL."""
         try:
             headers = {"Referer": url}
             async with await self._post(
@@ -24,7 +24,8 @@ class LulaCloudResolver(BaseResolver):
             ) as response:
                 location = response.headers.get("location")
                 if not location:
-                    raise ExtractionFailedException("No redirect location found")
+                    msg = "No redirect location found"
+                    raise ExtractionFailedException(msg)
 
                 filename, size, mime_type = await self._fetch_file_details(location)
 
@@ -33,6 +34,7 @@ class LulaCloudResolver(BaseResolver):
                 )
 
         except Exception as e:
+            msg = f"Failed to resolve LulaCloud URL: {e}"
             raise ExtractionFailedException(
-                f"Failed to resolve LulaCloud URL: {e}",
+                msg,
             ) from e

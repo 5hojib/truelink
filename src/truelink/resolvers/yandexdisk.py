@@ -14,14 +14,15 @@ YANDEX_DISK_URL_PATTERN = re.compile(
 
 
 class YandexDiskResolver(BaseResolver):
-    """Resolver for Yandex.Disk URLs"""
+    """Resolver for Yandex.Disk URLs."""
 
     DOMAINS: ClassVar[list[str]] = ["yadi.sk", "disk.yandex."]
 
     async def resolve(self, url: str) -> LinkResult | FolderResult:
-        """Resolve Yandex.Disk URL"""
+        """Resolve Yandex.Disk URL."""
         if not YANDEX_DISK_URL_PATTERN.match(url):
-            raise InvalidURLException(f"Invalid Yandex.Disk URL format: {url}")
+            msg = f"Invalid Yandex.Disk URL format: {url}"
+            raise InvalidURLException(msg)
 
         api_url = (
             "https://cloud-api.yandex.net/v1/disk/public/resources/download"
@@ -38,9 +39,8 @@ class YandexDiskResolver(BaseResolver):
                         or json_data.get("message")
                         or "Unknown error"
                     )
-                    raise ExtractionFailedException(
-                        f"Yandex API error ({response.status}): {error_msg}"
-                    )
+                    msg = f"Yandex API error ({response.status}): {error_msg}"
+                    raise ExtractionFailedException(msg)
 
                 direct_link = json_data.get("href")
                 if not direct_link:
@@ -60,11 +60,9 @@ class YandexDiskResolver(BaseResolver):
             raise
         except KeyError as e:
             if "href" in str(e):
-                raise ExtractionFailedException(
-                    "Yandex error: File not found or download limit reached (missing 'href')."
-                ) from e
+                msg = "Yandex error: File not found or download limit reached (missing 'href')."
+                raise ExtractionFailedException(msg) from e
             raise
         except Exception as e:
-            raise ExtractionFailedException(
-                f"Failed to resolve Yandex.Disk URL '{url}': {e!s}"
-            ) from e
+            msg = f"Failed to resolve Yandex.Disk URL '{url}': {e!s}"
+            raise ExtractionFailedException(msg) from e
