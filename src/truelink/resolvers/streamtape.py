@@ -29,7 +29,7 @@ class StreamtapeResolver(BaseResolver):
     # Use only streamtape.net as fallback domain
     FALLBACK_DOMAIN: ClassVar[str] = "streamtape.net"
 
-    async def _try_with_fallback_domain(self, original_url: str, video_id: str):
+    async def _try_with_fallback_domain(self, original_url: str):
         """Try accessing the URL with streamtape.net if the original fails"""
         parsed_url = urlparse(original_url)
         original_domain = parsed_url.netloc
@@ -74,7 +74,7 @@ class StreamtapeResolver(BaseResolver):
             )
 
             # Try with fallback domain if original fails
-            html_content, parsed_url = await self._try_with_fallback_domain(url, _id)
+            html_content, parsed_url = await self._try_with_fallback_domain(url)
             html = HTML(html_content)
 
             script_elements = html.xpath(

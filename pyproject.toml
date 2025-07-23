@@ -45,11 +45,11 @@ docs = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/5hojib/truelink"
+Homepage = "https://5hojib.github.io/truelink/"
 Repository = "https://github.com/5hojib/truelink"
-Documentation = "https://github.com/5hojib/truelink#readme"
+Documentation = "https://5hojib.github.io/truelink/"
 Issues = "https://github.com/5hojib/truelink/issues"
-Changelog = "https://github.com/5hojib/truelink/releases"
+Changelog = "https://5hojib.github.io/truelink/changelog/"
 
 [build-system]
 requires = ["hatchling>=1.21.0"]
@@ -139,6 +139,5 @@ select = [
 ignore = [
     "E501",
     "N818",
-    "B904",
     "COM812",
 ]
