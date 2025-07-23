@@ -108,33 +108,7 @@ allow-magic-value-types = ["int", "str", "bytes"]
 max-complexity = 50
 
 [tool.ruff.lint]
-select = [
-    "E",        # pycodestyle: error
-    "F",        # pyflakes
-    "I",        # isort
-    "W",        # pycodestyle: warning
-    "B",        # flake8-bugbear
-    "G",        # flake8-logging-format
-    "N",        # pep8-naming
-    "C4",       # flake8-comprehensions
-    "UP",       # pyupgrade
-    "FA",       # flake8-future-annotations
-    "PL",       # pylint
-    "PIE",      # flake8-pie
-    "PYI",      # flake8-pyi
-    "RET",      # flake8-return
-    "RUF",      # ruff
-    "SIM",      # flake8-simplify
-    "TCH",      # flake8-type-checking
-    "TID",      # flake8-tidy-imports
-    "ANN",      # flake8-annotations
-    "ARG",      # flake8-unused-arguments
-    "C90",      # mccabe
-    "COM",      # flake8-commas
-    "FURB",     # refurb
-    "PERF",     # perflint
-    "ASYNC",    # flake8-async
-]
+select = ["ALL"]
 
 ignore = [
     "E501",
