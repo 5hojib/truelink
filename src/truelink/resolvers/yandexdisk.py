@@ -41,8 +41,9 @@ class YandexDiskResolver(BaseResolver):
                         or json_data.get("message")
                         or "Unknown error"
                     )
-                    msg = f"Yandex API error ({response.status}): {error_msg}"
-                    raise ExtractionFailedException(msg)
+                    self._raise_extraction_failed(
+                        f"Yandex API error ({response.status}): {error_msg}",
+                    )
 
                 direct_link = json_data.get("href")
                 if not direct_link:
@@ -51,7 +52,7 @@ class YandexDiskResolver(BaseResolver):
                         or json_data.get("message")
                         or "Direct download link (href) not found in Yandex API response."
                     )
-                    raise ExtractionFailedException(error_msg)
+                    self._raise_extraction_failed(error_msg)
 
             filename, size, mime_type = await self._fetch_file_details(direct_link)
             return LinkResult(
@@ -66,3 +67,6 @@ class YandexDiskResolver(BaseResolver):
                 raise ExtractionFailedException(msg) from e
             msg = f"Failed to resolve Yandex.Disk URL '{url}': {e!s}"
             raise ExtractionFailedException(msg) from e
+
+    def _raise_extraction_failed(self, msg: str) -> None:
+        raise ExtractionFailedException(msg)

@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import os
 from hashlib import sha256
+from pathlib import Path
 from typing import TYPE_CHECKING, ClassVar
 from urllib.parse import urlparse
 
@@ -108,8 +108,8 @@ class GoFileResolver(BaseResolver):
                 if not content.get("public", True):
                     continue
                 next_path = (
-                    os.path.join(current_path, name) if current_path else name
-                )  # noqa: PTH118
+                    str(Path(current_path) / name) if current_path else name
+                )
                 await self._fetch_folder_contents(child_id, password_hash, next_path)
             else:
                 url = content.get("link")
@@ -180,7 +180,7 @@ class GoFileResolver(BaseResolver):
                     PASSWORD_ERROR_MESSAGE.format(request_url)
                 ) from e
             raise
-        except (ExtractionFailedException, ValueError) as e:
+        except ValueError as e:
             msg = f"GoFile resolution failed: {e}"
             raise ExtractionFailedException(msg) from e
 

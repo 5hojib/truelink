@@ -1,3 +1,4 @@
+"""Base class for all resolvers."""
 from __future__ import annotations
 
 import contextlib

@@ -12,7 +12,6 @@ from truelink.types import FolderResult, LinkResult
 from .base import BaseResolver
 
 
-# TODO: Add support for folders
 class OneDriveResolver(BaseResolver):
     """Resolver for OneDrive (1drv.ms) URLs."""
 
@@ -28,24 +27,21 @@ class OneDriveResolver(BaseResolver):
             link_data = parse_qs(parsed_link.query)
 
             if not link_data:
-                msg = "OneDrive error: Unable to find link_data (query parameters) in the URL."
-                raise ExtractionFailedException(
-                    msg,
+                self._raise_extraction_failed(
+                    "OneDrive error: Unable to find link_data (query parameters) in the URL.",
                 )
 
             folder_id_list = link_data.get("resid")
             if not folder_id_list:
-                msg = "OneDrive error: 'resid' not found in URL query parameters."
-                raise ExtractionFailedException(
-                    msg,
+                self._raise_extraction_failed(
+                    "OneDrive error: 'resid' not found in URL query parameters.",
                 )
             folder_id = folder_id_list[0]
 
             authkey_list = link_data.get("authkey")
             if not authkey_list:
-                msg = "OneDrive error: 'authkey' not found in URL query parameters."
-                raise ExtractionFailedException(
-                    msg,
+                self._raise_extraction_failed(
+                    "OneDrive error: 'authkey' not found in URL query parameters.",
                 )
             authkey = authkey_list[0]
 
@@ -87,9 +83,8 @@ class OneDriveResolver(BaseResolver):
                         ) as post_api_response:
                             if post_api_response.status != 200:
                                 error_text = await post_api_response.text()
-                                msg = f"OneDrive API error (after trying override). Status: {post_api_response.status}. Response: {error_text[:200]}"
-                                raise ExtractionFailedException(
-                                    msg,
+                                self._raise_extraction_failed(
+                                    f"OneDrive API error (after trying override). Status: {post_api_response.status}. Response: {error_text[:200]}",
                                 )
                             json_resp = await post_api_response.json()
 
@@ -106,7 +101,7 @@ class OneDriveResolver(BaseResolver):
                     "message",
                     "Direct download link ('@content.downloadUrl') not found in OneDrive API response.",
                 )
-                raise ExtractionFailedException(err_msg)
+                self._raise_extraction_failed(err_msg)
 
             direct_link = json_resp["@content.downloadUrl"]
 
@@ -131,3 +126,6 @@ class OneDriveResolver(BaseResolver):
             raise ExtractionFailedException(
                 msg,
             ) from e
+
+    def _raise_extraction_failed(self, msg: str) -> None:
+        raise ExtractionFailedException(msg)

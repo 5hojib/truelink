@@ -1,3 +1,4 @@
+"""Custom exceptions for TrueLink."""
 from __future__ import annotations
 
 

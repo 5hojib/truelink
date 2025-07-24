@@ -4,8 +4,9 @@ from __future__ import annotations
 
 import re
 from typing import ClassVar
-from urllib.parse import urlparse
+from urllib.parse import ParseResult, urlparse
 
+import aiohttp
 from lxml.etree import HTML
 
 from truelink.exceptions import ExtractionFailedException, InvalidURLException
@@ -31,7 +32,9 @@ class StreamtapeResolver(BaseResolver):
     # Use only streamtape.net as fallback domain
     FALLBACK_DOMAIN: ClassVar[str] = "streamtape.net"
 
-    async def _try_with_fallback_domain(self, original_url: str) -> tuple[str, URL]:
+    async def _try_with_fallback_domain(
+        self, original_url: str
+    ) -> tuple[str, ParseResult]:
         """Try accessing the URL with streamtape.net if the original fails."""
         parsed_url = urlparse(original_url)
         original_domain = parsed_url.netloc
@@ -90,13 +93,15 @@ class StreamtapeResolver(BaseResolver):
                     None,
                 )
                 if not script_content:
-                    msg = "Streamtape error: Required script content not found."
-                    raise ExtractionFailedException(msg)
+                    self._raise_extraction_failed(
+                        "Streamtape error: Required script content not found.",
+                    )
 
             match = re.findall(r"(&expires\S+?)'", script_content)
             if not match:
-                msg = "Streamtape error: Download link parameters not found."
-                raise ExtractionFailedException(msg)
+                self._raise_extraction_failed(
+                    "Streamtape error: Download link parameters not found.",
+                )
 
             suffix = match[-1]
             # Use the working domain for the direct URL
@@ -120,3 +125,6 @@ class StreamtapeResolver(BaseResolver):
                 raise
             msg = f"Unexpected error while resolving Streamtape URL: {e}"
             raise ExtractionFailedException(msg) from e
+
+    def _raise_extraction_failed(self, msg: str) -> None:
+        raise ExtractionFailedException(msg)

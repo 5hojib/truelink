@@ -104,7 +104,7 @@ class LinkBoxResolver(BaseResolver):
                 await self._fetch_list_recursive(
                     share_token,
                     item["id"],
-                    os.path.join(current_path, name) if current_path else name,  # noqa: PTH118
+                    os.path.join(current_path, name) if current_path else name,
                 )
             elif "url" in item:
                 filename = self._finalize_filename(item)
@@ -122,18 +122,23 @@ class LinkBoxResolver(BaseResolver):
             ) as response:
                 if response.status != 200:
                     msg = await response.text()
-                    msg = f"LinkBox API ({endpoint}) error {response.status}: {msg[:200]}"
-                    raise ExtractionFailedException(msg)
+                    self._raise_extraction_failed(
+                        f"LinkBox API ({endpoint}) error {response.status}: {msg[:200]}",
+                    )
                 json_data = await response.json()
                 if "data" not in json_data:
-                    msg = f"LinkBox API ({endpoint}) error: {json_data.get('msg')}"
-                    raise ExtractionFailedException(msg)
+                    self._raise_extraction_failed(
+                        f"LinkBox API ({endpoint}) error: {json_data.get('msg')}",
+                    )
                 return json_data["data"]
         except ExtractionFailedException:
             raise
-        except (ExtractionFailedException, ValueError) as e:
+        except ValueError as e:
             msg = f"LinkBox API ({endpoint}) failed: {e!s}"
             raise ExtractionFailedException(msg) from e
+
+    def _raise_extraction_failed(self, msg: str) -> None:
+        raise ExtractionFailedException(msg)
 
     def _extract_share_token(self, url: str) -> str:
         token = urlparse(url).path.strip("/").split("/")[-1]

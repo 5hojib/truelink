@@ -1,3 +1,4 @@
+"""Resolver for MediaFile.cc URLs."""
 from __future__ import annotations
 
 import asyncio
@@ -28,9 +29,8 @@ class MediaFileResolver(BaseResolver):
                     response_text,
                 )
                 if not postvalue_direct:
-                    msg = "Unable to find initial download link or post value on the page."
-                    raise ExtractionFailedException(
-                        msg,
+                    self._raise_extraction_failed(
+                        "Unable to find initial download link or post value on the page.",
                     )
 
                 download_url = str(response.url)
@@ -51,9 +51,8 @@ class MediaFileResolver(BaseResolver):
                     download_page_text,
                 )
                 if not postvalue:
-                    msg = "Unable to find post value on download page."
-                    raise ExtractionFailedException(
-                        msg,
+                    self._raise_extraction_failed(
+                        "Unable to find post value on download page.",
                     )
                 postid = postvalue.group(1).replace("(", "").replace(")", "")
 
@@ -75,9 +74,8 @@ class MediaFileResolver(BaseResolver):
                     ) from json_error
 
             if "html" not in json_response:
-                msg = "AJAX response does not contain 'html' key."
-                raise ExtractionFailedException(
-                    msg,
+                self._raise_extraction_failed(
+                    "AJAX response does not contain 'html' key.",
                 )
 
             html_content_from_ajax = json_response["html"]
@@ -96,9 +94,8 @@ class MediaFileResolver(BaseResolver):
                 elif potential_links:
                     direct_link = potential_links[0]
                 else:
-                    msg = "No suitable download link with 'download_token' found in AJAX response."
-                    raise ExtractionFailedException(
-                        msg,
+                    self._raise_extraction_failed(
+                        "No suitable download link with 'download_token' found in AJAX response.",
                     )
             else:
                 direct_link = token_links[1]
@@ -118,3 +115,6 @@ class MediaFileResolver(BaseResolver):
             raise ExtractionFailedException(
                 msg,
             ) from e
+
+    def _raise_extraction_failed(self, msg: str) -> None:
+        raise ExtractionFailedException(msg)

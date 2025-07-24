@@ -5,6 +5,8 @@ from __future__ import annotations
 from typing import ClassVar
 from urllib.parse import urlparse
 
+import aiohttp
+
 from truelink.exceptions import ExtractionFailedException, InvalidURLException
 from truelink.types import FolderResult, LinkResult
 
@@ -23,26 +25,21 @@ class PixelDrainResolver(BaseResolver):
             path_parts = parsed_url.path.split("/")
 
             if not path_parts:
-                msg = "Invalid PixelDrain URL: Empty path."
-                raise InvalidURLException(msg)
+                self._raise_invalid_url("Invalid PixelDrain URL: Empty path.")
 
             file_or_list_code = path_parts[-1]
             if not file_or_list_code:
                 if len(path_parts) > 1:
                     file_or_list_code = path_parts[-2]
                 else:
-                    msg = "Invalid PixelDrain URL: Could not extract ID."
-                    raise InvalidURLException(
-                        msg,
+                    self._raise_invalid_url(
+                        "Invalid PixelDrain URL: Could not extract ID.",
                     )
 
             if parsed_url.path.startswith("/l/"):
-                msg = (
+                self._raise_extraction_failed(
                     "PixelDrain lists (/l/ URLs) are not directly supported by this resolver method."
-                    " A list resolver would require iterating items."
-                )
-                raise ExtractionFailedException(
-                    msg,
+                    " A list resolver would require iterating items.",
                 )
 
             temp_base_url = "https://pd.cybar.xyz/"
@@ -73,3 +70,9 @@ class PixelDrainResolver(BaseResolver):
             raise ExtractionFailedException(
                 msg,
             ) from e
+
+    def _raise_extraction_failed(self, msg: str) -> None:
+        raise ExtractionFailedException(msg)
+
+    def _raise_invalid_url(self, msg: str) -> None:
+        raise InvalidURLException(msg)

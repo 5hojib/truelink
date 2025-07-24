@@ -13,7 +13,6 @@ from truelink.types import FolderResult, LinkResult
 from .base import BaseResolver
 
 
-# TODO: Add support for folders
 class PCloudResolver(BaseResolver):
     """Resolver for pCloud.link URLs."""
 
@@ -102,9 +101,8 @@ class PCloudResolver(BaseResolver):
                         direct_link = cdn_links[0]
 
             if not direct_link:
-                msg = "pCloud.link error: Direct download link not found in page source."
-                raise ExtractionFailedException(
-                    msg,
+                self._raise_extraction_failed(
+                    "pCloud.link error: Direct download link not found in page source.",
                 )
 
             if r"\/" in direct_link:
@@ -139,3 +137,6 @@ class PCloudResolver(BaseResolver):
             raise ExtractionFailedException(
                 msg,
             ) from e
+
+    def _raise_extraction_failed(self, msg: str) -> None:
+        raise ExtractionFailedException(msg)

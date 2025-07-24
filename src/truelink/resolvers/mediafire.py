@@ -5,8 +5,8 @@ from __future__ import annotations
 import asyncio
 import base64
 import contextlib
-import os.path as ospath
 import re
+from pathlib import Path
 from typing import TYPE_CHECKING, Any, ClassVar
 from urllib.parse import unquote, urlparse
 
@@ -119,21 +119,20 @@ class MediaFireResolver(BaseResolver):
 
             html = HTML(await self._get_content(scraper, url))
             if error := html.xpath('//p[@class="notranslate"]/text()'):
-                msg = f"MediaFire error: {error[0]}"
-                raise ExtractionFailedException(msg)
+                self._raise_extraction_failed(f"MediaFire error: {error[0]}")
 
             if html.xpath("//div[@class='passwordPrompt']"):
                 if not password:
-                    msg = f"ERROR: This link is password protected. Please provide the password for: {url}"
-                    raise ExtractionFailedException(msg)
+                    self._raise_extraction_failed(
+                        f"ERROR: This link is password protected. Please provide the password for: {url}",
+                    )
                 html = HTML(
                     await self._get_content(
                         scraper, url, method="post", data={"downloadp": password}
                     )
                 )
                 if html.xpath("//div[@class='passwordPrompt']"):
-                    msg = "MediaFire error: Wrong password."
-                    raise ExtractionFailedException(msg)
+                    self._raise_extraction_failed("MediaFire error: Wrong password.")
 
             # Use the new decoding method
             final_link = await self._decode_url(html, scraper)
@@ -157,7 +156,6 @@ class MediaFireResolver(BaseResolver):
             msg = f"MediaFire Cloudflare challenge failed: {e}"
             raise ExtractionFailedException(msg) from e
         except (
-            cloudscraper.exceptions.CloudflareException,
             ExtractionFailedException,
             InvalidURLException,
         ) as e:
@@ -222,8 +220,9 @@ class MediaFireResolver(BaseResolver):
 
             if html.xpath("//div[@class='passwordPrompt']"):
                 if not password:
-                    msg = f"ERROR: This link is password protected. Please provide the password for: {url}"
-                    raise ExtractionFailedException(msg)
+                    self._raise_extraction_failed(
+                        f"ERROR: This link is password protected. Please provide the password for: {url}",
+                    )
                 html = HTML(
                     await self._get_content(
                         scraper, url, method="post", data={"downloadp": password}
@@ -253,8 +252,7 @@ class MediaFireResolver(BaseResolver):
         try:
             folder_keys = url.split("/", 4)[-1].split("/", 1)[0].split(",")
             if not folder_keys[0]:
-                msg = f"Invalid folder key in URL: {url}"
-                raise InvalidURLException(msg)
+                self._raise_invalid_url(f"Invalid folder key in URL: {url}")
 
             folder_info = await self._api_request(
                 scraper,
@@ -271,8 +269,7 @@ class MediaFireResolver(BaseResolver):
                 folder_info.get("folder_info")
             ]
             if not folders:
-                msg = "No folder info found from API."
-                raise ExtractionFailedException(msg)
+                self._raise_extraction_failed("No folder info found from API.")
 
             folder_title = folders[0].get("name", "MediaFire Folder")
             all_files: list[FileItem] = []
@@ -306,7 +303,7 @@ class MediaFireResolver(BaseResolver):
                                 filename=result.filename,
                                 size=result.size,
                                 mime_type=result.mime_type,
-                                path=ospath.join(path_prefix, result.filename),
+                                path=str(Path(path_prefix) / result.filename),
                             )
                             all_files.append(file_item)
                             total_size += result.size or 0
@@ -328,15 +325,16 @@ class MediaFireResolver(BaseResolver):
                 ):
                     await collect_files(
                         subfolder["folderkey"],
-                        ospath.join(path_prefix, subfolder["name"]),  # noqa: PTH118
+                        str(Path(path_prefix) / subfolder["name"]),
                     )
 
             for folder in folders:
                 await collect_files(folder["folderkey"], folder["name"])
 
             if not all_files:
-                msg = f"No files found in MediaFire folder: {url}"
-                raise ExtractionFailedException(msg)
+                self._raise_extraction_failed(
+                    f"No files found in MediaFire folder: {url}",
+                )
 
             return FolderResult(
                 title=folder_title, contents=all_files, total_size=total_size
@@ -346,7 +344,6 @@ class MediaFireResolver(BaseResolver):
             msg = f"MediaFire Cloudflare challenge failed: {e}"
             raise ExtractionFailedException(msg) from e
         except (
-            cloudscraper.exceptions.CloudflareException,
             ExtractionFailedException,
             InvalidURLException,
         ) as e:
@@ -356,3 +353,9 @@ class MediaFireResolver(BaseResolver):
             raise ExtractionFailedException(msg) from e
         finally:
             await self._run_sync(scraper.close)
+
+    def _raise_extraction_failed(self, msg: str) -> None:
+        raise ExtractionFailedException(msg)
+
+    def _raise_invalid_url(self, msg: str) -> None:
+        raise InvalidURLException(msg)
