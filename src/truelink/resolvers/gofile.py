@@ -107,9 +107,7 @@ class GoFileResolver(BaseResolver):
             if content.get("type") == "folder":
                 if not content.get("public", True):
                     continue
-                next_path = (
-                    str(Path(current_path) / name) if current_path else name
-                )
+                next_path = str(Path(current_path) / name) if current_path else name
                 await self._fetch_folder_contents(child_id, password_hash, next_path)
             else:
                 url = content.get("link")

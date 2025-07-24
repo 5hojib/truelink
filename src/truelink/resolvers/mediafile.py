@@ -1,4 +1,5 @@
 """Resolver for MediaFile.cc URLs."""
+
 from __future__ import annotations
 
 import asyncio
