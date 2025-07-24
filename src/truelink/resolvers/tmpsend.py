@@ -1,3 +1,4 @@
+"""Resolver for TmpSend.com URLs."""
 from __future__ import annotations
 
 from typing import ClassVar
@@ -56,7 +57,7 @@ class TmpSendResolver(BaseResolver):
                 headers=headers,
             )
 
-        except Exception as e:
+        except (ExtractionFailedException, InvalidURLException) as e:
             if isinstance(e, ExtractionFailedException | InvalidURLException):
                 raise
             msg = f"Failed to resolve TmpSend.com URL '{url}': {e!s}"

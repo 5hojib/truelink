@@ -1,3 +1,4 @@
+"""Resolver for SwissTransfer.com URLs."""
 from __future__ import annotations
 
 import base64
@@ -20,7 +21,7 @@ class SwissTransferResolver(BaseResolver):
         transfer_id: str,
         password_b64: str | None,
     ) -> dict:
-        """Fetches metadata for a given transfer_id."""
+        """Fetch metadata for a given transfer_id."""
         api_url = f"https://www.swisstransfer.com/api/links/{transfer_id}"
         headers = {"User-Agent": self.USER_AGENT}
         if password_b64:
@@ -35,7 +36,7 @@ class SwissTransferResolver(BaseResolver):
                     json_err = await response.json(content_type=None)
                     if "message" in json_err:
                         err_text = json_err["message"]
-                except Exception:
+                except (ValueError, KeyError):
                     pass
                 msg = f"SwissTransfer API (metadata) error {response.status}: {err_text[:200]}"
                 raise ExtractionFailedException(
@@ -43,12 +44,12 @@ class SwissTransferResolver(BaseResolver):
                 )
             try:
                 return await response.json()
-            except Exception as e_json:
+            except ValueError as e_json:
                 err_txt = await response.text()
                 msg = f"SwissTransfer API (metadata) error: Failed to parse JSON. {e_json}. Response: {err_txt[:200]}"
                 raise ExtractionFailedException(
                     msg,
-                )
+                ) from e_json
 
     async def _generate_download_token(
         self,
@@ -56,7 +57,7 @@ class SwissTransferResolver(BaseResolver):
         container_uuid: str,
         file_uuid: str,
     ) -> str:
-        """Generates a download token for a specific file."""
+        """Generate a download token for a specific file."""
         api_url = "https://www.swisstransfer.com/api/generateDownloadToken"
         headers = {
             "User-Agent": self.USER_AGENT,
@@ -79,7 +80,7 @@ class SwissTransferResolver(BaseResolver):
                     json_err = await response.json(content_type=None)
                     if "message" in json_err:
                         err_text = json_err["message"]
-                except Exception:
+                except (ValueError, KeyError):
                     pass
                 msg = f"SwissTransfer API (token) error {response.status}: {err_text[:200]}"
                 raise ExtractionFailedException(
@@ -109,11 +110,11 @@ class SwissTransferResolver(BaseResolver):
                 password_b64 = base64.b64encode(password_str.encode("utf-8")).decode(
                     "utf-8",
                 )
-            except Exception as e_b64:
+            except (base64.binascii.Error, TypeError) as e_b64:
                 msg = f"Failed to base64 encode password: {e_b64}"
                 raise InvalidURLException(
                     msg,
-                )
+                ) from e_b64
 
         metadata_response = await self._get_file_metadata(transfer_id, password_b64)
 
@@ -130,7 +131,7 @@ class SwissTransferResolver(BaseResolver):
             msg = f"SwissTransfer error: Could not parse required fields from metadata. Error: {e_parse}. Metadata: {str(metadata_response)[:300]}"
             raise ExtractionFailedException(
                 msg,
-            )
+            ) from e_parse
 
         if not files_list:
             msg = "SwissTransfer error: No files found in the transfer metadata."

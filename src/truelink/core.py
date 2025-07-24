@@ -1,3 +1,4 @@
+"""Core module for TrueLink."""
 from __future__ import annotations
 
 import asyncio
@@ -97,9 +98,7 @@ class TrueLinkResolver:
 
     _cache: ClassVar[dict[str, LinkResult | FolderResult]] = {}
 
-    async def resolve(
-        self, url: str, use_cache: bool = False
-    ) -> LinkResult | FolderResult:
+    async def resolve(self, url: str, *, use_cache: bool = False) -> LinkResult | FolderResult:
         """Resolve a URL to direct download link(s) and return as a LinkResult or FolderResult object.
 
         Args:

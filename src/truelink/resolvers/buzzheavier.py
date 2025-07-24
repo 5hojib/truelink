@@ -1,3 +1,5 @@
+"""Resolver for BuzzHeavier URLs."""
+"""Resolver for BuzzHeavier URLs."""
 from __future__ import annotations
 
 import re
@@ -61,13 +63,13 @@ class BuzzHeavierResolver(BaseResolver):
             msg = "No download link found"
             raise ExtractionFailedException(msg)
 
-        except Exception as e:
+        except ExtractionFailedException as e:
             msg = f"Failed to resolve BuzzHeavier URL: {e}"
             raise ExtractionFailedException(
                 msg,
             ) from e
 
-    async def _get_download_url(self, url: str, is_folder: bool = False) -> str:
+    async def _get_download_url(self, url: str, *, is_folder: bool = False) -> str:
         """Get download URL from BuzzHeavier."""
         if "/download" not in url:
             url += "/download"
@@ -101,7 +103,7 @@ class BuzzHeavierResolver(BaseResolver):
 
                 download_url = await self._get_download_url(
                     f"https://buzzheavier.com{file_id}",
-                    True,
+                    is_folder=True,
                 )
 
                 if download_url:
@@ -133,7 +135,7 @@ class BuzzHeavierResolver(BaseResolver):
                     if item_size is not None:
                         total_size += item_size
 
-            except Exception:
+            except ExtractionFailedException:
                 continue
 
         title = (

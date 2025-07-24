@@ -68,11 +68,11 @@ class MediaFileResolver(BaseResolver):
             ) as ajax_response:
                 try:
                     json_response = await ajax_response.json()
-                except Exception as json_error:
+                except ValueError as json_error:
                     msg = f"Failed to parse JSON response from file_details: {json_error}"
                     raise ExtractionFailedException(
                         msg,
-                    )
+                    ) from json_error
 
             if "html" not in json_response:
                 msg = "AJAX response does not contain 'html' key."
@@ -111,7 +111,7 @@ class MediaFileResolver(BaseResolver):
                 url=direct_link, filename=filename, mime_type=mime_type, size=size
             )
 
-        except Exception as e:
+        except (ExtractionFailedException, ValueError) as e:
             if isinstance(e, ExtractionFailedException):
                 raise
             msg = f"Failed to resolve MediaFile.cc URL '{url}': {e!s}"

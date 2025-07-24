@@ -1,3 +1,4 @@
+"""This module contains the data classes used in TrueLink."""
 from __future__ import annotations
 
 import json
@@ -5,8 +6,17 @@ from dataclasses import asdict, dataclass, is_dataclass
 
 
 def custom_asdict_factory(data: object) -> object:
-    """Recursively converts dataclass instances (including nested ones and lists of them)
-    into dictionaries. Other data types are returned as is.
+    """Recursively converts dataclass instances to dictionaries.
+
+    This function handles nested dataclasses and lists of dataclasses.
+    Other data types are returned as-is.
+
+    Args:
+        data: The object to convert.
+
+    Returns:
+        The converted object.
+
     """
     if isinstance(data, list):
         return [custom_asdict_factory(item) for item in data]
@@ -16,11 +26,13 @@ def custom_asdict_factory(data: object) -> object:
 
 
 class PrettyPrintDataClass:
-    """A base class for dataclasses to provide a pretty-printed str representation,
-    formatted as a JSON-like string, omitting None and empty list values.
+    """A base class for dataclasses to provide a pretty-printed str representation.
+
+    The output is formatted as a JSON-like string, omitting None and empty list values.
     """
 
     def __str__(self) -> str:
+        """Return a pretty-printed string representation of the dataclass."""
         raw_dict = asdict(self)
         processed_dict = {k: custom_asdict_factory(v) for k, v in raw_dict.items()}
         filtered_dict = {

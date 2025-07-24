@@ -1,3 +1,4 @@
+"""Resolver for LinkBox.to URLs."""
 from __future__ import annotations
 
 import os
@@ -24,6 +25,7 @@ class LinkBoxResolver(BaseResolver):
     BASE_API = "https://www.linkbox.to/api/file"
 
     def __init__(self) -> None:
+        """Initialize the LinkBoxResolver."""
         super().__init__()
         self._folder: FolderResult | None = None
 
@@ -101,7 +103,7 @@ class LinkBoxResolver(BaseResolver):
                 await self._fetch_list_recursive(
                     share_token,
                     item["id"],
-                    os.path.join(current_path, name) if current_path else name,
+                    os.path.join(current_path, name) if current_path else name,  # noqa: PTH118
                 )
             elif "url" in item:
                 filename = self._finalize_filename(item)
@@ -128,7 +130,7 @@ class LinkBoxResolver(BaseResolver):
                 return json_data["data"]
         except ExtractionFailedException:
             raise
-        except Exception as e:
+        except (ExtractionFailedException, ValueError) as e:
             msg = f"LinkBox API ({endpoint}) failed: {e!s}"
             raise ExtractionFailedException(msg) from e
 

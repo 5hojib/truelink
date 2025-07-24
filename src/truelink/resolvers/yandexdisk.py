@@ -1,3 +1,4 @@
+"""Resolver for Yandex.Disk URLs."""
 from __future__ import annotations
 
 import re
@@ -56,13 +57,11 @@ class YandexDiskResolver(BaseResolver):
                 url=direct_link, filename=filename, mime_type=mime_type, size=size
             )
 
-        except (InvalidURLException, ExtractionFailedException):
-            raise
-        except KeyError as e:
-            if "href" in str(e):
+        except (InvalidURLException, ExtractionFailedException, ValueError) as e:
+            if isinstance(e, (InvalidURLException, ExtractionFailedException)):
+                raise
+            if isinstance(e, KeyError) and "href" in str(e):
                 msg = "Yandex error: File not found or download limit reached (missing 'href')."
                 raise ExtractionFailedException(msg) from e
-            raise
-        except Exception as e:
             msg = f"Failed to resolve Yandex.Disk URL '{url}': {e!s}"
             raise ExtractionFailedException(msg) from e

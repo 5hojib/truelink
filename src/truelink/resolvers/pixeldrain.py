@@ -1,3 +1,4 @@
+"""Resolver for PixelDrain URLs."""
 from __future__ import annotations
 
 from typing import ClassVar
@@ -53,7 +54,7 @@ class PixelDrainResolver(BaseResolver):
                     if not fetched_base.endswith("/"):
                         fetched_base += "/"
                     temp_base_url = fetched_base
-            except Exception:
+            except aiohttp.ClientError:
                 pass
 
             direct_link = temp_base_url + file_or_list_code
@@ -64,7 +65,7 @@ class PixelDrainResolver(BaseResolver):
                 url=direct_link, filename=filename, mime_type=mime_type, size=size
             )
 
-        except Exception as e:
+        except (ExtractionFailedException, InvalidURLException) as e:
             if isinstance(e, ExtractionFailedException | InvalidURLException):
                 raise
             msg = f"Failed to resolve PixelDrain URL '{url}': {e!s}"

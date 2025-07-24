@@ -21,10 +21,12 @@ class BaseResolver(ABC):
     USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0"
 
     def __init__(self, proxy: str | None = None) -> None:
+        """Initialize the resolver."""
         self.session: aiohttp.ClientSession | None = None
         self.proxy = proxy
 
     async def __aenter__(self) -> Self:
+        """Enter the async context."""
         await self._create_session()
         return self
 
@@ -34,6 +36,7 @@ class BaseResolver(ABC):
         exc_val: BaseException | None,
         exc_tb: TracebackType | None,
     ) -> None:
+        """Exit the async context."""
         await self._close_session()
 
     async def _create_session(self) -> None:
@@ -157,7 +160,7 @@ class BaseResolver(ABC):
                         await self._close_session()
                     return filename, size, mime_type
 
-        except Exception:
+        except aiohttp.ClientError:
             pass
 
         try:
@@ -188,7 +191,7 @@ class BaseResolver(ABC):
                             .strip()
                         )
 
-        except Exception:
+        except aiohttp.ClientError:
             pass
 
         finally:
