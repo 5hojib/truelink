@@ -1,347 +1,345 @@
-/* Force dark theme styles */
+/* MkDocs Material Pure Black Theme with Whitish Code Blocks */
+
+/* Root variables override */
 :root {
-    --md-default-bg-color: #000000;
-    --md-default-fg-color: #e0e0e0;
-    --md-primary-fg-color: #000000;
-    --md-accent-fg-color: #000000;
+  --md-primary-fg-color: #000000;
+  --md-primary-bg-color: #000000;
+  --md-accent-fg-color: #ffffff;
+  --md-default-bg-color: #000000;
+  --md-default-fg-color: #ffffff;
+  --md-code-bg-color: #1a1a1a;
+  --md-code-fg-color: #f0f0f0;
 }
 
-/* Main body styling */
-body {
-    background-color: #000000 !important;
-    color: #e0e0e0 !important;
+/* Main background */
+body,
+html {
+  background-color: #000000 !important;
+  color: #ffffff !important;
 }
 
-/* Header styling */
+/* Header - Pure Black */
 .md-header {
-    background-color: #000000 !important;
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+  border-bottom: 1px solid #333333 !important;
 }
 
-/* Navigation styling */
-.md-nav__link--active {
-    background-color: #000000 !important;
+.md-header__inner {
+  background-color: #000000 !important;
 }
 
-/* Code block styling - remove borders from outer container */
-.highlight {
-    background-color: #000000 !important;
-    border: none !important;
-    padding: 0 !important;
-    margin: 0.5rem 0 !important;
+.md-header__button {
+  color: #ffffff !important;
 }
 
-/* Pre tag styling - this is the actual code block */
-.md-typeset pre {
-    background-color: #000000 !important;
-    color: #e0e0e0 !important;
-    border-left: 2px solid #ffffff !important;
-    padding: 0.1rem !important;
-    margin: 0 !important;
-    border-radius: 3px !important;
+.md-header__title {
+  color: #ffffff !important;
 }
 
-/* Code inside pre tag */
-.md-typeset pre code {
-    background-color: transparent !important;
-    color: inherit !important;
-    border: none !important;
-    padding: 0 0 0.4rem 0.3rem !important;
-    display: block !important;
-    line-height: 1.6 !important;
-}
-
-/* Inline code styling */
-.md-typeset code {
-    background-color: #000000 !important;
-    color: #e0e0e0 !important;
-    border: 1px solid #333333 !important;
-    padding: 0.1em 0.3em !important;
-    border-radius: 2px !important;
-}
-
-/* Code block content */
-.md-typeset .highlight pre,
-.md-typeset .highlight code {
-    background-color: #000000 !important;
-    color: #e0e0e0 !important;
-}
-
-/* Syntax highlighting adjustments for better visibility on black background */
-.highlight .c,
-.highlight .ch,
-.highlight .cm,
-.highlight .c1,
-.highlight .cs {
-    color: #6A9955 !important;
-    /* Comments in green */
-}
-
-.highlight .k,
-.highlight .kc,
-.highlight .kd,
-.highlight .kn,
-.highlight .kp,
-.highlight .kr,
-.highlight .kt {
-    color: #569CD6 !important;
-    /* Keywords in blue */
-}
-
-.highlight .s,
-.highlight .sa,
-.highlight .sb,
-.highlight .sc,
-.highlight .sd,
-.highlight .s2,
-.highlight .se,
-.highlight .sh,
-.highlight .si,
-.highlight .sx,
-.highlight .sr,
-.highlight .s1,
-.highlight .ss {
-    color: #CE9178 !important;
-    /* Strings in orange */
-}
-
-.highlight .n,
-.highlight .na,
-.highlight .nb,
-.highlight .nc,
-.highlight .no,
-.highlight .nd,
-.highlight .ni,
-.highlight .ne,
-.highlight .nf,
-.highlight .nl,
-.highlight .nn,
-.highlight .nt,
-.highlight .nv,
-.highlight .nx,
-.highlight .py,
-.highlight .w {
-    color: #e0e0e0 !important;
-    /* Default text color */
-}
-
-.highlight .m,
-.highlight .mf,
-.highlight .mh,
-.highlight .mi,
-.highlight .mo {
-    color: #B5CEA8 !important;
-    /* Numbers in light green */
-}
-
-/* Blockquote styling to match code block style */
-.md-typeset blockquote {
-    background-color: #000000 !important;
-    border-left: 4px solid #ffffff !important;
-    color: #e0e0e0 !important;
-    padding: 0.2rem !important;
-    margin: 0.2rem 0 !important;
-}
-
-/* Content area background */
-.md-content {
-    background-color: #000000 !important;
-}
-
-/* Navigation background */
+/* Navigation - Pure Black */
 .md-nav {
-    background-color: #000000 !important;
+  background-color: #000000 !important;
+  color: #ffffff !important;
 }
 
-/* Sidebar background */
-.md-sidebar {
-    background-color: #000000 !important;
+.md-nav__item {
+  color: #ffffff !important;
 }
 
-/* Search background */
-.md-search__form {
-    background-color: #000000 !important;
+.md-nav__link {
+  color: #ffffff !important;
+  background-color: #000000 !important;
 }
 
-/* Table styling */
-.md-typeset table:not([class]) {
-    background-color: #000000 !important;
-    color: #e0e0e0 !important;
-    border: 1px solid #333333 !important;
-}
-
-.md-typeset table:not([class]) th {
-    background-color: #111111 !important;
-    color: #e0e0e0 !important;
-    border: 1px solid #333333 !important;
-}
-
-.md-typeset table:not([class]) td {
-    border: 1px solid #333333 !important;
-}
-
-/* Admonition styling */
-.md-typeset .admonition {
-    background-color: #000000 !important;
-    border-left: 4px solid #ffffff !important;
-    color: #e0e0e0 !important;
-}
-
-/* Footer styling */
-.md-footer {
-    background-color: #000000 !important;
-}
-
-/* Links styling */
-.md-typeset a {
-    color: #79C0FF !important;
-}
-
-.md-typeset a:hover {
-    color: #58A6FF !important;
-}
-
-/* Additional comprehensive black background selectors */
-
-/* Main container */
-.md-main {
-    background-color: #000000 !important;
-}
-
-/* Grid and layout containers */
-.md-grid {
-    background-color: #000000 !important;
-}
-
-.md-container {
-    background-color: #000000 !important;
-}
-
-/* All navigation elements */
-.md-nav,
-.md-nav__list,
-.md-nav__item,
-.md-nav__link,
-.md-nav__title,
-.md-nav__source {
-    background-color: #000000 !important;
-}
-
-/* Navigation hover and active states */
 .md-nav__link:hover,
-.md-nav__link:focus,
+.md-nav__link:focus {
+  color: #cccccc !important;
+  background-color: #000000 !important;
+}
+
 .md-nav__link--active {
-    background-color: #000000 !important;
+  color: #ffffff !important;
+  background-color: #000000 !important;
 }
 
-/* Sidebar and drawer */
-.md-sidebar,
-.md-sidebar__scrollwrap,
-.md-sidebar--primary,
+.md-nav__title {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+/* Primary Navigation (Top Menu) */
+.md-nav--primary {
+  background-color: #000000 !important;
+}
+
+.md-nav--primary .md-nav__item {
+  background-color: #000000 !important;
+}
+
+/* Sidebar - Pure Black */
+.md-sidebar {
+  background-color: #000000 !important;
+}
+
+.md-sidebar--primary {
+  background-color: #000000 !important;
+}
+
 .md-sidebar--secondary {
-    background-color: #000000 !important;
+  background-color: #000000 !important;
 }
 
-/* Header elements */
-.md-header,
-.md-header__inner,
-.md-header__button,
-.md-header__topic,
-.md-header__title,
-.md-header__source {
-    background-color: #000000 !important;
+.md-sidebar__scrollwrap {
+  background-color: #000000 !important;
 }
 
-/* Search elements */
-.md-search,
-.md-search__form,
-.md-search__input,
-.md-search__output,
-.md-search__scrollwrap,
-.md-search-result,
-.md-search-result__list,
-.md-search-result__item,
-.md-search-result__link,
-.md-search-result__meta {
-    background-color: #000000 !important;
+/* Mobile drawer/menu */
+.md-nav--primary .md-nav__item--nested > .md-nav__link {
+  background-color: #000000 !important;
+  color: #ffffff !important;
 }
 
-/* Footer elements */
-.md-footer,
-.md-footer__inner,
-.md-footer__link,
-.md-footer-meta,
+.md-nav--primary .md-nav__item--section > .md-nav__link {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+/* Main content area */
+.md-main {
+  background-color: #000000 !important;
+}
+
+.md-content {
+  background-color: #000000 !important;
+}
+
+.md-content__inner {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+/* Article/page content */
+article {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+/* Headers */
+h1, h2, h3, h4, h5, h6 {
+  color: #ffffff !important;
+}
+
+/* Paragraphs and text */
+p {
+  color: #ffffff !important;
+}
+
+/* Links */
+a {
+  color: #ffffff !important;
+}
+
+a:hover,
+a:focus {
+  color: #cccccc !important;
+}
+
+/* Code blocks - slightly whitish background */
+.md-typeset code {
+  background-color: #1a1a1a !important;
+  color: #f0f0f0 !important;
+  border: 1px solid #333333;
+}
+
+.md-typeset pre {
+  background-color: #1a1a1a !important;
+  color: #f0f0f0 !important;
+  border: 1px solid #333333;
+}
+
+.md-typeset pre code {
+  background-color: transparent !important;
+  color: #f0f0f0 !important;
+}
+
+/* Highlight.js code blocks */
+.hljs {
+  background-color: #1a1a1a !important;
+  color: #f0f0f0 !important;
+}
+
+/* Inline code */
+.md-typeset code:not(.hljs) {
+  background-color: #1a1a1a !important;
+  color: #f0f0f0 !important;
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
+/* Tables */
+.md-typeset table {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+.md-typeset table th,
+.md-typeset table td {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  border-color: #333333 !important;
+}
+
+/* Blockquotes */
+.md-typeset blockquote {
+  background-color: #111111 !important;
+  color: #ffffff !important;
+  border-left-color: #333333 !important;
+}
+
+/* Admonitions */
+.md-typeset .admonition {
+  background-color: #111111 !important;
+  color: #ffffff !important;
+  border-color: #333333 !important;
+}
+
+.md-typeset .admonition-title {
+  background-color: #1a1a1a !important;
+  color: #ffffff !important;
+}
+
+/* Search */
+.md-search {
+  background-color: #000000 !important;
+}
+
+.md-search__input {
+  background-color: #1a1a1a !important;
+  color: #ffffff !important;
+  border-color: #333333 !important;
+}
+
+.md-search__output {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+/* Footer - Pure Black */
+.md-footer {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  border-top: 1px solid #333333 !important;
+}
+
+.md-footer__inner {
+  background-color: #000000 !important;
+}
+
+.md-footer__link {
+  color: #ffffff !important;
+}
+
+.md-footer__link:hover,
+.md-footer__link:focus {
+  color: #cccccc !important;
+}
+
+.md-footer__title {
+  color: #ffffff !important;
+}
+
+.md-footer__direction {
+  color: #ffffff !important;
+}
+
+.md-footer-meta {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
 .md-footer-meta__inner {
-    background-color: #000000 !important;
+  background-color: #000000 !important;
 }
 
-/* Content and main areas */
-.md-content,
-.md-content__inner,
-.md-main__inner {
-    background-color: #000000 !important;
+/* Footer social links */
+.md-footer__link--social {
+  color: #ffffff !important;
 }
 
-/* Menu and dropdown elements */
-.md-menu,
-.md-menu__list,
-.md-menu__item,
-.md-menu__link {
-    background-color: #000000 !important;
-}
-
-/* Version selector and other dropdowns */
-.md-version,
-.md-version__list,
-.md-version__item,
-.md-version__link {
-    background-color: #000000 !important;
+.md-footer__link--social:hover,
+.md-footer__link--social:focus {
+  color: #cccccc !important;
 }
 
 /* Tabs */
-.md-tabs,
-.md-tabs__list,
-.md-tabs__item,
+.md-tabs {
+  background-color: #000000 !important;
+}
+
 .md-tabs__link {
-    background-color: #000000 !important;
+  color: #ffffff !important;
 }
 
-/* Announcement bar */
-.md-announce,
-.md-banner,
-.md-banner__inner {
-    background-color: #000000 !important;
+.md-tabs__link:hover,
+.md-tabs__link:focus {
+  color: #cccccc !important;
 }
 
-/* Progress bar */
-.md-progress {
-    background-color: #000000 !important;
+/* Source code repository info */
+.md-source {
+  background-color: #000000 !important;
+  color: #ffffff !important;
 }
 
-/* Dialog and overlay elements */
-.md-dialog,
-.md-overlay {
-    background-color: #000000 !important;
+/* Buttons */
+.md-button {
+  background-color: #1a1a1a !important;
+  color: #ffffff !important;
+  border-color: #333333 !important;
 }
 
-/* Source code repository link */
-.md-source,
-.md-source__inner,
-.md-source__repository,
-.md-source__facts {
-    background-color: #000000 !important;
+.md-button:hover,
+.md-button:focus {
+  background-color: #333333 !important;
+  color: #ffffff !important;
 }
 
-/* Catch-all for any remaining Material Design elements */
-[class*="md-"] {
-    background-color: #000000 !important;
+/* Lists */
+.md-typeset ul,
+.md-typeset ol {
+  color: #ffffff !important;
 }
 
-/* HTML and body fallback */
-html {
-    background-color: #000000 !important;
+.md-typeset li {
+  color: #ffffff !important;
 }
 
-/* Ensure all divs, sections, and containers are black */
-div, section, article, aside, main, header, footer, nav {
-    background-color: #000000 !important;
+/* Horizontal rules */
+.md-typeset hr {
+  border-color: #333333 !important;
+}
+
+/* Version selector (if present) */
+.md-version {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+/* Announcement bar (if present) */
+.md-banner {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+/* Back to top button */
+.md-top {
+  background-color: #1a1a1a !important;
+  color: #ffffff !important;
+}
+
+.md-top:hover,
+.md-top:focus {
+  background-color: #333333 !important;
 }
