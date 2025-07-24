@@ -107,8 +107,17 @@ def define_env(env: MkDocsConfig) -> None:
                 changelog_content += "---\n\n"
 
             return changelog_content
-        else:
-            return changelog_content
+
+        except requests.exceptions.RequestException as e:
+            error_msg: str = f"Error fetching releases from GitHub API: {e!s}"
+            return (
+                f"# Changelog\n\n"
+                f'!!! error "API Error"\n    {error_msg}\n\n'
+                f"Please check your internet connection or try again later.\n"
+            )
+        except Exception as e:
+            error_msg: str = f"Error processing releases: {e!s}"
+            return f'# Changelog\n\n!!! error "Processing Error"\n    {error_msg}\n'
 
 
 def process_release_body(body: str) -> str:
