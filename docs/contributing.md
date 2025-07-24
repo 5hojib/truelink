@@ -94,6 +94,10 @@ When reporting issues:
 
 Please be respectful and constructive in all interactions. We want to maintain a welcoming environment for all contributors.
 
+## Adding New Resolvers
+
+We welcome contributions of new resolvers. If you want to add a new resolver, please follow our guide on [how to add a new resolver](./adding-resolvers.md).
+
 ## Getting Help
 
 If you need help with contributing:

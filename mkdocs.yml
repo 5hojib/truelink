@@ -139,5 +139,7 @@ nav:
   - Core API: core.md
   - Exceptions: exceptions.md
   - Types: types.md
-  - Contributing: contributing.md
+      - Contributing:
+          - contributing.md
+          - How to Add a New Resolver: adding-resolvers.md
   - Changelog: changelog.md
