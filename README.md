@@ -48,3 +48,9 @@ asyncio.run(main())
 ### Documentation
 
 For more information, see the [documentation](https://5hojib.github.io/truelink/).
+
+### Community
+
+- [Contributing](docs/contributing.md)
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [Changelog](docs/changelog.md)
