@@ -1,3 +1,4 @@
+"""Resolver for 1Fichier.com URLs."""
 from __future__ import annotations
 
 import re
@@ -10,9 +11,7 @@ from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
 
-PASSWORD_ERROR_MESSAGE_FICHIER = (
-    "1Fichier link {} requires a password (append ::password to the URL)."
-)
+PASSWORD_ERROR_MESSAGE_FICHIER = "1Fichier link {} requires a password (append ::password to the URL)."  # noqa: S105
 
 
 class FichierResolver(BaseResolver):
@@ -136,7 +135,7 @@ class FichierResolver(BaseResolver):
                 msg,
             )
 
-        except Exception as e:
+        except (ExtractionFailedException, InvalidURLException) as e:
             if isinstance(e, ExtractionFailedException | InvalidURLException):
                 raise
             msg = f"Failed to resolve 1Fichier.com URL '{url}': {e!s}"

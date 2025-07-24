@@ -1,3 +1,4 @@
+"""Resolver for Ranoz.gg URLs."""
 from __future__ import annotations
 
 from typing import ClassVar
@@ -38,6 +39,6 @@ class RanozResolver(BaseResolver):
                     size=file_size,
                 )
 
-        except Exception as e:
+        except (ExtractionFailedException, ValueError) as e:
             msg = f"Failed to resolve Ranoz URL: {e}"
             raise ExtractionFailedException(msg) from e

@@ -1,3 +1,4 @@
+"""Resolver for GoFile.io URLs."""
 from __future__ import annotations
 
 import os
@@ -13,9 +14,7 @@ from .base import BaseResolver
 if TYPE_CHECKING:
     import aiohttp
 
-PASSWORD_ERROR_MESSAGE = (
-    "GoFile link {} requires a password (append ::password to the URL)."
-)
+PASSWORD_ERROR_MESSAGE = "GoFile link {} requires a password (append ::password to the URL)."  # noqa: S105
 
 
 class GoFileResolver(BaseResolver):
@@ -24,6 +23,7 @@ class GoFileResolver(BaseResolver):
     DOMAINS: ClassVar[list[str]] = ["gofile.io"]
 
     def __init__(self) -> None:
+        """Initialize the GoFileResolver."""
         super().__init__()
         self._folder_details: FolderResult | None = None
         self._account_token: str | None = None
@@ -37,12 +37,12 @@ class GoFileResolver(BaseResolver):
                 raise ExtractionFailedException(msg)
             try:
                 data = await response.json()
-            except Exception as e:
+            except ValueError as e:
                 err = await response.text()
                 msg = (
                     f"GoFile: Failed to parse token JSON. {e}. Response: {err[:200]}"
                 )
-                raise ExtractionFailedException(msg)
+                raise ExtractionFailedException(msg) from e
 
         if data.get("status") != "ok" or "token" not in data.get("data", {}):
             msg = f"GoFile: Invalid token response. Message: {data.get('message', 'Unknown error')}"
@@ -104,9 +104,7 @@ class GoFileResolver(BaseResolver):
             if content.get("type") == "folder":
                 if not content.get("public", True):
                     continue
-                next_path = (
-                    os.path.join(current_path, name) if current_path else name
-                )
+                next_path = os.path.join(current_path, name) if current_path else name  # noqa: PTH118
                 await self._fetch_folder_contents(child_id, password_hash, next_path)
             else:
                 url = content.get("link")
@@ -148,10 +146,10 @@ class GoFileResolver(BaseResolver):
                 raise ExtractionFailedException(msg)
             msg = f"GoFile API error {response.status}: {status} - {message[:200]}"
             raise ExtractionFailedException(msg)
-        except Exception:
+        except ValueError:
             text = await response.text()
             msg = f"GoFile API error {response.status}: {text[:200]}"
-            raise ExtractionFailedException(msg)
+            raise ExtractionFailedException(msg) from None
 
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve GoFile.io URL."""
@@ -177,7 +175,7 @@ class GoFileResolver(BaseResolver):
                     PASSWORD_ERROR_MESSAGE.format(request_url)
                 ) from e
             raise
-        except Exception as e:
+        except (ExtractionFailedException, ValueError) as e:
             msg = f"GoFile resolution failed: {e}"
             raise ExtractionFailedException(msg) from e
 

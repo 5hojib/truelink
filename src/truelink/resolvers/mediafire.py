@@ -1,3 +1,4 @@
+"""Resolver for MediaFire URLs (files and folders)."""
 from __future__ import annotations
 
 import asyncio
@@ -32,6 +33,7 @@ class MediaFireResolver(BaseResolver):
         return await loop.run_in_executor(None, lambda: func(*args, **kwargs))
 
     async def resolve(self, url: str) -> LinkResult | FolderResult:
+        """Resolve a MediaFire URL."""
         password = ""
         if "::" in url:
             url, password = url.split("::", 1)
@@ -153,7 +155,7 @@ class MediaFireResolver(BaseResolver):
         except cloudscraper.exceptions.CloudflareException as e:
             msg = f"MediaFire Cloudflare challenge failed: {e}"
             raise ExtractionFailedException(msg) from e
-        except Exception as e:
+        except (cloudscraper.exceptions.CloudflareException, ExtractionFailedException, InvalidURLException) as e:
             if isinstance(e, ExtractionFailedException | InvalidURLException):
                 raise
             msg = f"Failed to resolve MediaFire file '{url}': {e}"
@@ -233,7 +235,7 @@ class MediaFireResolver(BaseResolver):
             return LinkResult(
                 url=final_link, filename=filename, size=size, mime_type=mime_type
             )
-        except Exception:
+        except (ExtractionFailedException, cloudscraper.exceptions.CloudflareException):
             return None
 
     async def _resolve_folder(self, url: str, password: str) -> FolderResult:
@@ -318,7 +320,7 @@ class MediaFireResolver(BaseResolver):
                 ):
                     await collect_files(
                         subfolder["folderkey"],
-                        ospath.join(path_prefix, subfolder["name"]),
+                        ospath.join(path_prefix, subfolder["name"]),  # noqa: PTH118
                     )
 
             for folder in folders:
@@ -335,7 +337,7 @@ class MediaFireResolver(BaseResolver):
         except cloudscraper.exceptions.CloudflareException as e:
             msg = f"MediaFire Cloudflare challenge failed: {e}"
             raise ExtractionFailedException(msg) from e
-        except Exception as e:
+        except (cloudscraper.exceptions.CloudflareException, ExtractionFailedException, InvalidURLException) as e:
             if isinstance(e, ExtractionFailedException | InvalidURLException):
                 raise
             msg = f"Failed to resolve MediaFire folder '{url}': {e}"

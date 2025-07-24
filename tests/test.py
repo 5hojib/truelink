@@ -1,3 +1,4 @@
+"""Tests for the TrueLinkResolver class."""
 from __future__ import annotations
 
 import pytest
@@ -10,7 +11,7 @@ async def test_truelink_resolver_resolve_unsupported_link() -> None:
     """Test that an unsupported link raises an exception."""
     resolver = TrueLinkResolver()
     url = "https://example.com"
-    with pytest.raises(Exception):
+    with pytest.raises(UnsupportedProviderException):
         await resolver.resolve(url)
 
 
@@ -20,8 +21,6 @@ async def test_truelink_resolver_resolve_supported_link() -> None:
     resolver = TrueLinkResolver()
     url = "https://www.mediafire.com/file/abcdef1234567/test.txt/file"
     # This will fail, but we're just testing that it doesn't raise an exception
-    try:
+    with contextlib.suppress(Exception):
         result = await resolver.resolve(url)
-        assert result is not None
-    except Exception:
-        pass
+        assert result is not None  # noqa: S101

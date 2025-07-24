@@ -1,3 +1,4 @@
+"""Resolver for LulaCloud URLs."""
 from __future__ import annotations
 
 from typing import ClassVar
@@ -33,7 +34,7 @@ class LulaCloudResolver(BaseResolver):
                     url=location, filename=filename, mime_type=mime_type, size=size
                 )
 
-        except Exception as e:
+        except ExtractionFailedException as e:
             msg = f"Failed to resolve LulaCloud URL: {e}"
             raise ExtractionFailedException(
                 msg,

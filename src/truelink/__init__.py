@@ -1,3 +1,4 @@
+"""TrueLink is a Python library for resolving direct download links from various file hosting services."""
 from __future__ import annotations
 
 from .core import TrueLinkResolver

@@ -1,3 +1,4 @@
+"""Resolver for Upload.ee URLs."""
 from __future__ import annotations
 
 from typing import ClassVar
@@ -64,7 +65,7 @@ class UploadEeResolver(BaseResolver):
                 url=direct_link, filename=filename, mime_type=mime_type, size=size
             )
 
-        except Exception as e:
+        except (ExtractionFailedException, ValueError) as e:
             if isinstance(e, ExtractionFailedException):
                 raise
             msg = f"Failed to resolve Upload.ee URL '{url}': {e!s}"

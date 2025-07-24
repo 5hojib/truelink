@@ -32,7 +32,7 @@ def guess_type(url: str) -> tuple[str | None, str | None]:
 
         base, ext = posixpath.splitext(p.path)
     else:
-        base, ext = os.path.splitext(url)
+        base, ext = os.path.splitext(url)  # noqa: PTH122
 
     ext = ext.lower()
 
@@ -42,7 +42,7 @@ def guess_type(url: str) -> tuple[str | None, str | None]:
 
     if ext in _encodings_map:
         encoding = _encodings_map[ext]
-        base, ext = os.path.splitext(base)
+        base, ext = os.path.splitext(base)  # noqa: PTH122
         ext = ext.lower()
     else:
         encoding = None

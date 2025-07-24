@@ -1,3 +1,4 @@
+"""Resolver for OneDrive (1drv.ms) URLs."""
 from __future__ import annotations
 
 from typing import ClassVar
@@ -10,7 +11,7 @@ from truelink.types import FolderResult, LinkResult
 from .base import BaseResolver
 
 
-# TODO
+# TODO: Add support for folders
 class OneDriveResolver(BaseResolver):
     """Resolver for OneDrive (1drv.ms) URLs."""
 
@@ -122,7 +123,7 @@ class OneDriveResolver(BaseResolver):
 
             return LinkResult(url=direct_link, filename=filename, size=size)
 
-        except Exception as e:
+        except (ExtractionFailedException, InvalidURLException) as e:
             if isinstance(e, ExtractionFailedException | InvalidURLException):
                 raise
             msg = f"Failed to resolve OneDrive URL '{url}': {e!s}"

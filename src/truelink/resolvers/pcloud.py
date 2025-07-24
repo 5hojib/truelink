@@ -1,3 +1,4 @@
+"""Resolver for pCloud.link URLs."""
 from __future__ import annotations
 
 import json
@@ -11,7 +12,7 @@ from truelink.types import FolderResult, LinkResult
 from .base import BaseResolver
 
 
-# TODO
+# TODO: Add support for folders
 class PCloudResolver(BaseResolver):
     """Resolver for pCloud.link URLs."""
 
@@ -125,12 +126,12 @@ class PCloudResolver(BaseResolver):
                             and not potential_filename.split(".")[0].isdigit()
                         ):
                             filename = potential_filename
-                except Exception:
+                except (json.JSONDecodeError, TypeError):
                     pass
 
             return LinkResult(url=direct_link, filename=filename, size=size)
 
-        except Exception as e:
+        except (ExtractionFailedException, json.JSONDecodeError) as e:
             if isinstance(e, ExtractionFailedException):
                 raise
             msg = f"Failed to resolve pCloud.link URL '{url}': {e!s}"

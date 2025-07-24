@@ -1,3 +1,4 @@
+"""Resolver for Terabox URLs."""
 from __future__ import annotations
 
 from typing import ClassVar
@@ -10,6 +11,8 @@ from .base import BaseResolver
 
 
 class TeraboxResolver(BaseResolver):
+    """Resolver for Terabox URLs."""
+
     DOMAINS: ClassVar[list[str]] = [
         "terabox.com",
         "nephobox.com",
@@ -31,6 +34,7 @@ class TeraboxResolver(BaseResolver):
     ]
 
     async def resolve(self, url: str) -> LinkResult | FolderResult:
+        """Resolve Terabox URL."""
         if "/file/" in url and ("terabox.com" in url or "teraboxapp.com" in url):
             filename, size, mime_type = await self._fetch_file_details(url)
             return LinkResult(
@@ -51,12 +55,12 @@ class TeraboxResolver(BaseResolver):
                     )
                 try:
                     json_response = await response.json()
-                except Exception as json_error:
+                except ValueError as json_error:
                     text_snippet = await response.text()
                     msg = f"Terabox API error: Failed to parse JSON response. {json_error}. Response: {text_snippet[:200]}"
                     raise ExtractionFailedException(
                         msg,
-                    )
+                    ) from json_error
 
             if "✅ Status" not in json_response or not json_response.get(
                 "📜 Extracted Info",
@@ -138,7 +142,7 @@ class TeraboxResolver(BaseResolver):
                 total_size=total_size,
             )
 
-        except Exception as e:
+        except (ExtractionFailedException, ValueError) as e:
             if isinstance(e, ExtractionFailedException):
                 raise
             msg = f"Failed to resolve Terabox URL '{url}': {e!s}"

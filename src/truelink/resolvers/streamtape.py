@@ -1,3 +1,4 @@
+"""Resolver for Streamtape URLs."""
 from __future__ import annotations
 
 import re
@@ -29,7 +30,7 @@ class StreamtapeResolver(BaseResolver):
     # Use only streamtape.net as fallback domain
     FALLBACK_DOMAIN: ClassVar[str] = "streamtape.net"
 
-    async def _try_with_fallback_domain(self, original_url: str):
+    async def _try_with_fallback_domain(self, original_url: str) -> tuple[str, URL]:
         """Try accessing the URL with streamtape.net if the original fails."""
         parsed_url = urlparse(original_url)
         original_domain = parsed_url.netloc
@@ -42,7 +43,7 @@ class StreamtapeResolver(BaseResolver):
                 if response.status == 200:
                     html_content = await response.text()
                     return html_content, parsed_url
-        except Exception:
+        except aiohttp.ClientError:
             pass  # Continue to fallback
 
         # If original fails and it's not already streamtape.net, try with streamtape.net
@@ -109,7 +110,7 @@ class StreamtapeResolver(BaseResolver):
                 url=direct_url, filename=filename, mime_type=mime_type, size=size
             )
 
-        except Exception as e:
+        except (ExtractionFailedException, InvalidURLException, aiohttp.ClientError) as e:
             if isinstance(e, ExtractionFailedException | InvalidURLException):
                 raise
             msg = f"Unexpected error while resolving Streamtape URL: {e}"
