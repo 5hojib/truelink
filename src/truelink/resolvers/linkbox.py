@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import os
+from pathlib import Path
 from typing import ClassVar
 from urllib.parse import urlparse
 
@@ -104,7 +104,7 @@ class LinkBoxResolver(BaseResolver):
                 await self._fetch_list_recursive(
                     share_token,
                     item["id"],
-                    os.path.join(current_path, name) if current_path else name,
+                    str(Path(current_path) / name) if current_path else name,
                 )
             elif "url" in item:
                 filename = self._finalize_filename(item)
