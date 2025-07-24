@@ -14,13 +14,13 @@ async def test_mediafire_folder() -> None:
     resolver = TrueLinkResolver()
     url = "https://www.mediafire.com/folder/abdc8fr8j9nd2/K4"
     result = await resolver.resolve(url)
-    assert isinstance(result, FolderResult)  # noqa: S101
-    assert result.title == "K4"  # noqa: S101
-    assert len(result.contents) > 0  # noqa: S101
+    assert isinstance(result, FolderResult)
+    assert result.title == "K4"
+    assert len(result.contents) > 0
     for file in result.contents:
-        assert isinstance(file, FileItem)  # noqa: S101
-        assert file.filename is not None  # noqa: S101
-        assert file.url is not None  # noqa: S101
+        assert isinstance(file, FileItem)
+        assert file.filename is not None
+        assert file.url is not None
 
 
 @pytest.mark.asyncio
@@ -30,9 +30,9 @@ async def test_mediafire_file() -> None:
     resolver = TrueLinkResolver()
     url = "https://www.mediafire.com/file/cw7xsnxna2xfg4k/K4.part7.rar/file"
     result = await resolver.resolve(url)
-    assert isinstance(result, LinkResult)  # noqa: S101
-    assert result.filename == "K4.part7.rar"  # noqa: S101
-    assert result.url is not None  # noqa: S101
+    assert isinstance(result, LinkResult)
+    assert result.filename == "K4.part7.rar"
+    assert result.url is not None
 
 
 @pytest.mark.asyncio
@@ -41,10 +41,10 @@ async def test_terabox_link() -> None:
     resolver = TrueLinkResolver()
     url = "https://terabox.com/s/1vDkjtJWtIOcwr8swIOIBwQ"
     result = await resolver.resolve(url)
-    assert isinstance(result, FolderResult)  # noqa: S101
-    assert result.title is not None  # noqa: S101
-    assert len(result.contents) > 0  # noqa: S101
+    assert isinstance(result, FolderResult)
+    assert result.title is not None
+    assert len(result.contents) > 0
     for file in result.contents:
-        assert isinstance(file, FileItem)  # noqa: S101
-        assert file.filename is not None  # noqa: S101
-        assert file.url is not None  # noqa: S101
+        assert isinstance(file, FileItem)
+        assert file.filename is not None
+        assert file.url is not None

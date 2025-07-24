@@ -27,4 +27,4 @@ async def test_truelink_resolver_resolve_supported_link() -> None:
     # This will fail, but we're just testing that it doesn't raise an exception
     with contextlib.suppress(Exception):
         result = await resolver.resolve(url)
-        assert result is not None  # noqa: S101
+        assert result is not None
