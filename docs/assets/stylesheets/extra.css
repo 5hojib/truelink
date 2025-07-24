@@ -18,27 +18,13 @@ html {
   color: #ffffff !important;
 }
 
-/* Header - Pure Black */
+/* Header */
 .md-header {
   background-color: #000000 !important;
   color: #ffffff !important;
-  box-shadow: none !important;
-  border-bottom: 1px solid #333333 !important;
 }
 
-.md-header__inner {
-  background-color: #000000 !important;
-}
-
-.md-header__button {
-  color: #ffffff !important;
-}
-
-.md-header__title {
-  color: #ffffff !important;
-}
-
-/* Navigation - Pure Black */
+/* Navigation */
 .md-nav {
   background-color: #000000 !important;
   color: #ffffff !important;
@@ -50,35 +36,14 @@ html {
 
 .md-nav__link {
   color: #ffffff !important;
-  background-color: #000000 !important;
 }
 
 .md-nav__link:hover,
 .md-nav__link:focus {
   color: #cccccc !important;
-  background-color: #000000 !important;
 }
 
-.md-nav__link--active {
-  color: #ffffff !important;
-  background-color: #000000 !important;
-}
-
-.md-nav__title {
-  background-color: #000000 !important;
-  color: #ffffff !important;
-}
-
-/* Primary Navigation (Top Menu) */
-.md-nav--primary {
-  background-color: #000000 !important;
-}
-
-.md-nav--primary .md-nav__item {
-  background-color: #000000 !important;
-}
-
-/* Sidebar - Pure Black */
+/* Sidebar */
 .md-sidebar {
   background-color: #000000 !important;
 }
@@ -89,21 +54,6 @@ html {
 
 .md-sidebar--secondary {
   background-color: #000000 !important;
-}
-
-.md-sidebar__scrollwrap {
-  background-color: #000000 !important;
-}
-
-/* Mobile drawer/menu */
-.md-nav--primary .md-nav__item--nested > .md-nav__link {
-  background-color: #000000 !important;
-  color: #ffffff !important;
-}
-
-.md-nav--primary .md-nav__item--section > .md-nav__link {
-  background-color: #000000 !important;
-  color: #ffffff !important;
 }
 
 /* Main content area */
@@ -226,51 +176,10 @@ a:focus {
   color: #ffffff !important;
 }
 
-/* Footer - Pure Black */
+/* Footer */
 .md-footer {
   background-color: #000000 !important;
   color: #ffffff !important;
-  border-top: 1px solid #333333 !important;
-}
-
-.md-footer__inner {
-  background-color: #000000 !important;
-}
-
-.md-footer__link {
-  color: #ffffff !important;
-}
-
-.md-footer__link:hover,
-.md-footer__link:focus {
-  color: #cccccc !important;
-}
-
-.md-footer__title {
-  color: #ffffff !important;
-}
-
-.md-footer__direction {
-  color: #ffffff !important;
-}
-
-.md-footer-meta {
-  background-color: #000000 !important;
-  color: #ffffff !important;
-}
-
-.md-footer-meta__inner {
-  background-color: #000000 !important;
-}
-
-/* Footer social links */
-.md-footer__link--social {
-  color: #ffffff !important;
-}
-
-.md-footer__link--social:hover,
-.md-footer__link--social:focus {
-  color: #cccccc !important;
 }
 
 /* Tabs */
