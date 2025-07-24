@@ -84,8 +84,8 @@ extra:
     - icon: fontawesome/brands/telegram
       link: https://t.me/AeonOrg
 
-extra_css:
-  - assets/stylesheets/extra.css
+# extra_css:
+  # - assets/stylesheets/extra.css
 
 # Extensions
 markdown_extensions:
