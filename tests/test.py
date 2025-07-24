@@ -2,9 +2,12 @@
 
 from __future__ import annotations
 
+import contextlib
+
 import pytest
 
 from truelink.core import TrueLinkResolver
+from truelink.exceptions import UnsupportedProviderException
 
 
 @pytest.mark.asyncio

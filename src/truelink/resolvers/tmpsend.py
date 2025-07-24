@@ -33,12 +33,9 @@ class TmpSendResolver(BaseResolver):
                     file_id = path_segments[0]
 
             if not file_id:
-                msg = (
+                self._raise_invalid_url(
                     f"TmpSend error: Could not extract file ID from URL '{url}'. "
-                    "Expected format like /fileId, /thank-you?d=fileId, or /download?d=fileId."
-                )
-                raise InvalidURLException(
-                    msg,
+                    "Expected format like /fileId, /thank-you?d=fileId, or /download?d=fileId.",
                 )
 
             referer_url = f"https://tmpsend.com/thank-you?d={file_id}"
@@ -65,3 +62,6 @@ class TmpSendResolver(BaseResolver):
             raise ExtractionFailedException(
                 msg,
             ) from e
+
+    def _raise_invalid_url(self, msg: str) -> None:
+        raise InvalidURLException(msg)

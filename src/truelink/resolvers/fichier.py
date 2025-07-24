@@ -45,16 +45,12 @@ class FichierResolver(BaseResolver):
 
             async with await self._post(request_url, data=post_data) as response:
                 if response.status == 404:
-                    msg = "1Fichier error: File not found or the link you entered is wrong (404)."
-                    raise ExtractionFailedException(
-                        msg,
+                    self._raise_extraction_failed(
+                        "1Fichier error: File not found or the link you entered is wrong (404).",
                     )
                 if response.status != 200:
-                    msg = (
-                        f"1Fichier error: Unexpected status code {response.status}."
-                    )
-                    raise ExtractionFailedException(
-                        msg,
+                    self._raise_extraction_failed(
+                        f"1Fichier error: Unexpected status code {response.status}.",
                     )
                 response_text = await response.text()
 
@@ -82,13 +78,11 @@ class FichierResolver(BaseResolver):
                     "In order to access this file, you will have to validate a first download."
                     in response_text
                 ):
-                    msg = "1Fichier error: Requires a prior validation download (often via browser). Link may be restricted."
-                    raise ExtractionFailedException(
-                        msg,
+                    self._raise_extraction_failed(
+                        "1Fichier error: Requires a prior validation download (often via browser). Link may be restricted.",
                     )
-                msg = "1Fichier error: No download link found and no warning messages. Page structure might have changed."
-                raise ExtractionFailedException(
-                    msg,
+                self._raise_extraction_failed(
+                    "1Fichier error: No download link found and no warning messages. Page structure might have changed.",
                 )
 
             if len(ct_warn_elements) >= 1:
@@ -105,37 +99,33 @@ class FichierResolver(BaseResolver):
                         if numbers
                         else "Please wait a few minutes/hours."
                     )
-                    msg = f"1Fichier error: Download limit reached. {wait_time_msg}"
-                    raise ExtractionFailedException(
-                        msg,
+                    self._raise_extraction_failed(
+                        f"1Fichier error: Download limit reached. {wait_time_msg}",
                     )
 
                 if "bad password" in last_warn_text_content:
-                    msg = "1Fichier error: The password you entered is wrong."
-                    raise ExtractionFailedException(
-                        msg,
+                    self._raise_extraction_failed(
+                        "1Fichier error: The password you entered is wrong.",
                     )
 
                 if "you have to create a premium account" in last_warn_text_content:
-                    msg = "1Fichier error: This link may require a premium account."
-                    raise ExtractionFailedException(
-                        msg,
+                    self._raise_extraction_failed(
+                        "1Fichier error: This link may require a premium account.",
                     )
 
                 if (
                     "protect access to this file" in last_warn_text_content
                     or "enter the password" in last_warn_text_content
                 ) and not _password:
-                    raise ExtractionFailedException(
+                    self._raise_extraction_failed(
                         PASSWORD_ERROR_MESSAGE_FICHIER.format(request_url),
                     )
 
             all_warnings = " | ".join(
                 ["".join(w.xpath(".//text()")).strip() for w in ct_warn_elements],
             )
-            msg = f"1Fichier error: Could not retrieve download link. Warnings: {all_warnings}"
-            raise ExtractionFailedException(
-                msg,
+            self._raise_extraction_failed(
+                f"1Fichier error: Could not retrieve download link. Warnings: {all_warnings}",
             )
 
         except (ExtractionFailedException, InvalidURLException) as e:
@@ -145,3 +135,6 @@ class FichierResolver(BaseResolver):
             raise ExtractionFailedException(
                 msg,
             ) from e
+
+    def _raise_extraction_failed(self, msg: str) -> None:
+        raise ExtractionFailedException(msg)

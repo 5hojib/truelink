@@ -26,10 +26,7 @@ class FuckingFastResolver(BaseResolver):
             match = re.search(pattern, content)
 
             if not match:
-                msg = "Could not find download link in page"
-                raise ExtractionFailedException(
-                    msg,
-                )
+                self._raise_extraction_failed("Could not find download link in page")
 
             download_url = match.group(2)
             filename, size, mime_type = await self._fetch_file_details(download_url)
@@ -43,3 +40,6 @@ class FuckingFastResolver(BaseResolver):
             raise ExtractionFailedException(
                 msg,
             ) from e
+
+    def _raise_extraction_failed(self, msg: str) -> None:
+        raise ExtractionFailedException(msg)

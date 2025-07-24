@@ -36,21 +36,18 @@ class UploadEeResolver(BaseResolver):
                         "//div[contains(@class, 'alert-danger')]/text() | //div[contains(@class, 'error')]/text()",
                     )
                     if error_messages:
-                        msg = f"Upload.ee error: {error_messages[0].strip()}"
-                        raise ExtractionFailedException(
-                            msg,
+                        self._raise_extraction_failed(
+                            f"Upload.ee error: {error_messages[0].strip()}",
                         )
                     if (
                         "File not found" in response_text
                         or "File has been deleted" in response_text
                     ):
-                        msg = "Upload.ee error: File not found or has been deleted."
-                        raise ExtractionFailedException(
-                            msg,
+                        self._raise_extraction_failed(
+                            "Upload.ee error: File not found or has been deleted.",
                         )
-                    msg = "Upload.ee error: Direct download link element (id='d_l' or fallback) not found."
-                    raise ExtractionFailedException(
-                        msg,
+                    self._raise_extraction_failed(
+                        "Upload.ee error: Direct download link element (id='d_l' or fallback) not found.",
                     )
 
                 direct_link = fallback_links[0]
@@ -73,3 +70,6 @@ class UploadEeResolver(BaseResolver):
             raise ExtractionFailedException(
                 msg,
             ) from e
+
+    def _raise_extraction_failed(self, msg: str) -> None:
+        raise ExtractionFailedException(msg)

@@ -8,9 +8,8 @@ Main function:
 
 from __future__ import annotations
 
-import os
-import posixpath
 import urllib.parse
+from pathlib import Path
 
 __all__ = ["guess_type"]
 
@@ -30,19 +29,23 @@ def guess_type(url: str) -> tuple[str | None, str | None]:
                 mime_type = "text/plain"
             return mime_type, None
 
-        base, ext = posixpath.splitext(p.path)
+        path = Path(p.path)
+        base, ext = path.stem, path.suffix
     else:
-        base, ext = os.path.splitext(url)  # noqa: PTH122
+        path = Path(url)
+        base, ext = path.stem, path.suffix
 
     ext = ext.lower()
 
     while ext in _suffix_map:
-        base, ext = os.path.splitext(base + _suffix_map[ext])
+        path = Path(base + _suffix_map[ext])
+        base, ext = path.stem, path.suffix
         ext = ext.lower()
 
     if ext in _encodings_map:
         encoding = _encodings_map[ext]
-        base, ext = os.path.splitext(base)  # noqa: PTH122
+        path = Path(base)
+        base, ext = path.stem, path.suffix
         ext = ext.lower()
     else:
         encoding = None

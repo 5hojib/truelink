@@ -26,8 +26,7 @@ class LulaCloudResolver(BaseResolver):
             ) as response:
                 location = response.headers.get("location")
                 if not location:
-                    msg = "No redirect location found"
-                    raise ExtractionFailedException(msg)
+                    self._raise_extraction_failed("No redirect location found")
 
                 filename, size, mime_type = await self._fetch_file_details(location)
 
@@ -40,3 +39,6 @@ class LulaCloudResolver(BaseResolver):
             raise ExtractionFailedException(
                 msg,
             ) from e
+
+    def _raise_extraction_failed(self, msg: str) -> None:
+        raise ExtractionFailedException(msg)
