@@ -1,4 +1,5 @@
 """Resolver for LinkBox.to URLs."""
+
 from __future__ import annotations
 
 import os

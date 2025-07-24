@@ -1,4 +1,5 @@
 """Resolver for TmpSend.com URLs."""
+
 from __future__ import annotations
 
 from typing import ClassVar

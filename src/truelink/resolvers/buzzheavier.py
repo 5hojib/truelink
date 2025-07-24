@@ -1,4 +1,5 @@
 """Resolver for BuzzHeavier URLs."""
+
 """Resolver for BuzzHeavier URLs."""
 from __future__ import annotations
 

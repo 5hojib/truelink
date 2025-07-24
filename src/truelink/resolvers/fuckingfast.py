@@ -1,4 +1,5 @@
 """Resolver for FuckingFast URLs."""
+
 from __future__ import annotations
 
 import re

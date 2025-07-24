@@ -1,4 +1,5 @@
 """Tests for specific links."""
+
 from __future__ import annotations
 
 import pytest

@@ -1,4 +1,5 @@
 """Resolver for GoFile.io URLs."""
+
 from __future__ import annotations
 
 import os
@@ -14,7 +15,9 @@ from .base import BaseResolver
 if TYPE_CHECKING:
     import aiohttp
 
-PASSWORD_ERROR_MESSAGE = "GoFile link {} requires a password (append ::password to the URL)."  # noqa: S105
+PASSWORD_ERROR_MESSAGE = (
+    "GoFile link {} requires a password (append ::password to the URL)."  # noqa: S105
+)
 
 
 class GoFileResolver(BaseResolver):
@@ -104,7 +107,9 @@ class GoFileResolver(BaseResolver):
             if content.get("type") == "folder":
                 if not content.get("public", True):
                     continue
-                next_path = os.path.join(current_path, name) if current_path else name  # noqa: PTH118
+                next_path = (
+                    os.path.join(current_path, name) if current_path else name
+                )  # noqa: PTH118
                 await self._fetch_folder_contents(child_id, password_hash, next_path)
             else:
                 url = content.get("link")

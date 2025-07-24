@@ -1,4 +1,5 @@
 """Resolver for 1Fichier.com URLs."""
+
 from __future__ import annotations
 
 import re
@@ -11,7 +12,9 @@ from truelink.types import FolderResult, LinkResult
 
 from .base import BaseResolver
 
-PASSWORD_ERROR_MESSAGE_FICHIER = "1Fichier link {} requires a password (append ::password to the URL)."  # noqa: S105
+PASSWORD_ERROR_MESSAGE_FICHIER = (
+    "1Fichier link {} requires a password (append ::password to the URL)."  # noqa: S105
+)
 
 
 class FichierResolver(BaseResolver):

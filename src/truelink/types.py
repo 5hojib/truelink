@@ -1,4 +1,5 @@
 """This module contains the data classes used in TrueLink."""
+
 from __future__ import annotations
 
 import json

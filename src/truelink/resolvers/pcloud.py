@@ -1,4 +1,5 @@
 """Resolver for pCloud.link URLs."""
+
 from __future__ import annotations
 
 import json

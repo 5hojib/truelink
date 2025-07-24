@@ -1,4 +1,5 @@
 """Resolver for Yandex.Disk URLs."""
+
 from __future__ import annotations
 
 import re

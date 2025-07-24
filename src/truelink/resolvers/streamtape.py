@@ -1,4 +1,5 @@
 """Resolver for Streamtape URLs."""
+
 from __future__ import annotations
 
 import re
@@ -110,7 +111,11 @@ class StreamtapeResolver(BaseResolver):
                 url=direct_url, filename=filename, mime_type=mime_type, size=size
             )
 
-        except (ExtractionFailedException, InvalidURLException, aiohttp.ClientError) as e:
+        except (
+            ExtractionFailedException,
+            InvalidURLException,
+            aiohttp.ClientError,
+        ) as e:
             if isinstance(e, ExtractionFailedException | InvalidURLException):
                 raise
             msg = f"Unexpected error while resolving Streamtape URL: {e}"

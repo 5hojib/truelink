@@ -1,4 +1,5 @@
 """Resolver for OneDrive (1drv.ms) URLs."""
+
 from __future__ import annotations
 
 from typing import ClassVar
