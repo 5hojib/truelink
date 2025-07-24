@@ -6,6 +6,8 @@ on:
       - beta
       - dev
     workflow_dispatch:
+  pull_request:
+
 
 jobs:
   lint-format-and-test:
@@ -14,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout electrogram
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Set up Python
