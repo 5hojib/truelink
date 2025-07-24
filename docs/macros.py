@@ -1,4 +1,5 @@
 """Module for defining macros for the TrueLink documentation."""
+
 from __future__ import annotations
 
 from datetime import datetime
