@@ -1,254 +1,67 @@
-/* MkDocs Material Pure Black Theme with Whitish Code Blocks */
-
-/* Root variables override */
-:root {
-  --md-primary-fg-color: #000000;
-  --md-primary-bg-color: #000000;
-  --md-accent-fg-color: #ffffff;
-  --md-default-bg-color: #000000;
-  --md-default-fg-color: #ffffff;
-  --md-code-bg-color: #1a1a1a;
-  --md-code-fg-color: #f0f0f0;
-}
-
-/* Main background */
+/* Make all page background black */
 body,
-html {
-  background-color: #000000 !important;
-  color: #ffffff !important;
-}
-
-/* Header */
-.md-header {
-  background-color: #000000 !important;
-  color: #ffffff !important;
-}
-
-/* Navigation */
-.md-nav {
-  background-color: #000000 !important;
-  color: #ffffff !important;
-}
-
-.md-nav__item {
-  color: #ffffff !important;
-}
-
-.md-nav__link {
-  color: #ffffff !important;
-}
-
-.md-nav__link:hover,
-.md-nav__link:focus {
-  color: #cccccc !important;
-}
-
-/* Sidebar */
-.md-sidebar {
-  background-color: #000000 !important;
-}
-
-.md-sidebar--primary {
-  background-color: #000000 !important;
-}
-
-.md-sidebar--secondary {
-  background-color: #000000 !important;
-}
-
-/* Main content area */
-.md-main {
-  background-color: #000000 !important;
-}
-
-.md-content {
-  background-color: #000000 !important;
-}
-
+.md-content,
+.md-main,
+.md-container,
+.md-typeset,
 .md-content__inner {
-  background-color: #000000 !important;
-  color: #ffffff !important;
+  background-color: #000 !important;
+  color: #fff !important;
 }
 
-/* Article/page content */
-article {
-  background-color: #000000 !important;
-  color: #ffffff !important;
+/* Header and Footer */
+.md-header,
+.md-footer {
+  background-color: #000 !important;
+  color: #fff !important;
 }
 
-/* Headers */
-h1, h2, h3, h4, h5, h6 {
-  color: #ffffff !important;
+/* Navigation sidebar */
+.md-sidebar,
+.md-nav,
+.md-nav__list,
+.md-nav__item {
+  background-color: #000 !important;
+  color: #fff !important;
 }
 
-/* Paragraphs and text */
-p {
-  color: #ffffff !important;
+/* Code blocks (markdown-style fenced blocks) */
+pre,
+.md-typeset pre {
+  background-color: #111 !important;
+  color: #e0e0e0 !important;
+}
+
+/* Inline code */
+code,
+.md-typeset code {
+  background-color: #111 !important;
+  color: #e0e0e0 !important;
+}
+
+/* Table background */
+.md-typeset table {
+  background-color: #000 !important;
+}
+
+/* Border and shadow removal for uniformity */
+* {
+  border-color: #222 !important;
+  box-shadow: none !important;
 }
 
 /* Links */
 a {
-  color: #ffffff !important;
+  color: #4ea3ff !important;
 }
 
-a:hover,
-a:focus {
-  color: #cccccc !important;
+/* Scrollbar styling for dark theme (optional) */
+::-webkit-scrollbar {
+  width: 8px;
 }
-
-/* Code blocks - slightly whitish background */
-.md-typeset code {
-  background-color: #1a1a1a !important;
-  color: #f0f0f0 !important;
-  border: 1px solid #333333;
+::-webkit-scrollbar-track {
+  background: #000;
 }
-
-.md-typeset pre {
-  background-color: #1a1a1a !important;
-  color: #f0f0f0 !important;
-  border: 1px solid #333333;
-}
-
-.md-typeset pre code {
-  background-color: transparent !important;
-  color: #f0f0f0 !important;
-}
-
-/* Highlight.js code blocks */
-.hljs {
-  background-color: #1a1a1a !important;
-  color: #f0f0f0 !important;
-}
-
-/* Inline code */
-.md-typeset code:not(.hljs) {
-  background-color: #1a1a1a !important;
-  color: #f0f0f0 !important;
-  padding: 2px 4px;
-  border-radius: 3px;
-}
-
-/* Tables */
-.md-typeset table {
-  background-color: #000000 !important;
-  color: #ffffff !important;
-}
-
-.md-typeset table th,
-.md-typeset table td {
-  background-color: #000000 !important;
-  color: #ffffff !important;
-  border-color: #333333 !important;
-}
-
-/* Blockquotes */
-.md-typeset blockquote {
-  background-color: #111111 !important;
-  color: #ffffff !important;
-  border-left-color: #333333 !important;
-}
-
-/* Admonitions */
-.md-typeset .admonition {
-  background-color: #111111 !important;
-  color: #ffffff !important;
-  border-color: #333333 !important;
-}
-
-.md-typeset .admonition-title {
-  background-color: #1a1a1a !important;
-  color: #ffffff !important;
-}
-
-/* Search */
-.md-search {
-  background-color: #000000 !important;
-}
-
-.md-search__input {
-  background-color: #1a1a1a !important;
-  color: #ffffff !important;
-  border-color: #333333 !important;
-}
-
-.md-search__output {
-  background-color: #000000 !important;
-  color: #ffffff !important;
-}
-
-/* Footer */
-.md-footer {
-  background-color: #000000 !important;
-  color: #ffffff !important;
-}
-
-/* Tabs */
-.md-tabs {
-  background-color: #000000 !important;
-}
-
-.md-tabs__link {
-  color: #ffffff !important;
-}
-
-.md-tabs__link:hover,
-.md-tabs__link:focus {
-  color: #cccccc !important;
-}
-
-/* Source code repository info */
-.md-source {
-  background-color: #000000 !important;
-  color: #ffffff !important;
-}
-
-/* Buttons */
-.md-button {
-  background-color: #1a1a1a !important;
-  color: #ffffff !important;
-  border-color: #333333 !important;
-}
-
-.md-button:hover,
-.md-button:focus {
-  background-color: #333333 !important;
-  color: #ffffff !important;
-}
-
-/* Lists */
-.md-typeset ul,
-.md-typeset ol {
-  color: #ffffff !important;
-}
-
-.md-typeset li {
-  color: #ffffff !important;
-}
-
-/* Horizontal rules */
-.md-typeset hr {
-  border-color: #333333 !important;
-}
-
-/* Version selector (if present) */
-.md-version {
-  background-color: #000000 !important;
-  color: #ffffff !important;
-}
-
-/* Announcement bar (if present) */
-.md-banner {
-  background-color: #000000 !important;
-  color: #ffffff !important;
-}
-
-/* Back to top button */
-.md-top {
-  background-color: #1a1a1a !important;
-  color: #ffffff !important;
-}
-
-.md-top:hover,
-.md-top:focus {
-  background-color: #333333 !important;
+::-webkit-scrollbar-thumb {
+  background: #333;
 }
