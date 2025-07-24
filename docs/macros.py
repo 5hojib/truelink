@@ -1,3 +1,4 @@
+"""Module for defining macros for the TrueLink documentation."""
 from __future__ import annotations
 
 from datetime import datetime
@@ -10,7 +11,7 @@ if TYPE_CHECKING:
 
 
 def define_env(env: MkDocsConfig) -> None:
-    """This is the hook for defining variables, macros and filters for TrueLink documentation."""
+    """Define variables, macros, and filters for TrueLink documentation."""
 
     @env.macro
     def github_releases(
@@ -57,56 +58,57 @@ def define_env(env: MkDocsConfig) -> None:
 
             if not releases:
                 changelog_content += "No releases found.\n"
-                return changelog_content
+            else:
+                for release in releases:
+                    if release.get("draft", False):
+                        continue
 
-            for release in releases:
-                if release.get("draft", False):
-                    continue
-
-                title: str = release.get("name") or release.get(
-                    "tag_name", "Unknown Release"
-                )
-                tag: str = release.get("tag_name", "")
-                published_date: str = release.get("published_at", "")
-
-                if published_date:
-                    try:
-                        date_obj: datetime = datetime.fromisoformat(published_date)
-                        formatted_date: str = date_obj.strftime("%B %d, %Y")
-                    except Exception:
-                        formatted_date = published_date
-                else:
-                    formatted_date = "Unknown date"
-
-                changelog_content += f"## {title}\n\n"
-
-                metadata_parts: list[str] = []
-                if formatted_date != "Unknown date":
-                    metadata_parts.append(f"**Released:** {formatted_date}")
-                if tag:
-                    metadata_parts.append(f"**Tag:** `{tag}`")
-
-                if metadata_parts:
-                    changelog_content += " | ".join(metadata_parts) + "\n\n"
-
-                if release.get("prerelease", False):
-                    changelog_content += '!!! warning "Pre-release"\n    This is a pre-release version.\n\n'
-
-                body: str = release.get("body", "").strip()
-                if body:
-                    processed_body: str = process_release_body(body)
-                    changelog_content += f"{processed_body}\n\n"
-                else:
-                    changelog_content += "No release notes provided.\n\n"
-
-                if release.get("html_url"):
-                    changelog_content += (
-                        f"[View on GitHub]({release['html_url']})\n\n"
+                    title: str = release.get("name") or release.get(
+                        "tag_name", "Unknown Release"
                     )
+                    tag: str = release.get("tag_name", "")
+                    published_date: str = release.get("published_at", "")
 
-                changelog_content += "---\n\n"
+                    if published_date:
+                        try:
+                            date_obj: datetime = datetime.fromisoformat(
+                                published_date
+                            )
+                            formatted_date: str = date_obj.strftime("%B %d, %Y")
+                        except ValueError:
+                            formatted_date = published_date
+                    else:
+                        formatted_date = "Unknown date"
 
-            return changelog_content
+                    changelog_content += f"## {title}\n\n"
+
+                    metadata_parts: list[str] = []
+                    if formatted_date != "Unknown date":
+                        metadata_parts.append(f"**Released:** {formatted_date}")
+                    if tag:
+                        metadata_parts.append(f"**Tag:** `{tag}`")
+
+                    if metadata_parts:
+                        changelog_content += " | ".join(metadata_parts) + "\n\n"
+
+                    if release.get("prerelease", False):
+                        changelog_content += '!!! warning "Pre-release"\n    This is a pre-release version.\n\n'
+
+                    body: str = release.get("body", "").strip()
+                    if body:
+                        processed_body: str = process_release_body(body)
+                        changelog_content += f"{processed_body}\n\n"
+                    else:
+                        changelog_content += "No release notes provided.\n\n"
+
+                    if release.get("html_url"):
+                        changelog_content += (
+                            f"[View on GitHub]({release['html_url']})\n\n"
+                        )
+
+                    changelog_content += "---\n\n"
+
+                return changelog_content
 
         except requests.exceptions.RequestException as e:
             error_msg: str = f"Error fetching releases from GitHub API: {e!s}"
@@ -115,7 +117,7 @@ def define_env(env: MkDocsConfig) -> None:
                 f'!!! error "API Error"\n    {error_msg}\n\n'
                 f"Please check your internet connection or try again later.\n"
             )
-        except Exception as e:
+        except (ValueError, TypeError) as e:
             error_msg: str = f"Error processing releases: {e!s}"
             return f'# Changelog\n\n!!! error "Processing Error"\n    {error_msg}\n'
 
