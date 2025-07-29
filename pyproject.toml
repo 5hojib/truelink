@@ -33,6 +33,10 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+dev = [
+    "pre-commit>=3.0.0",
+    "ruff>=0.0.278",
+]
 docs = [
     "mkdocs>=1.4.0",
     "mkdocs-material>=9.0.0",
