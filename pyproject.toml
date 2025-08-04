@@ -51,6 +51,7 @@ docs = [
 [project.urls]
 Homepage = "https://5hojib.github.io/truelink/"
 Repository = "https://github.com/5hojib/truelink"
+Source = "https://github.com/5hojib/truelink"
 Documentation = "https://5hojib.github.io/truelink/"
 Issues = "https://github.com/5hojib/truelink/issues"
 Changelog = "https://5hojib.github.io/truelink/changelog/"
