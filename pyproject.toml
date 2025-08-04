@@ -74,15 +74,6 @@ include = [
 [tool.hatch.build.targets.wheel]
 packages = ["src/truelink"]
 
-[tool.pytest.ini_options]
-asyncio_mode = "auto"
-testpaths = ["tests"]
-addopts = "-v --strict-markers"
-markers = [
-    "integration: marks tests as integration tests",
-    "unit: marks tests as unit tests",
-]
-
 [tool.coverage.run]
 source = ["src/truelink"]
 omit = ["tests/*", "src/truelink/__pycache__/*"]
