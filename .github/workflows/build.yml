@@ -89,4 +89,5 @@ jobs:
           prerelease: false
 
       - name: Upload to pypi
+        if: env.RELEASE_EXISTS == 'false'
         uses: pypa/gh-action-pypi-publish@release/v1
