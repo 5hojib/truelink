@@ -30,6 +30,7 @@ dependencies = [
     "aiohttp>=3.8.0",
     "lxml>=4.9.0",
     "cloudscraper>=1.2.71",
+    "pycryptodome>=3.9.0",
 ]
 
 [project.optional-dependencies]
