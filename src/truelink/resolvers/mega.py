@@ -5,17 +5,15 @@ from __future__ import annotations
 import base64
 import json
 import re
-from typing import TYPE_CHECKING, ClassVar
+from typing import ClassVar
 
+import aiohttp
 from Crypto.Cipher import AES
 
 from truelink.exceptions import ExtractionFailedException, InvalidURLException
 from truelink.types import LinkResult
 
 from .base import BaseResolver
-
-if TYPE_CHECKING:
-    import aiohttp
 
 
 # The following crypto functions are adapted from the mega.py library
