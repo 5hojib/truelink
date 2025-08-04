@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - dev
   workflow_dispatch:
 
 jobs:
@@ -86,12 +87,6 @@ jobs:
             dist/*
           draft: false
           prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Publish to PyPI
-        if: env.RELEASE_EXISTS == 'false'
-        run: |
-          uv publish --token ${{ secrets.PYPI_API_TOKEN }}
-        env:
-          PYPI_API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+      - name: Upload to pypi
+        uses: pypa/gh-action-pypi-publish@release/v1
