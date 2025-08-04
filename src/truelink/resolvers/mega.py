@@ -44,8 +44,10 @@ def str_to_a32(b: bytes) -> list[int]:
 def decrypt_attr(attributes: bytes, key: list[int]) -> dict:
     """Decrypt file attributes."""
     key_str = a32_to_str(key)
+    iv = b'\0' * 16  # noqa: N806
     try:
-        decrypted_attrs = AES.new(key_str, AES.MODE_ECB).decrypt(attributes)
+        cipher = AES.new(key_str, AES.MODE_CBC, iv)
+        decrypted_attrs = cipher.decrypt(attributes)
         # MEGA adds "MEGA" and a null terminator to the JSON string.
         json_str = decrypted_attrs.decode("utf-8", errors="ignore").strip("\0")
         if json_str.startswith("MEGA"):
@@ -63,14 +65,17 @@ class MegaResolver(BaseResolver):
 
     def _parse_url(self, url: str) -> tuple[str, str]:
         """Parse file id and key from url."""
+        url = url.replace(" ", "").strip()
         if "/file/" in url:
-            match = re.search(r"/file/([\w-]+)#([\w-]+)", url)
+            # V2 URL structure
+            match = re.search(r"/file/([a-zA-Z0-9_-]+)#([a-zA-Z0-9_-]+)", url)
             if match:
-                return match.groups()
+                return match.group(1), match.group(2)
         elif "#!" in url:
-            match = re.search(r"#!([\w-]+)!([\w-]+)", url)
+            # V1 URL structure
+            match = re.search(r"#!([a-zA-Z0-9_-]+)!([a-zA-Z0-9_-]+)", url)
             if match:
-                return match.groups()
+                return match.group(1), match.group(2)
         msg = f"Invalid mega.nz URL: {url}"
         raise InvalidURLException(msg)
 
