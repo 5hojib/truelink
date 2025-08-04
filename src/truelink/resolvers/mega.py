@@ -44,7 +44,7 @@ def str_to_a32(b: bytes) -> list[int]:
 def decrypt_attr(attributes: bytes, key: list[int]) -> dict:
     """Decrypt file attributes."""
     key_str = a32_to_str(key)
-    iv = b'\0' * 16  # noqa: N806
+    iv = b"\0" * 16
     try:
         cipher = AES.new(key_str, AES.MODE_CBC, iv)
         decrypted_attrs = cipher.decrypt(attributes)
