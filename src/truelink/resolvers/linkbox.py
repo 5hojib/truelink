@@ -27,7 +27,7 @@ class LinkBoxResolver(BaseResolver):
 
     def __init__(self) -> None:
         """Initialize the LinkBoxResolver."""
-        super().__init__()
+        # super().__init__()
         self._folder: FolderResult | None = None
 
     async def resolve(self, url: str) -> LinkResult | FolderResult:

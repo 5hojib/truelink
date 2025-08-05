@@ -27,7 +27,7 @@ class GoFileResolver(BaseResolver):
 
     def __init__(self) -> None:
         """Initialize the GoFileResolver."""
-        super().__init__()
+        # super().__init__()
         self._folder_details: FolderResult | None = None
         self._account_token: str | None = None
 
