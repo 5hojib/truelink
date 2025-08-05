@@ -25,9 +25,9 @@ class LinkBoxResolver(BaseResolver):
     ]
     BASE_API = "https://www.linkbox.to/api/file"
 
-    def __init__(self) -> None:
+    def __init__(self, proxy: str | None = None) -> None:
         """Initialize the LinkBoxResolver."""
-        # super().__init__()
+        super().__init__(proxy=proxy)
         self._folder: FolderResult | None = None
 
     async def resolve(self, url: str) -> LinkResult | FolderResult:

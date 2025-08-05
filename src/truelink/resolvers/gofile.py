@@ -25,9 +25,9 @@ class GoFileResolver(BaseResolver):
 
     DOMAINS: ClassVar[list[str]] = ["gofile.io"]
 
-    def __init__(self) -> None:
+    def __init__(self, proxy: str | None = None) -> None:
         """Initialize the GoFileResolver."""
-        # super().__init__()
+        super().__init__(proxy=proxy)
         self._folder_details: FolderResult | None = None
         self._account_token: str | None = None
 
@@ -188,12 +188,7 @@ class GoFileResolver(BaseResolver):
             msg = f"GoFile: No content found for ID '{content_id}'. It might be empty, private, or protected."
             raise ExtractionFailedException(msg)
 
-        if (
-            len(self._folder_details.contents) == 1
-            and self._folder_details.title
-            == self._folder_details.contents[0].filename
-            and not self._folder_details.contents[0].path
-        ):
+        if len(self._folder_details.contents) == 1:
             item = self._folder_details.contents[0]
             return LinkResult(
                 url=item.url,
