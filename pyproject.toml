@@ -36,6 +36,7 @@ dependencies = [
 dev = [
     "pre-commit>=3.0.0",
     "ruff>=0.12.5",
+    "ty==0.0.1a17",
 ]
 docs = [
     "mkdocs>=1.4.0",
@@ -114,3 +115,14 @@ ignore = [
     "S101",
     "COM812",
 ]
+
+[tool.ty.src]
+include = ["src", "docs"]
+
+[tool.ty.environment]
+python-version = "3.13"
+python = ".venv"
+
+[tool.ty.rules]
+unused-ignore-comment = "warn"
+redundant-cast = "ignore"

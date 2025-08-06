@@ -31,19 +31,23 @@ jobs:
 
       - name: Install dependencies
         run: |
-          uv python install 3.13
           uv lock --upgrade
 
       - name: Run ruff to lint and format code
         run: |
           uv tool run ruff check . --exit-zero
           uv tool run ruff format .
-          git add -u
+
+      - name: Run ty to type check code
+        run: |
+          uv tool run ty check .
 
       - name: Commit and push changes
         run: |
           git config --global user.name "5hojib"
           git config --global user.email "yesiamshojib@gmail.com"
+          git add uv.lock
+          git add -u
           if git diff-index --quiet HEAD --; then
             echo "No changes to commit."
           else
