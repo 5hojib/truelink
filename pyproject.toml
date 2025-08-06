@@ -119,10 +119,6 @@ ignore = [
 [tool.ty.src]
 include = ["src", "docs"]
 
-[tool.ty.environment]
-python-version = "3.13"
-python = ".venv"
-
 [tool.ty.rules]
 unused-ignore-comment = "warn"
 redundant-cast = "ignore"
