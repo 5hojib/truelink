@@ -19,11 +19,6 @@ if TYPE_CHECKING:
 
     from truelink.types import FolderResult, LinkResult
 
-try:
-    from typing import Self  # Python 3.11+
-except ImportError:
-    from typing_extensions import Self  # Python <3.11
-
 class BaseResolver(ABC):
     """Base class for all resolvers."""
 
@@ -35,7 +30,7 @@ class BaseResolver(ABC):
         self.session: aiohttp.ClientSession | None = None
         self.proxy = proxy
 
-    async def __aenter__(self) -> Self:
+    async def __aenter__(self):
         """Enter the async context."""
         await self._create_session()
         return self
