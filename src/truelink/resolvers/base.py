@@ -9,7 +9,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     ClassVar,
-    Self,  # ruff: noqa
 )
 from urllib.parse import unquote, urlparse
 
@@ -20,6 +19,10 @@ if TYPE_CHECKING:
 
     from truelink.types import FolderResult, LinkResult
 
+try:
+    from typing import Self  # Python 3.11+
+except ImportError:
+    from typing_extensions import Self  # Python <3.11
 
 class BaseResolver(ABC):
     """Base class for all resolvers."""
