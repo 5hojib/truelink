@@ -1367,6 +1367,7 @@ dependencies = [
     { name = "aiohttp" },
     { name = "cloudscraper" },
     { name = "lxml" },
+    { name = "typing-extensions" },
 ]
 
 [package.optional-dependencies]
@@ -1402,6 +1403,7 @@ requires-dist = [
     { name = "pre-commit", marker = "extra == 'dev'", specifier = ">=3.0.0" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.12.5" },
     { name = "ty", marker = "extra == 'dev'", specifier = "==0.0.1a17" },
+    { name = "typing-extensions", specifier = ">=4.0.0" },
 ]
 provides-extras = ["dev", "docs"]
 

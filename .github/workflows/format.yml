@@ -31,16 +31,16 @@ jobs:
 
       - name: Install dependencies
         run: |
-          uv lock --upgrade
+          uv sync --all-extras
 
       - name: Run ruff to lint and format code
         run: |
-          uv tool run ruff check . --exit-zero
-          uv tool run ruff format .
+          uv run ruff check . --exit-zero
+          uv run ruff format .
 
       - name: Run ty to type check code
         run: |
-          uv tool run ty check .
+          uv run ty check .
 
       - name: Commit and push changes
         run: |
