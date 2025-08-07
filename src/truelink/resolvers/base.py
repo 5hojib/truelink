@@ -5,11 +5,15 @@ from __future__ import annotations
 import contextlib
 import re
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Any, ClassVar
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    ClassVar,
+    Self,  # ruff: noqa
+)
 from urllib.parse import unquote, urlparse
 
 import aiohttp
-from typing_extensions import Self
 
 if TYPE_CHECKING:
     from types import TracebackType

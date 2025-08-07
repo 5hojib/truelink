@@ -28,9 +28,9 @@ for path in sorted(Path(package_name).rglob("*.py")):
 
     nav[parts] = doc_path.as_posix()
 
-    with mkdocs_gen_files.open(full_doc_path, "w") as fd:  # type: ignore
+    with mkdocs_gen_files.open(full_doc_path, "w") as fd:  # type: ignore[reportGeneralTypeIssues]
         ident = ".".join(parts)
         fd.write(f"# {ident}\n\n")
         fd.write(f"::: {ident}")
 
-    mkdocs_gen_files.set_edit_path(full_doc_path, path)  # type: ignore
+    mkdocs_gen_files.set_edit_path(full_doc_path, path)  # type: ignore[reportGeneralTypeIssues]
