@@ -135,10 +135,8 @@ class MediaFireResolver(BaseResolver):
                 if html.xpath("//div[@class='passwordPrompt']"):
                     self._raise_extraction_failed("MediaFire error: Wrong password.")
 
-            # Use the new decoding method
             final_link = await self._decode_url(html, scraper)
 
-            # Handle recursive cases
             if final_link.startswith("//"):
                 return await self._resolve_file(
                     f"https:{final_link}", password, scraper
@@ -294,7 +292,6 @@ class MediaFireResolver(BaseResolver):
                     if not url:
                         continue
                     try:
-                        # Use the new scraping method for folder files
                         result = await self._scrape_folder_file(
                             url, password, scraper
                         )

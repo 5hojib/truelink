@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 def define_env(env: MkDocsConfig) -> None:
     """Define variables, macros, and filters for TrueLink documentation."""
 
-    @env.macro  # type: ignore[reportGeneralTypeIssues]
+    @env.macro  
     def github_releases(
         repo_name: str | None = None,
         token: str | None = None,

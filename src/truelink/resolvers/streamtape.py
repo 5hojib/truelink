@@ -29,7 +29,6 @@ class StreamtapeResolver(BaseResolver):
         "watchadsontape.com",
     ]
 
-    # Use only streamtape.net as fallback domain
     FALLBACK_DOMAIN: ClassVar[str] = "streamtape.net"
 
     async def _try_with_fallback_domain(
@@ -39,7 +38,6 @@ class StreamtapeResolver(BaseResolver):
         parsed_url = urlparse(original_url)
         original_domain = parsed_url.netloc
 
-        # Try original URL first
         try:
             async with await self._get(
                 original_url, allow_redirects=True
@@ -50,7 +48,6 @@ class StreamtapeResolver(BaseResolver):
         except aiohttp.ClientError:
             pass  # Continue to fallback
 
-        # If original fails and it's not already streamtape.net, try with streamtape.net
         if original_domain != self.FALLBACK_DOMAIN:
             fallback_url = original_url.replace(
                 original_domain, self.FALLBACK_DOMAIN
@@ -76,7 +73,6 @@ class StreamtapeResolver(BaseResolver):
                 url.split("/")[4] if len(url.split("/")) >= 6 else url.split("/")[-1]
             )
 
-            # Try with fallback domain if original fails
             html_content, parsed_url = await self._try_with_fallback_domain(url)
             html = fromstring(html_content)
 
