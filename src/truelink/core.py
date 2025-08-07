@@ -138,7 +138,8 @@ class TrueLinkResolver:
                     msg = f"Failed to resolve URL after {self.max_retries} attempts: {e!s}"
                     raise ExtractionFailedException(msg) from e
                 await asyncio.sleep(1 * (attempt + 1))
-        return None
+        msg = f"Failed to resolve URL after {self.max_retries} attempts."
+        raise ExtractionFailedException(msg)
 
     @staticmethod
     def is_supported(url: str) -> bool:

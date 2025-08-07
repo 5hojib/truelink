@@ -105,6 +105,7 @@ class PCloudResolver(BaseResolver):
                     "pCloud.link error: Direct download link not found in page source.",
                 )
 
+            assert direct_link is not None
             if r"\/" in direct_link:
                 direct_link = direct_link.replace(r"\/", "/")
 

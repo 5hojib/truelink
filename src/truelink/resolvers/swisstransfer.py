@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import base64
+import binascii
 import re
 from typing import ClassVar
 
@@ -111,7 +112,7 @@ class SwissTransferResolver(BaseResolver):
                 password_b64 = base64.b64encode(password_str.encode("utf-8")).decode(
                     "utf-8",
                 )
-            except (base64.binascii.Error, TypeError) as e_b64:
+            except (binascii.Error, TypeError) as e_b64:
                 msg = f"Failed to base64 encode password: {e_b64}"
                 raise InvalidURLException(
                     msg,

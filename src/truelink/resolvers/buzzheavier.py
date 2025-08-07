@@ -18,7 +18,7 @@ class BuzzHeavierResolver(BaseResolver):
 
     DOMAINS: ClassVar[list[str]] = ["buzzheavier.com"]
 
-    async def resolve(self, url: str) -> LinkResult | FolderResult:
+    async def resolve(self, url: str) -> LinkResult | FolderResult:  # type: ignore
         """Resolve BuzzHeavier URL."""
         pattern = r"^https?://buzzheavier.com/[a-zA-Z0-9]+$"
         if not re.match(pattern, url):
@@ -28,50 +28,51 @@ class BuzzHeavierResolver(BaseResolver):
             async with await self._get(url) as response:
                 html_content = await response.text()
                 tree = fromstring(html_content)
+        except Exception as e:
+            raise ExtractionFailedException(f"Failed to fetch content from URL: {e}") from e
 
-            link_elements = tree.xpath(
-                "//a[contains(@class, 'link-button') and contains(@class, 'gay-button')]/@hx-get",
+        link_elements = tree.xpath(
+            "//a[contains(@class, 'link-button') and contains(@class, 'gay-button')]/@hx-get",
+        )
+
+        if link_elements:
+            download_url = await self._get_download_url(
+                f"https://buzzheavier.com{link_elements[0]}",
             )
 
-            if link_elements:
-                download_url = await self._get_download_url(
-                    f"https://buzzheavier.com{link_elements[0]}",
-                )
+            if not download_url:
+                self._raise_extraction_failed("Failed to get download URL")
 
-                referer = download_url.split("?")[0]
-                buzz_headers = {
-                    "referer": referer,
-                    "hx-current-url": referer,
-                    "hx-request": "true",
-                    "priority": "u=1, i",
-                }
-                filename, size, mime_type = await self._fetch_file_details(
-                    download_url,
-                    headers=buzz_headers,
-                )
-                return LinkResult(
-                    url=download_url,
-                    filename=filename,
-                    mime_type=mime_type,
-                    size=size,
-                )
+            referer = download_url.split("?")[0]
+            buzz_headers = {
+                "referer": referer,
+                "hx-current-url": referer,
+                "hx-request": "true",
+                "priority": "u=1, i",
+            }
+            filename, size, mime_type = await self._fetch_file_details(
+                download_url,
+                headers=buzz_headers,
+            )
+            return LinkResult(
+                url=download_url,
+                filename=filename,
+                mime_type=mime_type,
+                size=size,
+            )
 
-            folder_elements = tree.xpath("//tbody[@id='tbody']/tr")
-            if folder_elements:
-                return await self._process_folder(tree, folder_elements)
+        folder_elements = tree.xpath("//tbody[@id='tbody']/tr")
+        if folder_elements:
+            return await self._process_folder(tree, folder_elements)
 
-            self._raise_extraction_failed("No download link found")
-
-        except ExtractionFailedException as e:
-            msg = f"Failed to resolve BuzzHeavier URL: {e}"
-            raise ExtractionFailedException(
-                msg,
-            ) from e
+        self._raise_extraction_failed("No download link found")
 
     def _raise_extraction_failed(self, msg: str) -> None:
         raise ExtractionFailedException(msg)
 
-    async def _get_download_url(self, url: str, *, is_folder: bool = False) -> str:
+    async def _get_download_url(
+        self, url: str, *, is_folder: bool = False
+    ) -> str | None:
         """Get download URL from BuzzHeavier."""
         if "/download" not in url:
             url += "/download"

@@ -36,6 +36,7 @@ class OneDriveResolver(BaseResolver):
                 self._raise_extraction_failed(
                     "OneDrive error: 'resid' not found in URL query parameters.",
                 )
+            assert folder_id_list is not None
             folder_id = folder_id_list[0]
 
             authkey_list = link_data.get("authkey")
@@ -43,6 +44,7 @@ class OneDriveResolver(BaseResolver):
                 self._raise_extraction_failed(
                     "OneDrive error: 'authkey' not found in URL query parameters.",
                 )
+            assert authkey_list is not None
             authkey = authkey_list[0]
 
             drive_id_part = folder_id.split("!", 1)[0]
@@ -120,7 +122,7 @@ class OneDriveResolver(BaseResolver):
             return LinkResult(url=direct_link, filename=filename, size=size)
 
         except (ExtractionFailedException, InvalidURLException) as e:
-            if isinstance(e, ExtractionFailedException | InvalidURLException):
+            if isinstance(e, (ExtractionFailedException, InvalidURLException)):
                 raise
             msg = f"Failed to resolve OneDrive URL '{url}': {e!s}"
             raise ExtractionFailedException(

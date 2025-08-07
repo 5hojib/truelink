@@ -7,7 +7,7 @@ from typing import ClassVar
 from urllib.parse import ParseResult, urlparse
 
 import aiohttp
-from lxml.etree import HTML
+from lxml.html import fromstring
 
 from truelink.exceptions import ExtractionFailedException, InvalidURLException
 from truelink.types import FolderResult, LinkResult
@@ -78,7 +78,7 @@ class StreamtapeResolver(BaseResolver):
 
             # Try with fallback domain if original fails
             html_content, parsed_url = await self._try_with_fallback_domain(url)
-            html = HTML(html_content)
+            html = fromstring(html_content)
 
             script_elements = html.xpath(
                 "//script[contains(text(),'ideoooolink')]/text()"
@@ -97,6 +97,7 @@ class StreamtapeResolver(BaseResolver):
                         "Streamtape error: Required script content not found.",
                     )
 
+            assert script_content is not None
             match = re.findall(r"(&expires\S+?)'", script_content)
             if not match:
                 self._raise_extraction_failed(
@@ -121,7 +122,7 @@ class StreamtapeResolver(BaseResolver):
             InvalidURLException,
             aiohttp.ClientError,
         ) as e:
-            if isinstance(e, ExtractionFailedException | InvalidURLException):
+            if isinstance(e, (ExtractionFailedException, InvalidURLException)):
                 raise
             msg = f"Unexpected error while resolving Streamtape URL: {e}"
             raise ExtractionFailedException(msg) from e
