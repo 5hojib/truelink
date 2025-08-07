@@ -137,9 +137,7 @@ class FichierResolver(BaseResolver):
                 msg,
             ) from e
         msg = "Fichier resolver failed to return a value."
-        raise ExtractionFailedException(
-            msg
-        )
+        raise ExtractionFailedException(msg)
 
     def _raise_extraction_failed(self, msg: str) -> None:
         raise ExtractionFailedException(msg)

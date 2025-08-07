@@ -19,6 +19,7 @@ if TYPE_CHECKING:
 
     from truelink.types import FolderResult, LinkResult
 
+
 class BaseResolver(ABC):
     """Base class for all resolvers."""
 
