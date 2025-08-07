@@ -120,6 +120,9 @@ ignore = [
 [tool.ty.src]
 include = ["src", "docs"]
 
+[tool.ty.environment]
+root = ["./src"]
+
 [tool.ty.rules]
 unused-ignore-comment = "warn"
 redundant-cast = "ignore"
