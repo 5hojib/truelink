@@ -29,7 +29,7 @@ class FichierResolver(BaseResolver):
             regex_1fichier,
             url.split("::")[0],
         ):
-            pass
+            raise InvalidURLException("Invalid 1Fichier.com URL format.")
 
         _password = None
         request_url = url
@@ -129,12 +129,15 @@ class FichierResolver(BaseResolver):
             )
 
         except (ExtractionFailedException, InvalidURLException) as e:
-            if isinstance(e, ExtractionFailedException | InvalidURLException):
+            if isinstance(e, (ExtractionFailedException, InvalidURLException)):
                 raise
             msg = f"Failed to resolve 1Fichier.com URL '{url}': {e!s}"
             raise ExtractionFailedException(
                 msg,
             ) from e
+        raise ExtractionFailedException(
+            "Fichier resolver failed to return a value."
+        )
 
     def _raise_extraction_failed(self, msg: str) -> None:
         raise ExtractionFailedException(msg)

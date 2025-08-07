@@ -56,7 +56,7 @@ class TmpSendResolver(BaseResolver):
             )
 
         except (ExtractionFailedException, InvalidURLException) as e:
-            if isinstance(e, ExtractionFailedException | InvalidURLException):
+            if isinstance(e, (ExtractionFailedException, InvalidURLException)):
                 raise
             msg = f"Failed to resolve TmpSend.com URL '{url}': {e!s}"
             raise ExtractionFailedException(

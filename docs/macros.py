@@ -6,6 +6,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 
 import requests
+from requests.exceptions import RequestException
 
 if TYPE_CHECKING:
     from mkdocs.config.defaults import MkDocsConfig
@@ -14,7 +15,7 @@ if TYPE_CHECKING:
 def define_env(env: MkDocsConfig) -> None:
     """Define variables, macros, and filters for TrueLink documentation."""
 
-    @env.macro
+    @env.macro  # type: ignore
     def github_releases(
         repo_name: str | None = None,
         token: str | None = None,
@@ -59,6 +60,7 @@ def define_env(env: MkDocsConfig) -> None:
 
             if not releases:
                 changelog_content += "No releases found.\n"
+                return changelog_content
             else:
                 for release in releases:
                     if release.get("draft", False):
@@ -111,7 +113,7 @@ def define_env(env: MkDocsConfig) -> None:
 
                 return changelog_content
 
-        except requests.exceptions.RequestException as e:
+        except RequestException as e:
             error_msg: str = f"Error fetching releases from GitHub API: {e!s}"
             return (
                 f"# Changelog\n\n"

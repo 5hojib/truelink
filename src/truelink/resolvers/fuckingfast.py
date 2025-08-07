@@ -28,6 +28,7 @@ class FuckingFastResolver(BaseResolver):
             if not match:
                 self._raise_extraction_failed("Could not find download link in page")
 
+            assert match is not None
             download_url = match.group(2)
             filename, size, mime_type = await self._fetch_file_details(download_url)
 

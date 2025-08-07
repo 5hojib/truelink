@@ -35,6 +35,7 @@ class MediaFileResolver(BaseResolver):
                     )
 
                 download_url = str(response.url)
+                assert postvalue_direct is not None
                 postid = postvalue_direct.group(1).replace("(", "").replace(")", "")
 
             else:
@@ -55,6 +56,7 @@ class MediaFileResolver(BaseResolver):
                     self._raise_extraction_failed(
                         "Unable to find post value on download page.",
                     )
+                assert postvalue is not None
                 postid = postvalue.group(1).replace("(", "").replace(")", "")
 
             ajax_headers = {
