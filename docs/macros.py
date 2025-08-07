@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 def define_env(env: MkDocsConfig) -> None:
     """Define variables, macros, and filters for TrueLink documentation."""
 
-    @env.macro  # type: ignore
+    @env.macro  # type: ignore[reportGeneralTypeIssues]
     def github_releases(
         repo_name: str | None = None,
         token: str | None = None,
@@ -60,7 +60,6 @@ def define_env(env: MkDocsConfig) -> None:
 
             if not releases:
                 changelog_content += "No releases found.\n"
-                return changelog_content
             else:
                 for release in releases:
                     if release.get("draft", False):
@@ -111,8 +110,6 @@ def define_env(env: MkDocsConfig) -> None:
 
                     changelog_content += "---\n\n"
 
-                return changelog_content
-
         except RequestException as e:
             error_msg: str = f"Error fetching releases from GitHub API: {e!s}"
             return (
@@ -123,6 +120,8 @@ def define_env(env: MkDocsConfig) -> None:
         except (ValueError, TypeError) as e:
             error_msg: str = f"Error processing releases: {e!s}"
             return f'# Changelog\n\n!!! error "Processing Error"\n    {error_msg}\n'
+
+        return changelog_content
 
 
 def process_release_body(body: str) -> str:

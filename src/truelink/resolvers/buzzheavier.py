@@ -18,7 +18,7 @@ class BuzzHeavierResolver(BaseResolver):
 
     DOMAINS: ClassVar[list[str]] = ["buzzheavier.com"]
 
-    async def resolve(self, url: str) -> LinkResult | FolderResult:  # type: ignore
+    async def resolve(self, url: str) -> LinkResult | FolderResult:
         """Resolve BuzzHeavier URL."""
         pattern = r"^https?://buzzheavier.com/[a-zA-Z0-9]+$"
         if not re.match(pattern, url):
@@ -29,7 +29,8 @@ class BuzzHeavierResolver(BaseResolver):
                 html_content = await response.text()
                 tree = fromstring(html_content)
         except Exception as e:
-            raise ExtractionFailedException(f"Failed to fetch content from URL: {e}") from e
+            msg = f"Failed to fetch content from URL: {e}"
+            raise ExtractionFailedException(msg) from e
 
         link_elements = tree.xpath(
             "//a[contains(@class, 'link-button') and contains(@class, 'gay-button')]/@hx-get",
@@ -41,7 +42,8 @@ class BuzzHeavierResolver(BaseResolver):
             )
 
             if not download_url:
-                self._raise_extraction_failed("Failed to get download URL")
+                msg = "Failed to get download URL"
+                raise ExtractionFailedException(msg)
 
             referer = download_url.split("?")[0]
             buzz_headers = {
@@ -65,9 +67,7 @@ class BuzzHeavierResolver(BaseResolver):
         if folder_elements:
             return await self._process_folder(tree, folder_elements)
 
-        self._raise_extraction_failed("No download link found")
-
-    def _raise_extraction_failed(self, msg: str) -> None:
+        msg = "No download link found"
         raise ExtractionFailedException(msg)
 
     async def _get_download_url(
