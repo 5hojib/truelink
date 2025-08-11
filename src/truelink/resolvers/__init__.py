@@ -8,6 +8,7 @@ from .fichier import FichierResolver
 from .fuckingfast import FuckingFastResolver
 from .gofile import GoFileResolver
 from .linkbox import LinkBoxResolver
+from .linkvertise import LinkvertiseResolver            # added linkvertise
 from .lulacloud import LulaCloudResolver
 from .mediafile import MediaFileResolver
 from .mediafire import MediaFireResolver
@@ -29,6 +30,7 @@ __all__ = [
     "FuckingFastResolver",
     "GoFileResolver",
     "LinkBoxResolver",
+    "LinkvertiseResolver",     # added linkvertise
     "LulaCloudResolver",
     "MediaFileResolver",
     "MediaFireResolver",
