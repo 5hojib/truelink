@@ -116,7 +116,7 @@ class XhamResolver(BaseResolver):
             )
 
         except Exception as e:
-            raise ExtractionFailedException(f"Failed to resolve domain URL: {e}")
+            raise ExtractionFailedException(f"Failed to resolve domain URL: {e}") from e
 
     def _raise_extraction_failed(self, msg: str) -> None:
         raise ExtractionFailedException(msg)
