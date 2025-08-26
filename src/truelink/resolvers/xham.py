@@ -7,7 +7,7 @@ from truelink.types import LinkResult
 from .base import BaseResolver
 
 
-class DomainResolver(BaseResolver):
+class XhamResolver(BaseResolver):
     """Resolver for domain.com, domain19.com, and domain.desi via EasyDownloader API,
     normalizing host to domain00.com before processing.
     """
