@@ -61,14 +61,14 @@ class XhamResolver(BaseResolver):
                     snippet = await response.text()
                     raise ExtractionFailedException(
                         f"Failed to parse JSON: {e} - Response: {snippet[:200]}"
-                    )
+                    ) from e
 
             # Expecting a structure similar to: {"final_urls": [{"links": [...], "file_name": "...", "file_type": "...", ...}]}
             final_urls = data.get("final_urls", [])
             if not isinstance(final_urls, list) or not final_urls:
                 raise ExtractionFailedException("No final_urls found in API response")
 
-            block = final_urls  # take first block as in other resolvers
+            block = final_urls[0]  # take first block as in other resolvers
             links = block.get("links", [])
             if not isinstance(links, list) or not links:
                 raise ExtractionFailedException("No links found inside final_urls")
