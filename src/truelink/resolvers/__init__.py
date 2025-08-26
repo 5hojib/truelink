@@ -22,6 +22,7 @@ from .terabox import TeraboxResolver
 from .tmpsend import TmpSendResolver
 from .uploadee import UploadEeResolver
 from .yandexdisk import YandexDiskResolver
+from .xham import XhamResolver
 
 __all__ = [
     "BaseResolver",
@@ -44,4 +45,5 @@ __all__ = [
     "TmpSendResolver",
     "UploadEeResolver",
     "YandexDiskResolver",
+    "XhamResolver",
 ]
