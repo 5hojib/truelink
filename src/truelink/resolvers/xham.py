@@ -13,14 +13,14 @@ class XhamResolver(BaseResolver):
     DOMAINS: ClassVar[list[str]] = [
         "xhamster.com",
         "xhamster19.com",
-        "xhamster.desi",
+        "xhamster1.desi",
         "xhamster2.com",
         "xhaccess.com",
     ]
 
     API_URL: ClassVar[str] = "https://api.easydownloader.app/api-extract"
-    API_KEY: ClassVar[str] = "174p81553h7m5r.eivdoi-ob-iegigrayfreprybfce-adx9XU"
-    CANONICAL_HOST: ClassVar[str] = "xhamster.desi"
+    API_KEY: ClassVar[str] = "175p40401h9m2rcmvdo-epdagr-egmadidn-eri-hcE"
+    CANONICAL_HOST: ClassVar[str] = "xhamster1.desi"
 
     def _normalize_to_canonical(self, original_url: str) -> str:
         """Replace supported domains with xhamster.desi using netloc only; keep scheme/path/query/fragment."""
@@ -28,7 +28,7 @@ class XhamResolver(BaseResolver):
         to_replace = {
             "xhamster.com",
             "xhamster19.com",
-            "xhamster.desi",
+            "xhamster1desi",
             "xhamster2.com",
             "xhaccess.com",
         }  # exact netloc matches [11]
