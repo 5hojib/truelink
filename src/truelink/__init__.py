@@ -6,7 +6,7 @@ from .core import TrueLinkResolver
 from .exceptions import TrueLinkException, UnsupportedProviderException
 from .types import FolderResult, LinkResult
 
-__version__ = "1.4.4"
+__version__ = "1.4.5"
 __all__ = [
     "FolderResult",
     "LinkResult",
