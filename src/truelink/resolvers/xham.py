@@ -28,7 +28,7 @@ class XhamResolver(BaseResolver):
         to_replace = {
             "xhamster.com",
             "xhamster19.com",
-            "xhamster1desi",
+            "xhamster1.desi",
             "xhamster2.com",
             "xhaccess.com",
         }  # exact netloc matches [11]
