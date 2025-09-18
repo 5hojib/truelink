@@ -99,7 +99,7 @@ class SpankBangResolver(BaseResolver):
     def _single_to_double_quoted_strings(js_obj: str) -> str:
         # Convert single-quoted JS strings to JSON double quoted with escaping
         def repl(m: re.Match) -> str:
-            s = m.group(1)
+            s = m[1]
             s = s.replace('\\"', '"').replace("\\'", "'")
             s = s.replace("\\", "\\\\").replace('"', '\\"')
             return f"\"{s}\""
