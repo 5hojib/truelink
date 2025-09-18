@@ -246,9 +246,15 @@ class SpankBangResolver(BaseResolver):
         # Append extension if needed based on URL path
         final_name = self._maybe_add_extension(filename, best_url) or filename
 
+        # Infer MIME type from extension
+        import mimetypes
+        mime_type, _ = mimetypes.guess_type(final_name)
+        if mime_type is None:
+            mime_type = "application/octet-stream"
+
         return LinkResult(
             url=best_url,
             filename=final_name,
-            mime_type="video/mp4",  # most SB direct links end with .mp4; adjust if needed [web:90]
+            mime_type=mime_type,
             size=None,
         )
