@@ -203,7 +203,7 @@ class SpankBangResolver(BaseResolver):
         path = urlparse(url).path.lower()
         m = re.search(r"\.(mp4|mkv|webm)$", path, re.I)
         if m and not re.search(r"\.(mp4|mkv|webm)$", name, re.I):
-            return f"{name}.{m.group(1).lower()}"
+            return f"{name}.{m[1].lower()}"
         return name
 
     async def resolve(self, url: str) -> LinkResult | FolderResult:
