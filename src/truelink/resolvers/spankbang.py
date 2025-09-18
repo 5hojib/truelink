@@ -230,7 +230,14 @@ class SpankBangResolver(BaseResolver):
             raise ExtractionFailedException(f"Failed to fetch page: {e}") from e
 
         # Extract title -> filename
-        filename = self._extract_title(html) or "video"
+        filename = self._extract_title(html)
+        if not filename:
+            # Try to extract a unique identifier from the URL
+            from urllib.parse import urlparse
+            url_parts = urlparse(url)
+            # Use last path segment as identifier, fallback to 'video'
+            unique_id = url_parts.path.rstrip('/').split('/')[-1] or "video"
+            filename = f"video_{unique_id}"
 
         # Parse stream_data JSON
         data = self._extract_stream_dict(html)
