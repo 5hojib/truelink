@@ -134,6 +134,10 @@ class SpankBangResolver(BaseResolver):
         """
         Extract and JSON-decode the stream_data object from the page. [web:90]
         """
+        MAX_HTML_SIZE = 2 * 1024 * 1024  # 2MB limit
+        if len(html) > MAX_HTML_SIZE:
+            # Optionally, log a warning here
+            return None
         block = self._find_stream_block(html)
         if not block:
             return None
