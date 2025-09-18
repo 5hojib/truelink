@@ -125,8 +125,7 @@ class SpankBangResolver(BaseResolver):
         Find the raw JS assignment text containing stream_data. [web:90]
         """
         for pat in self.STREAM_BLOCK_PATTERNS:
-            m = pat.search(html)
-            if m:
+            if m := pat.search(html):
                 return m.group(0)
         return None
 
