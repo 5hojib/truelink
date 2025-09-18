@@ -159,8 +159,7 @@ class SpankBangResolver(BaseResolver):
         """
         found: dict[str, list[str]] = {}
         for q, pat in self.FALLBACK_PATTERNS.items():
-            matches = pat.findall(html) or []
-            if matches:
+            if matches := pat.findall(html) or []:
                 found[q] = matches
         return found
 
