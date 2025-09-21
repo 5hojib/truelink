@@ -27,6 +27,7 @@ class StreamtapeResolver(BaseResolver):
         "streamta.pe",
         "streamtape.xyz",
         "watchadsontape.com",
+        "strcloud.club",
     ]
 
     # Use only streamtape.net as fallback domain
