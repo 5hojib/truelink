@@ -23,6 +23,7 @@ from .tmpsend import TmpSendResolver
 from .uploadee import UploadEeResolver
 from .yandexdisk import YandexDiskResolver
 from .xham import XhamResolver
+from .spankbang import SpankBangResolver
 
 __all__ = [
     "BaseResolver",
@@ -46,4 +47,5 @@ __all__ = [
     "UploadEeResolver",
     "YandexDiskResolver",
     "XhamResolver",
+    "SpankBangResolver",
 ]
