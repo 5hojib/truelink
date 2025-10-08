@@ -1,9 +1,13 @@
 # xham.py
 # ---------------
+from __future__ import annotations
+
 from typing import ClassVar
 from urllib.parse import urlparse, urlunparse
+
 from truelink.exceptions import ExtractionFailedException
-from truelink.types import FileItem, FolderResult, LinkResult
+from truelink.types import FolderResult, LinkResult
+
 from .base import BaseResolver
 
 
@@ -33,13 +37,17 @@ class XhamResolver(BaseResolver):
             "xhaccess.com",
         }  # exact netloc matches [11]
         if parsed.netloc in to_replace:
-            replaced = parsed._replace(netloc=self.CANONICAL_HOST)  # swap netloc only [11]
+            replaced = parsed._replace(
+                netloc=self.CANONICAL_HOST
+            )  # swap netloc only [11]
             return urlunparse(replaced)  # reassemble URL preserving other parts [11]
         return original_url  # not in our set; return unchanged [11]
 
     async def resolve(self, url: str) -> LinkResult | FolderResult:
         # Normalize to canonical host if matched
-        canonical_url = self._normalize_to_canonical(url)  # netloc-based canonicalization [11]
+        canonical_url = self._normalize_to_canonical(
+            url
+        )  # netloc-based canonicalization [11]
 
         payload = {
             "video_url": canonical_url,
@@ -59,23 +67,26 @@ class XhamResolver(BaseResolver):
                     data = await response.json()
                 except Exception as e:
                     snippet = await response.text()
-                    raise ExtractionFailedException(
-                        f"Failed to parse JSON: {e} - Response: {snippet[:200]}"
-                    ) from e
+                    msg = f"Failed to parse JSON: {e} - Response: {snippet[:200]}"
+                    raise ExtractionFailedException(msg) from e
 
             # Expecting a structure similar to: {"final_urls": [{"links": [...], "file_name": "...", "file_type": "...", ...}]}
             final_urls = data.get("final_urls", [])
             if not isinstance(final_urls, list) or not final_urls:
-                raise ExtractionFailedException("No final_urls found in API response")
+                msg = "No final_urls found in API response"
+                raise ExtractionFailedException(msg)
 
             block = final_urls[0]  # take first block as in other resolvers
             links = block.get("links", [])
             if not isinstance(links, list) or not links:
-                raise ExtractionFailedException("No links found inside final_urls")
+                msg = "No links found inside final_urls"
+                raise ExtractionFailedException(msg)
 
             # Attempt to take filename/mime from block if present (as per API fields)
             block_filename = block.get("file_name")  # API-provided filename [2][5]
-            block_mime = block.get("file_type") or "application/octet-stream"  # API-provided type or fallback [2][5]
+            block_mime = (
+                block.get("file_type") or "application/octet-stream"
+            )  # API-provided type or fallback [2][5]
 
             # Preferred quality order
             preferred_qualities = ["720p", "480p", "240p"]
@@ -98,16 +109,21 @@ class XhamResolver(BaseResolver):
                         break
 
             if not chosen:
-                raise ExtractionFailedException(
-                    "Failed to find a usable download link in preferred qualities"
-                )
+                msg = "Failed to find a usable download link in preferred qualities"
+                raise ExtractionFailedException(msg)
 
             # Map fields from chosen link and/or block for LinkResult parity with Terabox
             link_url = chosen.get("link_url")
             # Prefer more specific per-link fields if present; otherwise use block-level metadata
-            filename = chosen.get("file_name") or block_filename or None  # name source [2][5]
-            mime_type = chosen.get("file_type") or block_mime or "application/octet-stream"  # MIME [2][5]
-            size = chosen.get("file_size") or None  # may be absent; keep None if not provide
+            filename = (
+                chosen.get("file_name") or block_filename or None
+            )  # name source [2][5]
+            mime_type = (
+                chosen.get("file_type") or block_mime or "application/octet-stream"
+            )  # MIME [2][5]
+            size = (
+                chosen.get("file_size") or None
+            )  # may be absent; keep None if not provide
             return LinkResult(
                 url=link_url,
                 filename=filename,
@@ -116,7 +132,8 @@ class XhamResolver(BaseResolver):
             )
 
         except Exception as e:
-            raise ExtractionFailedException(f"Failed to resolve domain URL: {e}") from e
+            msg = f"Failed to resolve domain URL: {e}"
+            raise ExtractionFailedException(msg) from e
 
     def _raise_extraction_failed(self, msg: str) -> None:
         raise ExtractionFailedException(msg)

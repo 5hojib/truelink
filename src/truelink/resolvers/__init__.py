@@ -16,15 +16,15 @@ from .onedrive import OneDriveResolver
 from .pcloud import PCloudResolver
 from .pixeldrain import PixelDrainResolver
 from .ranoz import RanozResolver
+from .spankbang import SpankBangResolver
 from .streamtape import StreamtapeResolver
 from .swisstransfer import SwissTransferResolver
 from .terabox import TeraboxResolver
 from .tmpsend import TmpSendResolver
 from .uploadee import UploadEeResolver
-from .yandexdisk import YandexDiskResolver
-from .xham import XhamResolver
-from .spankbang import SpankBangResolver
 from .xfeed import XfeedResolver
+from .xham import XhamResolver
+from .yandexdisk import YandexDiskResolver
 
 __all__ = [
     "BaseResolver",
@@ -41,13 +41,13 @@ __all__ = [
     "PCloudResolver",
     "PixelDrainResolver",
     "RanozResolver",
+    "SpankBangResolver",
     "StreamtapeResolver",
     "SwissTransferResolver",
     "TeraboxResolver",
     "TmpSendResolver",
     "UploadEeResolver",
-    "YandexDiskResolver",
-    "XhamResolver",
-    "SpankBangResolver",
     "XfeedResolver",
+    "XhamResolver",
+    "YandexDiskResolver",
 ]
