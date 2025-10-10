@@ -27,25 +27,25 @@ classifiers = [
 ]
 keywords = ["download", "link", "extractor", "direct-link", "url"]
 dependencies = [
-    "aiohttp>=3.8.0",
-    "lxml>=4.9.0",
-    "cloudscraper>=1.2.71",
+    "aiohttp",
+    "lxml",
+    "cloudscraper",
 ]
 
 [project.optional-dependencies]
 dev = [
-    "pre-commit>=3.0.0",
-    "ruff>=0.12.5",
+    "pre-commit",
+    "ruff",
 ]
 docs = [
-    "mkdocs>=1.4.0",
-    "mkdocs-material>=9.0.0",
+    "mkdocs",
+    "mkdocs-material",
     "mkdocs-macros-plugin",
-    "mkdocstrings[python]>=0.20.0",
-    "mkdocs-gen-files>=0.4.0",
-    "mkdocs-literate-nav>=0.6.0",
-    "mkdocs-section-index>=0.3.0",
-    "mkdocs-autorefs>=0.4.0",
+    "mkdocstrings[python]",
+    "mkdocs-gen-files",
+    "mkdocs-literate-nav",
+    "mkdocs-section-index",
+    "mkdocs-autorefs",
 ]
 
 [project.urls]
