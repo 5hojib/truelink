@@ -1,3 +1,4 @@
+"""Resolver for xfeed.com."""
 from __future__ import annotations
 
 import re
@@ -11,9 +12,20 @@ from .base import BaseResolver
 
 
 class XfeedResolver(BaseResolver):
+    """Resolver for xfeed.com."""
+
     DOMAINS: ClassVar[list[str]] = ["xfeed.com", "www.xfeed.com"]
 
     async def resolve(self, url: str) -> LinkResult:
+        """Resolve an xfeed.com URL.
+
+        Args:
+            url: The xfeed.com URL to resolve.
+
+        Returns:
+            A LinkResult object.
+
+        """
         async with await self._get(
             url,
             headers={"Referer": "https://xfeed.com/", "User-Agent": "Mozilla/5.0"},

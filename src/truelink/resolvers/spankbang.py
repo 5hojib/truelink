@@ -1,11 +1,14 @@
-# spankbang.py
-# ---------------
+"""Resolver for spankbang.com."""
 from __future__ import annotations
 
+import hashlib
 import json
+import mimetypes
 import re
 from typing import TYPE_CHECKING, ClassVar
 from urllib.parse import urlparse, urlunparse
+
+import aiohttp
 
 from truelink.exceptions import ExtractionFailedException
 from truelink.types import FolderResult, LinkResult
@@ -17,8 +20,11 @@ if TYPE_CHECKING:
 
 
 class SpankBangResolver(BaseResolver):
-    """Resolver for spankbang domains by scraping the page and extracting `var stream_data`,
-    then choosing the best MP4 link in priority 1080p > 720p > 480p. [web:90][web:76].
+    """Resolver for spankbang domains.
+
+    This resolver scrapes the page, extracts `var stream_data`, and then
+    chooses the best MP4 link in priority 1080p > 720p > 480p.
+    [web:90][web:76]
     """
 
     DOMAINS: ClassVar[list[str]] = [
@@ -140,8 +146,8 @@ class SpankBangResolver(BaseResolver):
 
     def _extract_stream_dict(self, html: str) -> dict | None:
         """Extract and JSON-decode the stream_data object from the page. [web:90]."""
-        MAX_HTML_SIZE = 2 * 1024 * 1024  # 2MB limit
-        if len(html) > MAX_HTML_SIZE:
+        max_html_size = 2 * 1024 * 1024  # 2MB limit
+        if len(html) > max_html_size:
             # Optionally, log a warning here
             return None
         block = self._find_stream_block(html)
@@ -155,7 +161,7 @@ class SpankBangResolver(BaseResolver):
             data = json.loads(json_like)
             if isinstance(data, dict):
                 return data
-        except Exception:
+        except json.JSONDecodeError:
             return None
         return None
 
@@ -210,7 +216,19 @@ class SpankBangResolver(BaseResolver):
             return f"{name}.{m[1].lower()}"
         return name
 
+    def _raise_extraction_failed(self, msg: str, from_exc: Exception | None = None) -> None:
+        raise ExtractionFailedException(msg) from from_exc
+
     async def resolve(self, url: str) -> LinkResult | FolderResult:
+        """Resolve a SpankBang URL.
+
+        Args:
+            url: The SpankBang URL to resolve.
+
+        Returns:
+            A LinkResult or FolderResult object.
+
+        """
         # Normalize host if matches our set
         target = self._normalize_to_canonical(
             url
@@ -232,19 +250,16 @@ class SpankBangResolver(BaseResolver):
                 if resp.status != 200:
                     text = await resp.text()
                     msg = f"HTTP {resp.status} fetching page: {text[:200]}"
-                    raise ExtractionFailedException(msg)
+                    self._raise_extraction_failed(msg)
                 html = await resp.text()
-        except Exception as e:
+        except aiohttp.ClientError as e:
             msg = f"Failed to fetch page: {e}"
-            raise ExtractionFailedException(msg) from e
+            self._raise_extraction_failed(msg, from_exc=e)
 
         # Extract title -> filename
         filename = self._extract_title(html)
         if not filename:
             # Try to extract a unique identifier from the URL, using domain, path, and a hash for uniqueness
-            import hashlib
-            from urllib.parse import urlparse
-
             url_parts = urlparse(url)
             domain = url_parts.netloc.replace(".", "_")
             path_segments = [
@@ -264,14 +279,12 @@ class SpankBangResolver(BaseResolver):
         best_url = self._choose_best_url(data, fallback)
         if not best_url:
             msg = "Could not extract a playable quality link"
-            raise ExtractionFailedException(msg)
+            self._raise_extraction_failed(msg)
 
         # Append extension if needed based on URL path
         final_name = self._maybe_add_extension(filename, best_url) or filename
 
         # Infer MIME type from extension
-        import mimetypes
-
         mime_type, _ = mimetypes.guess_type(final_name)
         if mime_type is None:
             mime_type = "application/octet-stream"
