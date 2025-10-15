@@ -1,4 +1,5 @@
 """Resolver for xhamster.com."""
+
 from __future__ import annotations
 
 import json
@@ -146,5 +147,7 @@ class XhamResolver(BaseResolver):
             msg = f"Failed to resolve domain URL: {e}"
             self._raise_extraction_failed(msg, from_exc=e)
 
-    def _raise_extraction_failed(self, msg: str, from_exc: Exception | None = None) -> None:
+    def _raise_extraction_failed(
+        self, msg: str, from_exc: Exception | None = None
+    ) -> None:
         raise ExtractionFailedException(msg) from from_exc

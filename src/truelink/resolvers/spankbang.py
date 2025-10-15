@@ -1,4 +1,5 @@
 """Resolver for spankbang.com."""
+
 from __future__ import annotations
 
 import hashlib
@@ -216,7 +217,9 @@ class SpankBangResolver(BaseResolver):
             return f"{name}.{m[1].lower()}"
         return name
 
-    def _raise_extraction_failed(self, msg: str, from_exc: Exception | None = None) -> None:
+    def _raise_extraction_failed(
+        self, msg: str, from_exc: Exception | None = None
+    ) -> None:
         raise ExtractionFailedException(msg) from from_exc
 
     async def resolve(self, url: str) -> LinkResult | FolderResult:

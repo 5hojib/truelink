@@ -1,4 +1,5 @@
 """Resolver for linkvertise.com."""
+
 from __future__ import annotations
 
 import json
