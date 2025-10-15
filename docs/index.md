@@ -22,7 +22,7 @@ TrueLink supports a growing list of file hosting services. The table below provi
 - [x] gofile
 - [x] linkbox
 - [x] lulacloud
-- [x] mediafile (size parsing left)
+- [x] mediafile
 - [x] mediafire
 - [x] pixeldrain
 - [x] streamtape
@@ -31,6 +31,9 @@ TrueLink supports a growing list of file hosting services. The table below provi
 - [x] uploadee
 - [x] yandexlink
 - [x] ranoz
+- [x] xfeed
+- [x] spankbang
+- [x] xhamster
 - [ ] swisstransfer
 - [ ] onedrive
 - [ ] pcloud
