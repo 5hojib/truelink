@@ -63,5 +63,3 @@ class TmpSendResolver(BaseResolver):
                 msg,
             ) from e
 
-    def _raise_invalid_url(self, msg: str) -> None:
-        raise InvalidURLException(msg)

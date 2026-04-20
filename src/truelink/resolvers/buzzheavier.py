@@ -68,9 +68,6 @@ class BuzzHeavierResolver(BaseResolver):
                 msg,
             ) from e
 
-    def _raise_extraction_failed(self, msg: str) -> None:
-        raise ExtractionFailedException(msg)
-
     async def _get_download_url(self, url: str, *, is_folder: bool = False) -> str:
         """Get download URL from BuzzHeavier."""
         if "/download" not in url:

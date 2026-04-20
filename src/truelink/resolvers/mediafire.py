@@ -354,8 +354,3 @@ class MediaFireResolver(BaseResolver):
         finally:
             await self._run_sync(scraper.close)
 
-    def _raise_extraction_failed(self, msg: str) -> None:
-        raise ExtractionFailedException(msg)
-
-    def _raise_invalid_url(self, msg: str) -> None:
-        raise InvalidURLException(msg)

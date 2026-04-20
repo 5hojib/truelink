@@ -138,5 +138,3 @@ class PCloudResolver(BaseResolver):
                 msg,
             ) from e
 
-    def _raise_extraction_failed(self, msg: str) -> None:
-        raise ExtractionFailedException(msg)

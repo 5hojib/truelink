@@ -68,5 +68,3 @@ class YandexDiskResolver(BaseResolver):
             msg = f"Failed to resolve Yandex.Disk URL '{url}': {e!s}"
             raise ExtractionFailedException(msg) from e
 
-    def _raise_extraction_failed(self, msg: str) -> None:
-        raise ExtractionFailedException(msg)

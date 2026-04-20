@@ -127,5 +127,3 @@ class StreamtapeResolver(BaseResolver):
             msg = f"Unexpected error while resolving Streamtape URL: {e}"
             raise ExtractionFailedException(msg) from e
 
-    def _raise_extraction_failed(self, msg: str) -> None:
-        raise ExtractionFailedException(msg)

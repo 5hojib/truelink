@@ -71,8 +71,3 @@ class PixelDrainResolver(BaseResolver):
                 msg,
             ) from e
 
-    def _raise_extraction_failed(self, msg: str) -> None:
-        raise ExtractionFailedException(msg)
-
-    def _raise_invalid_url(self, msg: str) -> None:
-        raise InvalidURLException(msg)

@@ -137,8 +137,6 @@ class LinkBoxResolver(BaseResolver):
             msg = f"LinkBox API ({endpoint}) failed: {e!s}"
             raise ExtractionFailedException(msg) from e
 
-    def _raise_extraction_failed(self, msg: str) -> None:
-        raise ExtractionFailedException(msg)
 
     def _extract_share_token(self, url: str) -> str:
         token = urlparse(url).path.strip("/").split("/")[-1]

@@ -10,6 +10,8 @@ from urllib.parse import unquote, urlparse
 
 import aiohttp
 
+from truelink.exceptions import ExtractionFailedException, InvalidURLException
+
 if TYPE_CHECKING:
     from types import TracebackType
 
@@ -127,53 +129,22 @@ class BaseResolver(ABC):
         mime_type: str | None = None
 
         session_created_here = False
-        if not self.session:
-            await self._create_session()
-            session_created_here = True
-
-        if not self.session:
-            if session_created_here:
-                await self._close_session()
-            return None, None, None
-
-        request_headers = headers.copy() if headers else {}
-
         try:
-            async with self.session.head(
-                url, headers=request_headers, allow_redirects=True
-            ) as resp:
-                if resp.status == 200:
-                    content_disposition = resp.headers.get("Content-Disposition")
-                    if content_disposition:
-                        filename = self._extract_filename(content_disposition)
+            if not self.session:
+                await self._create_session()
+                session_created_here = True
 
-                    if not filename:
-                        filename = self._get_filename_from_url(url)
+            if not self.session:
+                return None, None, None
 
-                    content_length = resp.headers.get("Content-Length")
-                    if content_length and content_length.isdigit():
-                        size = int(content_length)
+            request_headers = headers.copy() if headers else {}
 
-                    mime_type = (
-                        resp.headers.get("Content-Type", "").split(";")[0].strip()
-                    )
-
-                    if session_created_here:
-                        await self._close_session()
-                    return filename, size, mime_type
-
-        except aiohttp.ClientError:
-            pass
-
-        try:
-            range_headers = request_headers.copy()
-            range_headers["Range"] = "bytes=0-0"
-
-            async with self.session.get(
-                url, headers=range_headers, allow_redirects=True
-            ) as resp:
-                if resp.status in (200, 206):
-                    if not filename:
+            # Try HEAD request first
+            try:
+                async with self.session.head(
+                    url, headers=request_headers, allow_redirects=True
+                ) as resp:
+                    if resp.status == 200:
                         content_disposition = resp.headers.get("Content-Disposition")
                         if content_disposition:
                             filename = self._extract_filename(content_disposition)
@@ -181,23 +152,77 @@ class BaseResolver(ABC):
                         if not filename:
                             filename = self._get_filename_from_url(url)
 
-                    content_range = resp.headers.get("Content-Range")
-                    if content_range:
-                        with contextlib.suppress(ValueError, IndexError):
-                            size = int(content_range.split("/")[-1])
+                        content_length = resp.headers.get("Content-Length")
+                        if content_length and content_length.isdigit():
+                            size = int(content_length)
 
-                    if not mime_type:
                         mime_type = (
-                            resp.headers.get("Content-Type", "")
-                            .split(";")[0]
-                            .strip()
+                            resp.headers.get("Content-Type", "").split(";")[0].strip()
                         )
 
-        except aiohttp.ClientError:
-            pass
+                        return filename, size, mime_type
+
+            except aiohttp.ClientError:
+                pass
+
+            # Fallback to GET request with Range header
+            try:
+                range_headers = request_headers.copy()
+                range_headers["Range"] = "bytes=0-0"
+
+                async with self.session.get(
+                    url, headers=range_headers, allow_redirects=True
+                ) as resp:
+                    if resp.status in (200, 206):
+                        if not filename:
+                            content_disposition = resp.headers.get("Content-Disposition")
+                            if content_disposition:
+                                filename = self._extract_filename(content_disposition)
+
+                            if not filename:
+                                filename = self._get_filename_from_url(url)
+
+                        content_range = resp.headers.get("Content-Range")
+                        if content_range:
+                            with contextlib.suppress(ValueError, IndexError):
+                                size = int(content_range.split("/")[-1])
+
+                        if not mime_type:
+                            mime_type = (
+                                resp.headers.get("Content-Type", "")
+                                .split(";")[0]
+                                .strip()
+                            )
+
+            except aiohttp.ClientError:
+                pass
 
         finally:
             if session_created_here:
                 await self._close_session()
 
         return filename, size, mime_type
+
+    def _raise_extraction_failed(self, msg: str) -> None:
+        """Raise ExtractionFailedException with message.
+
+        Args:
+            msg: Error message
+
+        Raises:
+            ExtractionFailedException: Always
+
+        """
+        raise ExtractionFailedException(msg)
+
+    def _raise_invalid_url(self, msg: str) -> None:
+        """Raise InvalidURLException with message.
+
+        Args:
+            msg: Error message
+
+        Raises:
+            InvalidURLException: Always
+
+        """
+        raise InvalidURLException(msg)

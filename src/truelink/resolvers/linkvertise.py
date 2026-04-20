@@ -50,5 +50,3 @@ class LinkvertiseResolver(BaseResolver):
             msg = f"Failed to resolve Linkvertise URL: {e}"
             raise ExtractionFailedException(msg)
 
-    def _raise_extraction_failed(self, msg: str) -> None:
-        raise ExtractionFailedException(msg)
